@@ -1,0 +1,971 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Admin Dashboard - Logistics Platform{% endblock %}</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            --primary-color: #1e293b;
+            --secondary-color: #475569;
+            --accent-color: #3b82f6;
+            --success-color: #10b981;
+            --warning-color: #f59e0b;
+            --danger-color: #ef4444;
+            --background-color: #f8fafc;
+            --card-background: #ffffff;
+            --border-color: #e2e8f0;
+            --text-primary: #0f172a;
+            --text-secondary: #64748b;
+            --text-muted: #94a3b8;
+            --sidebar-width: 260px;
+            --header-height: 80px;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: var(--background-color);
+            color: var(--text-primary);
+            line-height: 1.5;
+            font-size: 14px;
+        }
+
+        .dashboard-layout {
+            display: flex;
+            min-height: 100vh;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            width: var(--sidebar-width);
+            background: var(--card-background);
+            border-right: 1px solid var(--border-color);
+            position: fixed;
+            height: 100vh;
+            z-index: 100;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .sidebar-header {
+            padding: 24px 20px;
+            border-bottom: 1px solid var(--border-color);
+        }
+
+        .logo {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            text-decoration: none;
+            color: var(--text-primary);
+        }
+
+        .logo-icon {
+            width: 40px;
+            height: 40px;
+            background: var(--accent-color);
+            border-radius: 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 18px;
+        }
+
+        .logo-text {
+            font-size: 20px;
+            font-weight: 700;
+            letter-spacing: -0.025em;
+        }
+
+        .sidebar-content {
+            flex: 1;
+            padding: 20px 0;
+            overflow-y: auto;
+        }
+
+        .nav-section {
+            margin-bottom: 32px;
+        }
+
+        .nav-title {
+            font-size: 11px;
+            font-weight: 600;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            color: var(--text-muted);
+            padding: 0 20px 12px;
+        }
+
+        .nav-menu {
+            list-style: none;
+        }
+
+        .nav-item {
+            margin-bottom: 2px;
+        }
+
+        .nav-link {
+            display: flex;
+            align-items: center;
+            padding: 12px 20px;
+            color: var(--text-secondary);
+            text-decoration: none;
+            font-weight: 500;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .nav-link:hover {
+            background-color: #f1f5f9;
+            color: var(--text-primary);
+        }
+
+        .nav-link.active {
+            background-color: #eff6ff;
+            color: var(--accent-color);
+            border-right: 3px solid var(--accent-color);
+        }
+
+        .nav-icon {
+            width: 20px;
+            margin-right: 12px;
+            text-align: center;
+            font-size: 16px;
+        }
+
+        /* Sidebar Footer */
+        .sidebar-footer {
+            padding: 20px;
+            border-top: 1px solid var(--border-color);
+        }
+
+        .user-profile {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .user-details {
+            flex: 1;
+        }
+
+        .user-details h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .user-details p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .sidebar-logout {
+            color: var(--text-muted);
+            font-size: 14px;
+            transition: all 0.2s ease;
+        }
+
+        .sidebar-logout:hover {
+            color: var(--danger-color);
+        }
+
+        /* Main Content */
+        .main-content {
+            flex: 1;
+            margin-left: var(--sidebar-width);
+            display: flex;
+            flex-direction: column;
+        }
+
+        /* Header */
+        .header {
+            height: var(--header-height);
+            background: var(--card-background);
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 0 32px;
+            position: sticky;
+            top: 0;
+            z-index: 50;
+        }
+
+        .header-left h1 {
+            font-size: 24px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .breadcrumb {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-top: 2px;
+        }
+
+        .header-right {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .search-container {
+            position: relative;
+        }
+
+        .search-input {
+            width: 320px;
+            height: 40px;
+            padding: 0 16px 0 44px;
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+            font-size: 14px;
+            background: var(--background-color);
+            transition: all 0.2s ease;
+        }
+
+        .search-input:focus {
+            outline: none;
+            border-color: var(--accent-color);
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+            background: white;
+        }
+
+        .search-icon {
+            position: absolute;
+            left: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+        }
+
+        .notification-btn {
+            width: 40px;
+            height: 40px;
+            border: none;
+            background: none;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            cursor: pointer;
+            transition: all 0.2s ease;
+            position: relative;
+        }
+
+        .notification-btn:hover {
+            background: var(--background-color);
+            color: var(--text-primary);
+        }
+
+        .notification-badge {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            width: 8px;
+            height: 8px;
+            background: var(--danger-color);
+            border-radius: 50%;
+        }
+
+        .user-menu {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+
+        .user-menu:hover {
+            background: var(--background-color);
+        }
+
+        .user-avatar {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            background: linear-gradient(135deg, var(--accent-color), #1d4ed8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .user-info {
+            min-width: 120px;
+        }
+
+        .user-info h4 {
+            font-size: 13px;
+            font-weight: 600;
+            color: var(--text-primary);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+        }
+
+        .user-info p {
+            font-size: 11px;
+            color: var(--text-muted);
+        }
+
+        .logout-container {
+            margin-left: 12px;
+        }
+
+        .logout-btn {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-secondary);
+            background: var(--background-color);
+            transition: all 0.2s ease;
+            text-decoration: none;
+        }
+
+        .logout-btn:hover {
+            background: #f1f5f9;
+            color: var(--danger-color);
+        }
+
+        /* Content Area */
+        .content-area {
+            flex: 1;
+            padding: 32px;
+            overflow-y: auto;
+        }
+
+        .page-header {
+            margin-bottom: 32px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .page-subtitle {
+            color: var(--text-secondary);
+            font-size: 16px;
+        }
+
+        /* Stats Grid */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+            margin-bottom: 32px;
+        }
+
+        .stat-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            padding: 24px;
+            transition: all 0.2s ease;
+        }
+
+        .stat-card:hover {
+            border-color: #cbd5e1;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+        }
+
+        .stat-header {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-bottom: 16px;
+        }
+
+        .stat-title {
+            font-size: 14px;
+            font-weight: 500;
+            color: var(--text-secondary);
+        }
+
+        .stat-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 18px;
+            color: white;
+        }
+
+        .stat-icon.blue { background: linear-gradient(135deg, #3b82f6, #1d4ed8); }
+        .stat-icon.green { background: linear-gradient(135deg, #10b981, #059669); }
+        .stat-icon.purple { background: linear-gradient(135deg, #8b5cf6, #7c3aed); }
+        .stat-icon.orange { background: linear-gradient(135deg, #f59e0b, #d97706); }
+        .stat-icon.red { background: linear-gradient(135deg, #ef4444, #dc2626); }
+
+        .stat-value {
+            font-size: 32px;
+            font-weight: 700;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+        }
+
+        .stat-change {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            font-size: 13px;
+            font-weight: 500;
+        }
+
+        .stat-change.positive {
+            color: var(--success-color);
+        }
+
+        .stat-change.negative {
+            color: var(--danger-color);
+        }
+
+        /* Content Cards */
+        .content-grid {
+            display: grid;
+            grid-template-columns: 2fr 1fr;
+            gap: 24px;
+        }
+
+        .content-card {
+            background: var(--card-background);
+            border: 1px solid var(--border-color);
+            border-radius: 12px;
+            overflow: hidden;
+        }
+
+        .card-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border-color);
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .card-title {
+            font-size: 16px;
+            font-weight: 600;
+            color: var(--text-primary);
+        }
+
+        .card-content {
+            padding: 24px;
+        }
+
+        .chart-placeholder {
+            height: 200px;
+            background: linear-gradient(135deg, #f1f5f9, #e2e8f0);
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: var(--text-muted);
+            font-size: 14px;
+        }
+
+        /* Activity List */
+        .activity-list {
+            list-style: none;
+        }
+
+        .activity-item {
+            display: flex;
+            align-items: flex-start;
+            gap: 12px;
+            padding: 16px 0;
+            border-bottom: 1px solid #f1f5f9;
+        }
+
+        .activity-item:last-child {
+            border-bottom: none;
+        }
+
+        .activity-icon {
+            width: 32px;
+            height: 32px;
+            border-radius: 6px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 12px;
+            color: white;
+            flex-shrink: 0;
+        }
+
+        .activity-content h4 {
+            font-size: 13px;
+            font-weight: 500;
+            color: var(--text-primary);
+            margin-bottom: 2px;
+        }
+
+        .activity-content p {
+            font-size: 12px;
+            color: var(--text-muted);
+        }
+
+        /* Product Table Styles */
+        .product-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin-top: 16px;
+        }
+
+        .product-table th {
+            background-color: #f8fafc;
+            padding: 16px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--text-primary);
+            border-bottom: 2px solid var(--border-color);
+            font-size: 14px;
+        }
+
+        .product-table td {
+            padding: 16px;
+            border-bottom: 1px solid var(--border-color);
+            color: var(--text-secondary);
+            font-size: 14px;
+        }
+
+        .product-table tr:hover {
+            background-color: #f8fafc;
+        }
+
+        .product-table .product-name {
+            font-weight: 500;
+            color: var(--text-primary);
+        }
+
+        .product-table .price {
+            font-weight: 600;
+            color: var(--success-color);
+        }
+
+        .product-table .original-price {
+            color: var(--text-muted);
+            text-decoration: line-through;
+        }
+
+        .table-container {
+            overflow-x: auto;
+            border-radius: 8px;
+            border: 1px solid var(--border-color);
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .content-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 768px) {
+            :root {
+                --sidebar-width: 0px;
+            }
+
+            .sidebar {
+                transform: translateX(-100%);
+                transition: transform 0.3s ease;
+            }
+
+            .sidebar.open {
+                transform: translateX(0);
+            }
+
+            .main-content {
+                margin-left: 0;
+            }
+
+            .header {
+                padding: 0 16px;
+            }
+
+            .search-input {
+                width: 200px;
+            }
+
+            .content-area {
+                padding: 16px;
+            }
+
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .user-info {
+                display: none;
+            }
+
+            .product-table {
+                font-size: 12px;
+            }
+
+            .product-table th,
+            .product-table td {
+                padding: 12px 8px;
+            }
+        }
+
+        {% block extra_css %}{% endblock %}
+    </style>
+</head>
+<body>
+    <div class="dashboard-layout">
+        <!-- Sidebar -->
+        <aside class="sidebar">
+            <div class="sidebar-header">
+                <a href="{% url 'admin_dashboard' %}" class="logo">
+                    <div >
+                        <img src="{% static 'images/SYSMAC LOGO-01.png' %}" alt="Logo" style="width: 220px; height: 80px;">
+                    </div>
+                    {% comment %} <span class="logo-text">Enterprise</span> {% endcomment %}
+                </a>
+            </div>
+            
+            <div class="sidebar-content">
+                <nav class="nav-section">
+                    <div class="nav-title">Main</div>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="{% url 'admin_dashboard' %}" class="nav-link {% if request.resolver_match.url_name == 'admin_dashboard' %}active{% endif %}" data-page="user">
+                                <i class="nav-icon fas fa-tachometer-alt"></i>
+                                <span>Dashboard</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'sysmac_products' %}" class="nav-link {% if request.resolver_match.url_name == 'sysmac_products' %}active{% endif %}" data-page="sysmac">
+                                <i class="nav-icon fas fa-microchip"></i>
+                                <span>Sysmac Products</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="{% url 'custom_products' %}" class="nav-link" data-page="custom">
+                                <i class="nav-icon fas fa-tools"></i>
+                                <span>Custom Products</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-page="custom">
+                                <i class="nav-icon fas fa-users"></i>
+                                <span >Users</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav>
+
+                {% comment %} <nav class="nav-section">
+                    <div class="nav-title">Commerce</div>
+                    <ul class="nav-menu">
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-page="cart">
+                                <i class="nav-icon fas fa-shopping-cart"></i>
+                                <span>Shopping Cart</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-page="wishlist">
+                                <i class="nav-icon fas fa-heart"></i>
+                                <span>Wishlist</span>
+                            </a>
+                        </li>
+                        <li class="nav-item">
+                            <a href="#" class="nav-link" data-page="sales">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                <span>Sales Analytics</span>
+                            </a>
+                        </li>
+                    </ul>
+                </nav> {% endcomment %}
+            </div>
+
+            <!-- Sidebar Footer with User Info and Logout -->
+            <div class="sidebar-footer">
+                <div class="user-profile">
+                    <div class="user-avatar">
+                        <i class="fas fa-user"></i>
+                    </div>
+                    <div class="user-details">
+                        <h4>{{ user.email }}</h4>
+                        <p>Super Admin</p>
+                    </div>
+                    <a href="{% url 'logout' %}" class="sidebar-logout">
+                        <i class="fas fa-sign-out-alt"></i>
+                    </a>
+                </div>
+            </div>
+        </aside>
+
+        <!-- Main Content -->
+        <main class="main-content">
+            <!-- Header -->
+            <header class="header">
+                <div class="header-left">
+                    <h1 id="page-title">{% block page_title %}Dashboard{% endblock %}</h1>
+                    <div class="breadcrumb">Dashboard / {% block breadcrumb %}Overview{% endblock %}</div>
+                </div>
+                
+                <div class="header-right">
+                    <div class="search-container">
+                        <input type="text" class="search-input" placeholder="Search anything...">
+                        <i class="search-icon fas fa-search"></i>
+                    </div>
+                    
+                    <div class="header-actions">
+                        <button class="notification-btn">
+                            <i class="fas fa-bell"></i>
+                            <span class="notification-badge"></span>
+                        </button>
+                        
+                        <div class="user-menu">
+                            <div class="user-avatar">
+                                <i class="fas fa-user"></i>
+                            </div>
+                            <div class="user-info">
+                                <h4>{{ user.email }}</h4>
+                                <p>Administrator</p>
+                            </div>
+                            <div class="logout-container">
+                                <a href="{% url 'logout' %}" class="logout-btn">
+                                    <i class="fas fa-sign-out-alt"></i>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </header>
+
+            <!-- Content Area -->
+            {% block content %}
+            <div class="content-area">
+                {% comment %} <div class="page-header">
+                    <h2 class="page-title">Dashboard Overview</h2>
+                    <p class="page-subtitle">Monitor your business performance and key metrics</p>
+                </div> {% endcomment %}
+
+                <!-- Stats Grid -->
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Sysmac Products</div>
+                            <div class="stat-icon blue">
+                                <i class="fas fa-microchip"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">1,247</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+12.5% from last month</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Custom Products</div>
+                            <div class="stat-icon green">
+                                <i class="fas fa-tools"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">486</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+8.2% from last month</span>
+                        </div>
+                    </div>
+
+                    {% comment %} <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Active Cart Items</div>
+                            <div class="stat-icon purple">
+                                <i class="fas fa-shopping-cart"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">23</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>5 items added today</span>
+                        </div>
+                    </div>
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Wishlist Items</div>
+                            <div class="stat-icon orange">
+                                <i class="fas fa-heart"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">142</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>8 items on promotion</span>
+                        </div>
+                    </div> {% endcomment %}
+
+                    <div class="stat-card">
+                        <div class="stat-header">
+                            <div class="stat-title">Monthly Revenue</div>
+                            <div class="stat-icon red">
+                                <i class="fas fa-chart-line"></i>
+                            </div>
+                        </div>
+                        <div class="stat-value">$84,520</div>
+                        <div class="stat-change positive">
+                            <i class="fas fa-arrow-up"></i>
+                            <span>+15.3% from last month</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Content Grid -->
+                <div class="content-grid">
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Sales Performance</h3>
+                        </div>
+                        <div class="card-content">
+                            <div class="chart-placeholder">
+                                <i class="fas fa-chart-area" style="margin-right: 8px;"></i>
+                                Sales Chart Visualization
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="content-card">
+                        <div class="card-header">
+                            <h3 class="card-title">Recent Activity</h3>
+                        </div>
+                        <div class="card-content">
+                            <ul class="activity-list">
+                                <li class="activity-item">
+                                    <div class="activity-icon blue">
+                                        <i class="fas fa-plus"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>New product added</h4>
+                                        <p>Sysmac NX1P2 Controller added to catalog</p>
+                                    </div>
+                                </li>
+                                {% comment %} <li class="activity-item">
+                                    <div class="activity-icon green">
+                                        <i class="fas fa-shopping-cart"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Order completed</h4>
+                                        <p>Customer purchased 3 custom products</p>
+                                    </div>
+                                </li> {% endcomment %}
+                                {% comment %} <li class="activity-item">
+                                    <div class="activity-icon purple">
+                                        <i class="fas fa-heart"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Items added to wishlist</h4>
+                                        <p>5 products marked as favorites</p>
+                                    </div>
+                                </li> {% endcomment %}
+                                <li class="activity-item">
+                                    <div class="activity-icon orange">
+                                        <i class="fas fa-chart-bar"></i>
+                                    </div>
+                                    <div class="activity-content">
+                                        <h4>Monthly report generated</h4>
+                                        <p>Sales analytics report is ready</p>
+                                    </div>
+                                </li>
+                            </ul>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            {% endblock %}
+        </main>
+    </div>
+
+    <script>
+        // Navigation functionality
+        document.querySelectorAll('.nav-link').forEach(link => {
+            link.addEventListener('click', function(e) {
+                // Don't prevent default for actual links with href
+                if (this.getAttribute('href') === '#') {
+                    e.preventDefault();
+                }
+                
+                // Remove active class from all links
+                document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+                
+                // Add active class to clicked link
+                this.classList.add('active');
+                
+                // Add subtle animation for placeholder links
+                if (this.getAttribute('href') === '#') {
+                    this.style.transform = 'translateX(4px)';
+                    setTimeout(() => {
+                        this.style.transform = 'translateX(0)';
+                    }, 200);
+                }
+            });
+        });
+
+        // Search functionality
+        document.querySelector('.search-input').addEventListener('input', function() {
+            console.log('Searching for:', this.value);
+        });
+
+        // Notification button
+        document.querySelector('.notification-btn').addEventListener('click', function() {
+            console.log('Notifications clicked');
+        });
+
+        // Add hover effects to stat cards
+        document.querySelectorAll('.stat-card').forEach(card => {
+            card.addEventListener('mouseenter', function() {
+                this.style.transform = 'translateY(-2px)';
+            });
+            
+            card.addEventListener('mouseleave', function() {
+                this.style.transform = 'translateY(0)';
+            });
+        });
+
+        // Mobile menu toggle (for future implementation)
+        function toggleSidebar() {
+            document.querySelector('.sidebar').classList.toggle('open');
+        }
+
+        {% block extra_js %}{% endblock %}
+    </script>
+</body>
+</html>

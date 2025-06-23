@@ -1,0 +1,271 @@
+{% extends 'admin_dashboard.html' %}
+
+{% block content %}
+<div class="content-area">
+    <div class="page-header">
+        <h2 class="page-title">{{ action }} Custom Product</h2>
+        <p class="page-subtitle">{% if action == 'Add' %}Create a new custom product{% else %}Edit existing product{% endif %}</p>
+    </div>
+
+    <div class="content-card">
+        <div class="card-header">
+            <h3 class="card-title">Product Details</h3>
+        </div>
+        <div class="card-content">
+            {% if form.errors %}
+                <div class="alert alert-danger">
+                    <strong>Please correct the following errors:</strong>
+                    <ul>
+                        {% for field, errors in form.errors.items %}
+                            {% for error in errors %}
+                                <li>{{ field }}: {{ error }}</li>
+                            {% endfor %}
+                        {% endfor %}
+                    </ul>
+                </div>
+            {% endif %}
+            
+            <form method="post" enctype="multipart/form-data">
+                {% csrf_token %}
+                
+                <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 24px;">
+                    <div>
+                        <div class="form-group">
+                            <label for="{{ form.main_image.id_for_label }}">Main Image</label>
+                            {{ form.main_image }}
+                            {% if form.instance.main_image %}
+                                <div style="margin-top: 10px;">
+                                    <img src="{{ form.instance.main_image.url }}" style="max-width: 200px; border-radius: 4px;">
+                                </div>
+                            {% endif %}
+                            {% if form.main_image.errors %}
+                                <div class="error-text">{{ form.main_image.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.stock_quantity.id_for_label }}">Stock Quantity</label>
+                            {{ form.stock_quantity }}
+                            {% if form.stock_quantity.help_text %}
+                                <small class="help-text">{{ form.stock_quantity.help_text }}</small>
+                            {% endif %}
+                            {% if form.stock_quantity.errors %}
+                                <div class="error-text">{{ form.stock_quantity.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label class="checkbox-label">
+                                {{ form.is_active }} Active Product
+                            </label>
+                            {% if form.is_active.errors %}
+                                <div class="error-text">{{ form.is_active.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                    
+                    <div>
+                        <div class="form-group">
+                            <label for="{{ form.name.id_for_label }}">Name *</label>
+                            {{ form.name }}
+                            {% if form.name.errors %}
+                                <div class="error-text">{{ form.name.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.company.id_for_label }}">Company</label>
+                            {{ form.company }}
+                            {% if form.company.errors %}
+                                <div class="error-text">{{ form.company.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.brand.id_for_label }}">Brand</label>
+                            {{ form.brand }}
+                            {% if form.brand.errors %}
+                                <div class="error-text">{{ form.brand.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.category.id_for_label }}">Category</label>
+                            {{ form.category }}
+                            {% if form.category.errors %}
+                                <div class="error-text">{{ form.category.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.price.id_for_label }}">Price *</label>
+                            {{ form.price }}
+                            {% if form.price.help_text %}
+                                <small class="help-text">{{ form.price.help_text }}</small>
+                            {% endif %}
+                            {% if form.price.errors %}
+                                <div class="error-text">{{ form.price.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.unit.id_for_label }}">Unit</label>
+                            {{ form.unit }}
+                            {% if form.unit.errors %}
+                                <div class="error-text">{{ form.unit.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                        
+                        <div class="form-group">
+                            <label for="{{ form.product.id_for_label }}">Product Type</label>
+                            {{ form.product }}
+                            {% if form.product.errors %}
+                                <div class="error-text">{{ form.product.errors.0 }}</div>
+                            {% endif %}
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="{{ form.description.id_for_label }}">Description</label>
+                    {{ form.description }}
+                    {% if form.description.errors %}
+                        <div class="error-text">{{ form.description.errors.0 }}</div>
+                    {% endif %}
+                </div>
+                
+                <div style="display: flex; gap: 16px; margin-top: 24px;">
+                    <button type="submit" class="submit-btn" style="width: auto; padding: 12px 24px;">
+                        <i class="fas fa-save"></i> Save Product
+                    </button>
+                    <a href="{% url 'custom_products' %}" class="submit-btn" style="width: auto; padding: 12px 24px; background: #64748b; text-decoration: none;">
+                        <i class="fas fa-arrow-left"></i> Cancel
+                    </a>
+                </div>
+            </form>
+        </div>
+    </div>
+</div>
+
+<style>
+    .form-group {
+        margin-bottom: 20px;
+    }
+    
+    .form-group label {
+        display: block;
+        margin-bottom: 8px;
+        font-weight: 500;
+        color: #475569;
+    }
+    
+    .checkbox-label {
+        display: flex !important;
+        align-items: center;
+        gap: 8px;
+        cursor: pointer;
+    }
+    
+    .form-group input,
+    .form-group select,
+    .form-group textarea {
+        width: 100%;
+        padding: 10px 12px;
+        border: 1px solid #e2e8f0;
+        border-radius: 6px;
+        background: #f8fafc;
+        font-size: 14px;
+    }
+    
+    .form-group input:focus,
+    .form-group select:focus,
+    .form-group textarea:focus {
+        outline: none;
+        border-color: #3b82f6;
+        box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    }
+    
+    .form-group textarea {
+        min-height: 100px;
+        resize: vertical;
+    }
+    
+    .help-text {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #64748b;
+    }
+    
+    .error-text {
+        display: block;
+        margin-top: 4px;
+        font-size: 12px;
+        color: #ef4444;
+        font-weight: 500;
+    }
+    
+    .alert {
+        padding: 12px 16px;
+        margin-bottom: 20px;
+        border-radius: 6px;
+        border: 1px solid transparent;
+    }
+    
+    .alert-danger {
+        background-color: #fef2f2;
+        border-color: #fecaca;
+        color: #dc2626;
+    }
+    
+    .alert ul {
+        margin: 8px 0 0 0;
+        padding-left: 20px;
+    }
+    
+    .submit-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        background: #3b82f6;
+        color: white;
+        border: none;
+        border-radius: 6px;
+        cursor: pointer;
+        transition: all 0.2s ease;
+        font-size: 14px;
+        font-weight: 500;
+    }
+    
+    .submit-btn:hover {
+        background: #2563eb;
+        transform: translateY(-1px);
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+    }
+</style>
+
+<script>
+    // Update the active navigation item
+    document.addEventListener('DOMContentLoaded', function() {
+        // Remove active class from all links
+        document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
+        
+        // Add active class to Custom Products link
+        const customLink = document.querySelector('.nav-link[data-page="custom"]');
+        if (customLink) {
+            customLink.classList.add('active');
+        }
+        
+        // Update page title and breadcrumb if elements exist
+        const pageTitle = document.getElementById('page-title');
+        const breadcrumb = document.querySelector('.breadcrumb');
+        
+        if (pageTitle) {
+            pageTitle.textContent = '{{ action }} Custom Product';
+        }
+        if (breadcrumb) {
+            breadcrumb.textContent = 'Dashboard / Custom Products / {{ action }}';
+        }
+    });
+</script>
+{% endblock %}

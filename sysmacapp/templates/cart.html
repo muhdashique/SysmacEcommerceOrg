@@ -1,0 +1,970 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+    <title>Shopping Cart - SYSMAC</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            background-color: #f5f7fa;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        /* Header */
+        .header {
+            background: white;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        .header-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            height: 70px;
+        }
+
+        .logo {
+            font-size: 24px;
+            font-weight: bold;
+            color: #2c3e50;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .search-container {
+            flex: 1;
+            max-width: 500px;
+            margin: 0 40px;
+            position: relative;
+        }
+
+        .search-input {
+            width: 100%;
+            padding: 12px 50px 12px 20px;
+            border: 2px solid #e9ecef;
+            border-radius: 25px;
+            font-size: 14px;
+            outline: none;
+            transition: all 0.3s ease;
+        }
+
+        .search-input:focus {
+            border-color: #F98F15;
+            box-shadow: 0 0 0 3px rgba(255, 107, 53, 0.1);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: #F98F15;
+            color: white;
+            border: none;
+            padding: 8px 16px;
+            border-radius: 20px;
+            cursor: pointer;
+            font-size: 14px;
+            transition: all 0.3s ease;
+        }
+
+        .search-btn:hover {
+            background: #e07d00;
+        }
+
+        .header-actions {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .cart-icon, .profile-icon {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: #f8f9fa;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            color: #2c3e50;
+            position: relative;
+        }
+
+        .cart-icon:hover, .profile-icon:hover {
+            background: #e9ecef;
+        }
+
+        /* Profile Dropdown */
+        .profile-dropdown {
+            position: absolute;
+            top: 100%;
+            right: 0;
+            background: white;
+            min-width: 200px;
+            border-radius: 12px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            border: 1px solid #e9ecef;
+            opacity: 0;
+            visibility: hidden;
+            transform: translateY(-10px);
+            transition: all 0.3s ease;
+            z-index: 1000;
+            margin-top: 8px;
+        }
+
+        .profile-dropdown.show {
+            opacity: 1;
+            visibility: visible;
+            transform: translateY(0);
+        }
+
+        .profile-dropdown::before {
+            content: '';
+            position: absolute;
+            top: -6px;
+            right: 15px;
+            width: 12px;
+            height: 12px;
+            background: white;
+            border: 1px solid #e9ecef;
+            border-bottom: none;
+            border-right: none;
+            transform: rotate(45deg);
+        }
+
+        .profile-info {
+            padding: 20px;
+            border-bottom: 1px solid #f1f3f4;
+        }
+
+        .profile-name {
+            font-weight: 600;
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 4px;
+        }
+
+        .profile-email {
+            font-size: 13px;
+            color: #6c757d;
+        }
+
+        .dropdown-menu {
+            padding: 10px 0;
+        }
+
+        .dropdown-item {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            padding: 12px 20px;
+            color: #2c3e50;
+            text-decoration: none;
+            font-size: 14px;
+            transition: all 0.2s ease;
+            border: none;
+            background: none;
+            width: 100%;
+            text-align: left;
+        }
+
+        .dropdown-item:hover {
+            background: #f8f9fa;
+            color: #ff6b35;
+        }
+
+        .dropdown-item i {
+            width: 16px;
+            font-size: 14px;
+        }
+
+        .dropdown-divider {
+            height: 1px;
+            background: #f1f3f4;
+            margin: 8px 0;
+        }
+
+        /* Navigation */
+        .nav-bar {
+            background: white;
+            border-top: 1px solid #e9ecef;
+        }
+
+        .nav-content {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px;
+            display: flex;
+            align-items: center;
+            height: 50px;
+            gap: 30px;
+        }
+
+        .nav-item {
+            color: #6c757d;
+            text-decoration: none;
+            font-size: 14px;
+            font-weight: 500;
+            padding: 15px 0;
+            transition: color 0.3s ease;
+            border-bottom: 2px solid transparent;
+        }
+
+        .nav-item:hover, .nav-item.active {
+            color: #ff6b35;
+            border-bottom-color: #ff6b35;
+        }
+
+        /* Cart Page Styles */
+        .main-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 40px 20px;
+        }
+
+        .page-title {
+            font-size: 28px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 30px;
+        }
+
+        .cart-container {
+            display: flex;
+            gap: 30px;
+            background: white;
+            border-radius: 15px;
+            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            overflow: hidden;
+        }
+
+        .cart-items {
+            flex: 2;
+            padding: 30px;
+        }
+
+        .cart-summary {
+            flex: 1;
+            background: #f8f9fa;
+            padding: 30px;
+            border-left: 1px solid #e9ecef;
+        }
+
+        .delivery-header {
+            background-color: #f8f9fa;
+            padding: 15px 20px;
+            margin: -30px -30px 20px -30px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .delivery-info {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .delivery-address {
+            font-size: 14px;
+            color: #333;
+        }
+
+        .change-btn {
+            background: none;
+            border: 1px solid #007bff;
+            color: #007bff;
+            padding: 6px 12px;
+            border-radius: 4px;
+            cursor: pointer;
+            font-size: 12px;
+            transition: all 0.3s ease;
+        }
+
+        .change-btn:hover {
+            background-color: #007bff;
+            color: white;
+        }
+
+        .cart-item {
+            display: flex;
+            gap: 20px;
+            padding: 20px 0;
+            border-bottom: 1px solid #eee;
+        }
+
+        .item-image {
+            width: 100px;
+            height: 100px;
+            background-color: #f8f9fa;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            flex-shrink: 0;
+            overflow: hidden;
+        }
+
+        .item-image img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+        }
+
+        .item-details {
+            flex: 1;
+        }
+
+        .item-title {
+            font-size: 16px;
+            color: #2c3e50;
+            margin-bottom: 5px;
+            font-weight: 600;
+        }
+
+        .item-subtitle {
+            font-size: 14px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .out-of-stock {
+            color: #dc3545;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .in-stock {
+            color: #28a745;
+            font-size: 13px;
+            margin-bottom: 10px;
+            font-weight: 500;
+        }
+
+        .seller-info {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 8px;
+        }
+
+        .price-section {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            margin: 15px 0;
+        }
+
+        .original-price {
+            text-decoration: line-through;
+            color: #999;
+            font-size: 14px;
+        }
+
+        .current-price {
+            font-weight: 700;
+            color: #ff6b35;
+            font-size: 18px;
+        }
+
+        .discount {
+            background-color: #28a745;
+            color: white;
+            padding: 3px 8px;
+            border-radius: 4px;
+            font-size: 12px;
+            font-weight: 600;
+        }
+
+        .offers {
+            color: #28a745;
+            font-size: 12px;
+            margin-left: 5px;
+        }
+
+        .payment-options {
+            font-size: 12px;
+            color: #6c757d;
+            margin-bottom: 10px;
+        }
+
+        .item-actions {
+            display: flex;
+            gap: 15px;
+            align-items: center;
+        }
+
+        .quantity-controls {
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .qty-btn {
+            width: 30px;
+            height: 30px;
+            border: 1px solid #ddd;
+            background: white;
+            border-radius: 50%;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+        }
+
+        .qty-btn:hover {
+            background: #f1f1f1;
+        }
+
+        .qty-input {
+            width: 50px;
+            text-align: center;
+            border: 1px solid #ddd;
+            padding: 8px;
+            font-size: 14px;
+            border-radius: 4px;
+        }
+
+        .action-btn {
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+        }
+
+        .action-btn:hover {
+            background: #f8f9fa;
+            color: #ff6b35;
+        }
+
+        .price-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #2c3e50;
+            margin-bottom: 20px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid #e9ecef;
+        }
+
+        .price-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 15px;
+            font-size: 15px;
+        }
+
+        .price-row.total {
+            font-weight: 700;
+            padding-top: 15px;
+            border-top: 1px solid #ddd;
+            font-size: 18px;
+            color: #2c3e50;
+        }
+
+        .savings {
+            color: #28a745;
+            font-size: 15px;
+            margin: 20px 0;
+            font-weight: 600;
+            text-align: center;
+            padding: 10px;
+            background: rgba(40, 167, 69, 0.1);
+            border-radius: 8px;
+        }
+
+        .security-info {
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            font-size: 13px;
+            color: #6c757d;
+            margin: 20px 0;
+        }
+
+        .security-icon {
+            color: #28a745;
+            font-size: 16px;
+        }
+
+        .place-order-btn {
+            width: 100%;
+            background-color: #ff6b35;
+            color: white;
+            border: none;
+            padding: 15px;
+            font-size: 16px;
+            font-weight: 600;
+            border-radius: 8px;
+            cursor: pointer;
+            margin-top: 20px;
+            transition: all 0.3s ease;
+        }
+
+        .place-order-btn:hover {
+            background-color: #e55a2b;
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
+        }
+
+        .empty-cart {
+            text-align: center;
+            padding: 50px 0;
+        }
+
+        .empty-cart-icon {
+            font-size: 60px;
+            color: #e9ecef;
+            margin-bottom: 20px;
+        }
+
+        .empty-cart-message {
+            font-size: 18px;
+            color: #6c757d;
+            margin-bottom: 20px;
+        }
+
+        .shop-btn {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            background: #ff6b35;
+            color: white;
+            padding: 12px 25px;
+            border-radius: 30px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 16px;
+            transition: all 0.3s ease;
+        }
+
+        .shop-btn:hover {
+            background: #e55a2b;
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Footer */
+        .footer {
+            background: #2c3e50;
+            color: white;
+            padding: 50px 0 20px;
+            margin-top: 50px;
+        }
+
+        .footer-content {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #34495e;
+            padding-top: 20px;
+            text-align: center;
+            color: #bdc3c7;
+            font-size: 14px;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            .header-content {
+                flex-direction: column;
+                height: auto;
+                padding: 15px 20px;
+            }
+
+            .search-container {
+                margin: 15px 0;
+                max-width: none;
+            }
+
+            .nav-content {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 10px 20px;
+            }
+
+            .cart-container {
+                flex-direction: column;
+            }
+
+            .cart-summary {
+                border-left: none;
+                border-top: 1px solid #e9ecef;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <div class="header-content">
+            <div class="logos w-28 h-26"><img src="{% static 'images/SYSMAC LOGO-01.png' %}"></div>
+
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="Search products...">
+                <button class="search-btn">Search</button>
+            </div>
+            <div class="header-actions">
+                <div class="cart-icon relative">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    {% if user.is_authenticated %}
+                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">{{ cart_count|default:"0" }}</span>
+                    {% endif %}
+                </div>
+                <div class="profile-icon" id="profileIcon">
+                    {% if user.is_authenticated %}
+                        {% if user.profile_picture %}
+                            <img src="{{ user.profile_picture }}" class="w-full h-full rounded-full object-cover" alt="Profile">
+                        {% else %}
+                            <div class="w-full h-full rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold" title="{{ user.email }}">
+                                {{ user.email|first|upper }}
+                            </div>
+                        {% endif %}
+                        
+                        <!-- Profile Dropdown -->
+                        <div class="profile-dropdown" id="profileDropdown">
+                            <div class="profile-info">
+                                <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:"" }}</div>
+                                <div class="profile-email">{{ user.email }}</div>
+                            </div>
+                            <div class="dropdown-menu">
+                                {% comment %} <a href="#" class="dropdown-item">
+                                    <i class="fa-solid fa-user"></i>
+                                    My Profile
+                                </a> {% endcomment %}
+                                <a href="#" class="dropdown-item">
+                                    <i class="fa-solid fa-box"></i>
+                                    My Orders
+                                </a>
+                                <a href="{% url 'wishlist' %}" class="dropdown-item">
+                                    <i class="fa-solid fa-heart"></i>
+                                    My Wishlist
+                                </a>
+                                <a href="{% url 'cart' %}" class="dropdown-item">
+                                    <i class="fa-solid fa-shopping-cart"></i>
+                                    My Cart
+                                </a>
+                                <div class="dropdown-divider"></div>
+                                <a href="{% url 'logout' %}" class="dropdown-item">
+                                    <i class="fa-solid fa-sign-out-alt"></i>
+                                    Logout
+                                </a>
+                            </div>
+                        </div>
+                    {% else %}
+                        <a href="login"><i class="fa-solid fa-user"></i></a>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        
+        <!-- Navigation -->
+        <nav class="nav-bar">
+            <div class="nav-content">
+                <a href="{% url 'home' %}" class="nav-item">Home</a>
+                {% comment %} <a href="#" class="nav-item">Electronics</a>
+                <a href="#" class="nav-item">Computers</a>
+                <a href="#" class="nav-item">Mobile</a>
+                <a href="#" class="nav-item">Accessories</a> {% endcomment %}
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content -->
+    <div class="main-container">
+        <h1 class="page-title">Your Shopping Cart</h1>
+        
+        <div class="cart-container">
+            <div class="cart-items">
+                <div class="delivery-header">
+                    <div class="delivery-info">
+                        <div>
+                            <div style="font-weight: 600; margin-bottom: 3px;">Deliver to: {{ user.first_name|default:"User" }} {{ user.last_name|default:"" }}, {{ user.profile.zip_code|default:"000000" }}</div>
+                            <div class="delivery-address">{{ user.profile.address|default:"No address provided" }}</div>
+                        </div>
+                        <button class="change-btn">Change</button>
+                    </div>
+                </div>
+
+                {% if cart_items %}
+                    {% for item in cart_items %}
+                    <div class="cart-item" data-product-id="{{ item.product.id }}">
+                        <div class="item-image">
+                            <img src="{% static 'images/productdemo.jpg' %}" alt="{{ item.product.name }}">
+                        </div>
+                        <div class="item-details">
+                            <div class="item-title">{{ item.product.name }}</div>
+                            <div class="item-subtitle">{{ item.product.brand }} - {{ item.product.product_type }}</div>
+                            
+                            {% if item.product.stock > 0 %}
+                                <div class="in-stock">Delivery in 2-3 days</div>
+                            {% else %}
+                                <div class="out-of-stock">Currently out of stock</div>
+                            {% endif %}
+                            
+                            <div class="seller-info">Seller: SYSMAC {% if item.product.assured %}✓Assured{% endif %}</div>
+                            
+                            <div class="price-section">
+                                <span class="original-price">₹{{ item.product.original_price }}</span>
+                                <span class="current-price">₹{{ item.product.price }}</span>
+                                <span class="discount">{{ item.product.discount_percentage }}% Off</span>
+                                <span class="offers">Offers available</span>
+                            </div>
+                            
+                            <div class="item-actions">
+                                <div class="quantity-controls">
+                                    <button class="qty-btn" onclick="updateQuantity({{ item.product.id }}, -1)">−</button>
+                                    <input type="text" value="{{ item.quantity }}" class="qty-input" id="qty-{{ item.product.id }}" readonly>
+                                    <button class="qty-btn" onclick="updateQuantity({{ item.product.id }}, 1)">+</button>
+                                </div>
+                                <button class="action-btn" onclick="moveToWishlist({{ item.product.id }})">
+                                    <i class="fa-regular fa-heart"></i> SAVE FOR LATER
+                                </button>
+                                <button class="action-btn" onclick="removeFromCart({{ item.product.id }})">
+                                    <i class="fa-solid fa-trash"></i> REMOVE
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
+                    <div class="empty-cart">
+                        <div class="empty-cart-icon">
+                            <i class="fa-solid fa-cart-shopping"></i>
+                        </div>
+                        <div class="empty-cart-message">Your cart is empty</div>
+                        <a href="{% url 'home' %}" class="shop-btn">
+                            <i class="fa-solid fa-bag-shopping"></i>
+                            Continue Shopping
+                        </a>
+                    </div>
+                {% endif %}
+            </div>
+
+            {% if cart_items %}
+            <div class="cart-summary">
+                <div class="price-title">PRICE DETAILS</div>
+                
+                <div class="price-row">
+                    <span>Price ({{ cart_count }} items)</span>
+                    <span>₹{{ total_price }}</span>
+                </div>
+                
+                <div class="price-row">
+                    <span>Discount</span>
+                    <span style="color: #28a745;">− ₹{{ total_discount }}</span>
+                </div>
+                
+                <div class="price-row">
+                    <span>Delivery Charges</span>
+                    <span>{% if delivery_charge == 0 %}<span style="color: #28a745;">FREE</span>{% else %}₹{{ delivery_charge }}{% endif %}</span>
+                </div>
+                
+                <div class="price-row total">
+                    <span>Total Amount</span>
+                    <span>₹{{ grand_total }}</span>
+                </div>
+                
+                <div class="savings">You will save ₹{{ total_discount }} on this order</div>
+                
+                <div class="security-info">
+                    <i class="fa-solid fa-shield-alt security-icon"></i>
+                    <span>Safe and Secure Payments. Easy returns. 100% Authentic products.</span>
+                </div>
+                
+                <button class="place-order-btn" onclick="placeOrder()">PLACE ORDER</button>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="footer-content">
+            <div class="footer-bottom">
+                Copyright © SYSMAC All rights Reserved
+            </div>
+        </div>
+    </footer>
+
+    <script>
+        // Check if user is authenticated
+        const isAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+        
+        // Profile dropdown functionality
+        const profileIcon = document.getElementById('profileIcon');
+        const profileDropdown = document.getElementById('profileDropdown');
+        
+        if (profileIcon && profileDropdown) {
+            profileIcon.addEventListener('click', function(e) {
+                e.stopPropagation();
+                profileDropdown.classList.toggle('show');
+            });
+            
+            // Close dropdown when clicking outside
+            document.addEventListener('click', function(e) {
+                if (!profileIcon.contains(e.target)) {
+                    profileDropdown.classList.remove('show');
+                }
+            });
+            
+            // Prevent dropdown from closing when clicking inside it
+            profileDropdown.addEventListener('click', function(e) {
+                e.stopPropagation();
+            });
+        }
+        
+        // Update quantity function
+        async function updateQuantity(productId, change) {
+            if (!isAuthenticated) {
+                window.location.href = '/login/';
+                return;
+            }
+            
+            const qtyInput = document.getElementById(`qty-${productId}`);
+            let newQty = parseInt(qtyInput.value) + change;
+            
+            if (newQty < 1) newQty = 1;
+            
+            try {
+                const response = await fetch(`/cart/update/${productId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    body: JSON.stringify({
+                        quantity: newQty
+                    }),
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    qtyInput.value = data.quantity;
+                    document.getElementById('cart-count').textContent = data.cart_count;
+                    // You might want to update the total prices here as well
+                    window.location.reload(); // Simple way to refresh all prices
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Remove from cart function
+        async function removeFromCart(productId) {
+            if (!isAuthenticated) {
+                window.location.href = '/login/';
+                return;
+            }
+            
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
+                try {
+                    const response = await fetch(`/cart/remove/${productId}/`, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': '{{ csrf_token }}',
+                        },
+                        credentials: 'same-origin'
+                    });
+                    
+                    if (response.ok) {
+                        const data = await response.json();
+                        document.getElementById('cart-count').textContent = data.cart_count;
+                        document.querySelector(`.cart-item[data-product-id="${productId}"]`).remove();
+                        
+                        // If cart is now empty, show empty cart message
+                        if (data.cart_count == 0) {
+                            window.location.reload();
+                        } else {
+                            // Update summary section if needed
+                            window.location.reload();
+                        }
+                    }
+                } catch (error) {
+                    console.error('Error:', error);
+                }
+            }
+        }
+        
+        // Move to wishlist function
+        async function moveToWishlist(productId) {
+            if (!isAuthenticated) {
+                window.location.href = '/login/';
+                return;
+            }
+            
+            try {
+                const response = await fetch(`/wishlist/add/${productId}/`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        // Remove from cart after adding to wishlist
+                        await removeFromCart(productId);
+                        alert('Item moved to your wishlist');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
+        
+        // Place order function
+        function placeOrder() {
+            if (!isAuthenticated) {
+                window.location.href = '/login/';
+                return;
+            }
+            
+            // Here you would typically redirect to checkout page
+            // For now, just show an alert
+            alert('Redirecting to checkout page...');
+            // window.location.href = '/checkout/';
+        }
+        
+        // Search functionality
+        document.querySelector('.search-btn').addEventListener('click', performSearch);
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        function performSearch() {
+            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
+            window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
+        }
+    </script>
+</body>
+</html>

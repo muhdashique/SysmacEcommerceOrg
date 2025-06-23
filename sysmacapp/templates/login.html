@@ -1,0 +1,130 @@
+{% load static %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://accounts.google.com/gsi/client" async defer></script>
+    <title>Login - Logistics Platform</title>
+</head>
+<body class="bg-gradient-to-br from-blue-50 to-indigo-100 min-h-screen flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl shadow-xl w-full max-w-md p-8">
+        <!-- Header -->
+        <div class="text-center mb-8">
+            <div class="mb-4">
+                <button 
+                    class="bg-gray-500 hover:bg-gray-600 text-white px-4 py-2 rounded-lg text-sm transition duration-300"
+                    onclick="window.location.href='{% url 'home' %}'"
+                >
+                    ← Back to Home
+                </button>
+            </div>
+            <h1 class="text-3xl font-bold text-gray-800 mb-2">Welcome Back</h1>
+            <p class="text-gray-600">Sign in to your account</p>
+        </div>
+
+        <!-- Messages -->
+        {% if messages %}
+            {% for message in messages %}
+                <div class="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded mb-4">
+                    {{ message }}
+                </div>
+            {% endfor %}
+        {% endif %}
+
+        <!-- Login Form -->
+        <form method="post" action="{% url 'login' %}" class="space-y-6">
+            {% csrf_token %}
+            
+            <div>
+                <label for="email" class="block text-sm font-medium text-gray-700 mb-2">Email</label>
+                <input 
+                    type="email" 
+                    id="email" 
+                    name="email" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+                    placeholder="Enter your email" 
+                    required
+                >
+            </div>
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-gray-700 mb-2">Password</label>
+                <input 
+                    type="password" 
+                    id="password" 
+                    name="password" 
+                    class="w-full px-4 py-3 border border-gray-300 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition duration-300"
+                    placeholder="Enter your password" 
+                    required
+                >
+            </div>
+
+            <button 
+                type="submit" 
+                class="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-4 rounded-lg transition duration-300 transform hover:scale-105"
+            >
+                Sign In
+            </button>
+        </form>
+
+        <!-- Divider -->
+        <div class="flex items-center my-6">
+            <div class="flex-1 border-t border-gray-300"></div>
+            <span class="px-4 text-gray-500 text-sm">or</span>
+            <div class="flex-1 border-t border-gray-300"></div>
+        </div>
+
+        <!-- Google Sign In -->
+        <div id="g_id_onload"
+             data-client_id="YOUR_GOOGLE_CLIENT_ID"
+             data-callback="handleCredentialResponse"
+             data-auto_prompt="false">
+        </div>
+        <div class="g_id_signin" 
+             data-type="standard" 
+             data-size="large" 
+             data-theme="outline" 
+             data-text="sign_in_with" 
+             data-shape="rectangular" 
+             data-logo_alignment="left"
+             data-width="100%">
+        </div>
+
+        <!-- Sign Up Link -->
+        <div class="text-center mt-6">
+            <p class="text-gray-600">
+                Don't have an account? 
+                <a href="{% url 'signup' %}" class="text-blue-600 hover:text-blue-700 font-medium">Sign up</a>
+            </p>
+        </div>
+    </div>
+
+    <script>
+        function handleCredentialResponse(response) {
+            // Send the credential to your server
+            fetch('{% url "google_auth" %}', {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': document.querySelector('[name=csrfmiddlewaretoken]').value,
+                },
+                body: JSON.stringify({'credential': response.credential})
+            })
+            .then(response => response.json())
+            .then(data => {
+                if (data.success) {
+                    window.location.href = data.redirect_url;
+                } else {
+                    alert('Authentication failed');
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+                alert('Authentication failed');
+            });
+        }
+    </script>
+</body>
+</html>
