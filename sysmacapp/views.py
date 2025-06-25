@@ -9,9 +9,10 @@ import requests
 import json
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-from .models import CustomProduct, CustomUser, Wishlist, Cart
-from .forms import CustomProductForm
+from .models import CartItem, CustomProduct, CustomUser, Wishlist, Cart
+from .forms import CustomProductForm, CustomUserCreationForm
 from django.views.decorators.http import require_POST
+from decimal import Decimal
 
 def home(request):
     api_url = "https://sysmacsynctoolapi.imcbs.com/api/upload-products/"
@@ -129,25 +130,44 @@ def wishlist_view(request):
         'wishlist_items': wishlist_items,
         'cart_count': cart_count
     })
+from decimal import Decimal
+from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+
 @login_required
 def cart_view(request):
     """Display user's cart with all items and calculations"""
-    cart_items = Cart.objects.filter(user=request.user).select_related('product')
+    # Get all cart items for the user
+    cart_items = request.user.cart_items.select_related('product').all()
     
-    # Calculate totals
-    total_price = 0
-    total_original_price = 0
+    # Initialize totals
+    total_price = Decimal('0.00')
+    total_original_price = Decimal('0.00')
     cart_count = 0
     
     for item in cart_items:
-        total_price += item.total_price
-        total_original_price += item.total_original_price
+        # Get price from the item (handles both custom and API products)
+        item_price = item.get_price
+        quantity = Decimal(str(item.quantity))
+        
+        # Calculate totals
+        total_price += item_price * quantity
+        
+        # Handle original price (if available)
+        if item.product and hasattr(item.product, 'price'):
+            # Assuming original_price is a field in CustomProduct
+            original_price = getattr(item.product, 'original_price', item_price)
+            total_original_price += Decimal(str(original_price)) * quantity
+        else:
+            # For API products or when original_price isn't available
+            total_original_price += item_price * quantity
+        
         cart_count += item.quantity
     
-    total_discount = total_original_price - total_price
+    total_discount = max(total_original_price - total_price, Decimal('0.00'))
     
     # Calculate delivery charges (free for orders above ₹500)
-    delivery_charge = 0 if total_price >= 500 else 40
+    delivery_charge = Decimal('0.00') if total_price >= Decimal('500.00') else Decimal('40.00')
     grand_total = total_price + delivery_charge
     
     context = {
@@ -182,25 +202,37 @@ def remove_from_wishlist(request, product_id):
     except Exception as e:
         return JsonResponse({'success': False, 'error': str(e)})
 
-
 @require_POST
 @login_required
 def add_to_cart(request, product_id):
     try:
         product = CustomProduct.objects.get(id=product_id)
-        cart_item, created = Cart.objects.get_or_create(
+        cart_item, created = CartItem.objects.get_or_create(
             user=request.user,
             product=product,
             defaults={'quantity': 1}
         )
+        
         if not created:
             cart_item.quantity += 1
             cart_item.save()
         
         cart_count = request.user.cart_items.count()
-        return JsonResponse({'success': True, 'cart_count': cart_count})
+        return JsonResponse({
+            'success': True, 
+            'cart_count': cart_count,
+            'message': 'Product added to cart successfully'
+        })
+    except CustomProduct.DoesNotExist:
+        return JsonResponse({
+            'success': False, 
+            'error': 'Product not found'
+        }, status=404)
     except Exception as e:
-        return JsonResponse({'success': False, 'error': str(e)})
+        return JsonResponse({
+            'success': False, 
+            'error': str(e)
+        }, status=500)
 
 
 @login_required
@@ -376,10 +408,10 @@ def product_detail(request, product_identifier):
         if is_custom_product:
             in_wishlist = Wishlist.objects.filter(
                 user=request.user,
-                product_id=product.id  # Fixed: use product.id instead of product_id
+                product_id=product.id
             ).exists()
         else:
-            # For API products, we might store the code in wishlist
+            # For API products, check by api_product_code
             in_wishlist = Wishlist.objects.filter(
                 user=request.user,
                 api_product_code=product.get('code')
@@ -392,7 +424,7 @@ def product_detail(request, product_identifier):
         'in_wishlist': in_wishlist,
         'cart_count': cart_count,
         'is_custom_product': is_custom_product,
-        'product_identifier': product_identifier,  # Fixed: use product_identifier instead of product_id
+        'product_identifier': product_identifier,
     }
     
     return render(request, 'productview.html', context)
@@ -446,3 +478,19 @@ def add_api_product_to_cart(request, product_code):
             return JsonResponse({'error': 'An error occurred'}, status=500)
     
     return JsonResponse({'error': 'Method not allowed'}, status=405)
+
+
+
+
+
+
+
+
+@property
+def get_price(self):
+    """Get the price of the item as Decimal"""
+    if self.product:
+        return Decimal(str(self.product.price))
+    elif self.api_product_price:
+        return Decimal(str(self.api_product_price))
+    return Decimal('0.00')

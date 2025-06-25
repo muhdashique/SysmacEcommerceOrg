@@ -597,7 +597,10 @@
             </div>
             <div class="header-actions">
                 <div class="cart-icon relative">
-                    <i class="fa-solid fa-cart-shopping"></i>
+                   <a href="{% url 'cart' %}" class="dropdown-item">
+                                    <i class="fa-solid fa-shopping-cart"></i>
+                                   
+                                </a>
                     {% if user.is_authenticated %}
                     <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
                     {% endif %}
@@ -931,5 +934,6 @@
     });
 });
     </script>
+    
 </body>
 </html>

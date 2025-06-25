@@ -79,20 +79,23 @@ class CustomProduct(models.Model):
     
     def __str__(self):
         return self.name
-
 class Wishlist(models.Model):
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='wishlist')
-    product = models.ForeignKey(CustomProduct, on_delete=models.CASCADE)
+    product = models.ForeignKey(CustomProduct, on_delete=models.CASCADE, null=True, blank=True)
+    api_product_code = models.CharField(max_length=100, null=True, blank=True)
     added_at = models.DateTimeField(auto_now_add=True)
 
     class Meta:
-        unique_together = ('user', 'product')
+        unique_together = ('user', 'product', 'api_product_code')
         verbose_name = 'Wishlist'
         verbose_name_plural = 'Wishlists'
 
     def __str__(self):
-        return f"{self.user.email} - {self.product.name}"
-
+        if self.product:
+            return f"{self.user.email} - {self.product.name}"
+        elif self.api_product_code:
+            return f"{self.user.email} - API Product {self.api_product_code}"
+        return f"{self.user.email} - Unknown Product"
 class CartItem(models.Model):
     # Fixed: Changed User to CustomUser
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='cart_items')
