@@ -23,6 +23,14 @@ urlpatterns = [
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),   
     path('products/<product_identifier>/', views.product_detail, name='product_detail'),
     path('cart/add-api/<str:product_code>/', views.add_api_product_to_cart, name='add_api_product_to_cart'),
+    path('cart/remove/<str:product_code>/', views.remove_from_cart, name='remove_from_cart'),
+    path('cart/remove-api/<str:product_code>/', views.remove_api_product_from_cart, name='remove_api_from_cart'),
+    path('cart/update/<int:product_id>/', views.update_cart_quantity, name='update_cart_quantity'),
+    path('cart/check-api/<str:product_code>/', views.check_cart_status_api, name='check_cart_status_api'),
+    
+    path('wishlist/check-api/<str:product_code>/', views.check_wishlist_status_api, name='check_wishlist_status_api'),
+
+
 ]
 
 # Serve media files during development

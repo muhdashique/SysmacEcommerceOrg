@@ -1,5 +1,6 @@
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -23,7 +24,7 @@
         /* Header */
         .header {
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -52,6 +53,14 @@
             flex: 1;
             max-width: 500px;
             margin: 0 40px;
+            position: relative;
+        }
+
+        .mobile-search-container {
+            display: none;
+            width: 100%;
+            padding: 0 15px;
+            margin: 10px 0;
             position: relative;
         }
 
@@ -95,7 +104,8 @@
             gap: 20px;
         }
 
-        .cart-icon, .profile-icon {
+        .cart-icon,
+        .profile-icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -109,7 +119,8 @@
             position: relative;
         }
 
-        .cart-icon:hover, .profile-icon:hover {
+        .cart-icon:hover,
+        .profile-icon:hover {
             background: #e9ecef;
         }
 
@@ -121,7 +132,7 @@
             background: white;
             min-width: 200px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             border: 1px solid #e9ecef;
             opacity: 0;
             visibility: hidden;
@@ -216,7 +227,7 @@
             display: flex;
             align-items: center;
             height: 50px;
-            gap: 30px;
+            gap: 15px;
         }
 
         .nav-item {
@@ -229,7 +240,8 @@
             border-bottom: 2px solid transparent;
         }
 
-        .nav-item:hover, .nav-item.active {
+        .nav-item:hover,
+        .nav-item.active {
             color: #ff6b35;
             border-bottom-color: #ff6b35;
         }
@@ -240,7 +252,7 @@
             margin: 16px auto;
             background: white;
             border-radius: 8px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             display: flex;
             padding: 24px;
             gap: 32px;
@@ -403,6 +415,10 @@
             font-weight: 600;
             cursor: pointer;
             transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
         }
 
         .btn-cart {
@@ -427,27 +443,67 @@
             transform: translateY(-2px);
         }
 
+        /* Mobile Responsive Styles */
         @media (max-width: 768px) {
-            .header-content {
-                padding: 15px;
+
+            /* Show mobile search bar */
+            .mobile-search-container {
+                display: block;
             }
 
+            /* Hide desktop search bar */
             .search-container {
-                margin: 15px 0;
-                max-width: none;
+                display: none;
+            }
+
+            /* Adjust header layout */
+            .header-content {
+                padding: 10px 15px;
+                height: auto;
+                justify-content: space-between;
+            }
+
+            /* Make logo smaller in mobile */
+            .logos {
+                width: 80px !important;
+                height: auto !important;
             }
 
             .main-container {
                 flex-direction: column;
                 padding: 16px;
+                margin: 10px;
+                gap: 20px;
             }
 
             .image-section {
                 flex: none;
+                width: 100%;
             }
 
             .main-image {
                 height: 300px;
+            }
+
+            .thumbnail {
+                width: 50px;
+                height: 50px;
+            }
+
+            .product-title {
+                font-size: 20px;
+            }
+
+            .current-price {
+                font-size: 24px;
+            }
+
+            .original-price {
+                font-size: 16px;
+            }
+
+            .discount {
+                font-size: 16px;
             }
 
             .action-buttons {
@@ -456,10 +512,222 @@
 
             .btn {
                 width: 100%;
+                padding: 12px;
+                font-size: 15px;
             }
+        }
+
+        @media (max-width: 480px) {
+            .header-content {
+                flex-wrap: wrap;
+                height: auto;
+                padding: 10px;
+            }
+
+            .logos {
+                order: 1;
+            }
+
+            .header-actions {
+                order: 2;
+            }
+
+            .search-container {
+                order: 3;
+                margin: 10px 0;
+                width: 100%;
+            }
+
+            .main-image {
+                height: 250px;
+            }
+
+            .product-title {
+                font-size: 18px;
+            }
+
+            .rating-section {
+                flex-wrap: wrap;
+                gap: 6px;
+            }
+
+            .pricing-section {
+                padding: 12px;
+            }
+
+            .current-price {
+                font-size: 22px;
+            }
+
+            .original-price {
+                font-size: 15px;
+            }
+
+            .highlight-item {
+                font-size: 14px;
+            }
+        }
+
+        .btn-wishlist {
+            background: #ffffff;
+            color: #ff6b35;
+            border: 2px solid #ff6b35;
+            flex: 1;
+        }
+
+        .btn-wishlist:hover {
+            background: #fff5f2;
+            transform: translateY(-2px);
+        }
+
+        .btn-wishlist.added {
+            background: #ff6b35;
+            color: white;
+        }
+
+        .action-buttons {
+            display: flex;
+            gap: 16px;
+            margin: 24px 0;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            padding: 14px 28px;
+            border: none;
+            border-radius: 8px;
+            font-size: 16px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .btn-cart {
+            background: #ff9f00;
+            color: white;
+            flex: 1;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .btn-cart:hover {
+            background: #e68a00;
+            transform: translateY(-2px);
+        }
+
+        .btn-cart.added {
+            background: #388e3c;
+            color: white;
+        }
+
+        .btn-cart.added:hover {
+            background: #2e7d32;
+            transform: translateY(-2px);
+        }
+
+        .btn-cart.removing {
+            background: #d32f2f;
+            color: white;
+        }
+
+        .btn-cart.removing:hover {
+            background: #c62828;
+        }
+
+        /* Loading animation for cart button */
+        .btn-cart.loading {
+            pointer-events: none;
+            opacity: 0.7;
+        }
+
+        .btn-cart.loading::after {
+            content: '';
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            width: 20px;
+            height: 20px;
+            margin: -10px 0 0 -10px;
+            border: 2px solid transparent;
+            border-top: 2px solid #fff;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+        }
+
+        @keyframes spin {
+            0% {
+                transform: rotate(0deg);
+            }
+
+            100% {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* Cart count badge animation */
+        .cart-count-animate {
+            animation: bounce 0.5s ease-in-out;
+        }
+
+        @keyframes bounce {
+
+            0%,
+            20%,
+            50%,
+            80%,
+            100% {
+                transform: translateY(0);
+            }
+
+            40% {
+                transform: translateY(-10px);
+            }
+
+            60% {
+                transform: translateY(-5px);
+            }
+        }
+
+        /* Success/Error notification styles */
+        .notification {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            padding: 12px 20px;
+            border-radius: 8px;
+            color: white;
+            font-weight: 500;
+            z-index: 1000;
+            opacity: 0;
+            transform: translateX(100%);
+            transition: all 0.3s ease;
+        }
+
+        .notification.show {
+            opacity: 1;
+            transform: translateX(0);
+        }
+
+        .notification.success {
+            background: #388e3c;
+        }
+
+        .notification.error {
+            background: #d32f2f;
+        }
+
+        .notification.info {
+            background: #1976d2;
         }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -473,63 +741,75 @@
                 <button class="search-btn">Search</button>
             </div>
             <div class="header-actions">
-                <a href="{% url 'cart' %}" class="cart-icon relative">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    {% if user.is_authenticated %}
-                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">{{ cart_count }}</span>
-                    {% endif %}
-                </a>
+                <div class="cart-icon relative">
+                    <a href="{% url 'cart' %}">
+                        <i class="fa-solid fa-shopping-cart"></i>
+                        <span
+                            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                            id="cart-count">
+                            {% if user.is_authenticated %}{{ request.user.cart_items.count }}{% else %}0{% endif %}
+                        </span>
+                    </a>
+                </div>
                 <div class="profile-icon" id="profileIcon">
                     {% if user.is_authenticated %}
-                        {% if user.profile_picture %}
-                            <img src="{{ user.profile_picture }}" class="w-full h-full rounded-full object-cover" alt="Profile">
-                        {% else %}
-                            <div class="w-full h-full rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold" title="{{ user.email }}">
-                                {{ user.email|first|upper }}
-                            </div>
-                        {% endif %}
-                        
-                        <!-- Profile Dropdown -->
-                        <div class="profile-dropdown" id="profileDropdown">
-                            <div class="profile-info">
-                                <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:"" }}</div>
-                                <div class="profile-email">{{ user.email }}</div>
-                            </div>
-                            <div class="dropdown-menu">
-                                <a href="#" class="dropdown-item">
-                                    <i class="fa-solid fa-box"></i>
-                                    My Orders
-                                </a>
-                                <a href="{% url 'wishlist' %}" class="dropdown-item">
-                                    <i class="fa-solid fa-heart"></i>
-                                    My Wishlist
-                                </a>
-                                <a href="{% url 'cart' %}" class="dropdown-item">
-                                    <i class="fa-solid fa-shopping-cart"></i>
-                                    My Cart
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="{% url 'logout' %}" class="dropdown-item">
-                                    <i class="fa-solid fa-sign-out-alt"></i>
-                                    Logout
-                                </a>
-                            </div>
-                        </div>
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture }}" class="w-full h-full rounded-full object-cover" alt="Profile">
                     {% else %}
-                        <a href="{% url 'login' %}"><i class="fa-solid fa-user"></i></a>
+                    <div class="w-full h-full rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold"
+                        title="{{ user.email }}">
+                        {{ user.email|first|upper }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Profile Dropdown -->
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="profile-info">
+                            <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:""
+                                }}</div>
+                            <div class="profile-email">{{ user.email }}</div>
+                        </div>
+                        <div class="dropdown-menu">
+                            <a href="#" class="dropdown-item">
+                                <i class="fa-solid fa-box"></i>
+                                My Orders
+                            </a>
+                            <a href="{% url 'wishlist' %}" class="dropdown-item">
+                                <i class="fa-solid fa-heart"></i>
+                                My Wishlist
+                            </a>
+                            <a href="{% url 'cart' %}" class="dropdown-item">
+                                <i class="fa-solid fa-shopping-cart"></i>
+                                My Cart
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{% url 'logout' %}" class="dropdown-item">
+                                <i class="fa-solid fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'login' %}"><i class="fa-solid fa-user"></i></a>
                     {% endif %}
                 </div>
             </div>
         </div>
-        
+
+        <!-- Mobile Search Bar (hidden on desktop) -->
+        <div class="mobile-search-container">
+            <input type="text" class="search-input" placeholder="Search products...">
+            <button class="search-btn">Search</button>
+        </div>
+
         <!-- Navigation -->
         <nav class="nav-bar">
             <div class="nav-content">
                 <a href="{% url 'home' %}" class="nav-item">Home</a>
-                {% comment %} <a href="#" class="nav-item">Electronics</a>
-                <a href="#" class="nav-item">Computers</a>
-                <a href="#" class="nav-item">Mobile</a>
-                <a href="#" class="nav-item">Accessories</a> {% endcomment %}
+                <a href="#" class="nav-item">></a>
+                <a href="#" class="nav-item">{{ product.name }}</a>
+                <!-- <a href="#" class="nav-item">Mobile</a>
+                <a href="#" class="nav-item">Accessories</a>  -->
             </div>
         </nav>
     </header>
@@ -538,12 +818,12 @@
     <div class="main-container">
         <div class="image-section">
             {% load static %}
-            <img src="{% if is_custom_product and product.main_image %}{{ product.main_image.url }}{% else %}{% static 'images/productdemo.jpg' %}{% endif %}" 
-                 alt="{{ product.name }}" class="main-image">
-            
+            <img src="{% if is_custom_product and product.main_image %}{{ product.main_image.url }}{% else %}{% static 'images/productdemo.jpg' %}{% endif %}"
+                alt="{{ product.name }}" class="main-image">
+
             <div class="thumbnail-list">
-                <img src="{% if is_custom_product and product.main_image %}{{ product.main_image.url }}{% else %}{% static 'images/productdemo.jpg' %}{% endif %}" 
-                     alt="Thumbnail" class="thumbnail active">
+                <img src="{% if is_custom_product and product.main_image %}{{ product.main_image.url }}{% else %}{% static 'images/productdemo.jpg' %}{% endif %}"
+                    alt="Thumbnail" class="thumbnail active">
                 <!-- Add more thumbnails if available -->
             </div>
         </div>
@@ -551,12 +831,12 @@
         <div class="product-details">
             <h1 class="product-title">
                 {% if is_custom_product %}
-                    {{ product.name }}
+                {{ product.name }}
                 {% else %}
-                    {{ product.name|default:"Product Name" }}
+                {{ product.name|default:"Product Name" }}
                 {% endif %}
             </h1>
-            
+
             <div class="rating-section">
                 <span class="rating">4.4 ★</span>
                 <span class="rating-details">0 Ratings & Reviews</span>
@@ -567,10 +847,12 @@
                 <div class="special-price">Special price</div>
                 <div>
                     <span class="current-price">
-                        ₹{% if is_custom_product %}{{ product.price }}{% else %}{{ product.price|default:"299.00" }}{% endif %}
+                        ₹{% if is_custom_product %}{{ product.price }}{% else %}{{ product.price|default:"299.00" }}
+                        {% endif %}
                     </span>
                     <span class="original-price">
-                        ₹{% if is_custom_product %}{{ product.original_price|default:product.price|add:"1000" }}{% else %}{{ product.original_price|default:"399.00" }}{% endif %}
+                        ₹{% if is_custom_product %}{{ product.original_price|default:product.price|add:"1000" }}{% else
+                        %}{{ product.original_price|default:"399.00" }}{% endif %}
                     </span>
                     <span class="discount">25% off</span>
                 </div>
@@ -584,16 +866,20 @@
             <div class="highlights">
                 <h3 class="section-title">Product Details</h3>
                 <div class="highlight-item">
-                    Brand: {% if is_custom_product %}{{ product.brand|default:"Not specified" }}{% else %}{{ product.brand|default:"Not specified" }}{% endif %}
+                    Brand: {% if is_custom_product %}{{ product.brand|default:"Not specified" }}{% else %}{{
+                    product.brand|default:"Not specified" }}{% endif %}
                 </div>
                 <div class="highlight-item">
-                    Company: {% if is_custom_product %}{{ product.company|default:"Not specified" }}{% else %}{{ product.company|default:"Not specified" }}{% endif %}
+                    Company: {% if is_custom_product %}{{ product.company|default:"Not specified" }}{% else %}{{
+                    product.company|default:"Not specified" }}{% endif %}
                 </div>
                 <div class="highlight-item">
-                    Category: {% if is_custom_product %}{{ product.category|default:"Not specified" }}{% else %}{{ product.catagory|default:"Not specified" }}{% endif %}
+                    Category: {% if is_custom_product %}{{ product.category|default:"Not specified" }}{% else %}{{
+                    product.catagory|default:"Not specified" }}{% endif %}
                 </div>
                 <div class="highlight-item">
-                    Product Type: {% if is_custom_product %}{{ product.product_type|default:"Not specified" }}{% else %}{{ product.product|default:"Not specified" }}{% endif %}
+                    Product Type: {% if is_custom_product %}{{ product.product_type|default:"Not specified" }}{% else
+                    %}{{ product.product|default:"Not specified" }}{% endif %}
                 </div>
                 {% if product.description %}
                 <div class="highlight-item">Description: {{ product.description }}</div>
@@ -601,55 +887,53 @@
             </div>
 
             <!-- Action buttons -->
+            <!-- Action buttons -->
             <div class="action-buttons">
-                <button class="btn btn-cart" id="addToCartBtn" 
-                        data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-                        data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}">
-                    🛒 ADD TO CART
+                <button class="btn btn-cart" id="addToCartBtn"
+                    data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+                    data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-in-cart="false">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="btn-text">ADD TO CART</span>
                 </button>
-                <button class="btn btn-buy">⚡ BUY NOW</button>
+                <button class="btn btn-buy">
+                    <i class="fas fa-bolt"></i> BUY NOW
+                </button>
+                <button class="btn btn-wishlist" id="addToWishlistBtn"
+                    data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+                    data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}">
+                    <i class="fas fa-heart"></i> WISHLIST
+                </button>
             </div>
         </div>
+        <div id="notificationContainer"></div>
     </div>
 
     <script>
-        // Profile dropdown functionality
-        const profileIcon = document.getElementById('profileIcon');
-        const profileDropdown = document.getElementById('profileDropdown');
-        
-        if (profileIcon && profileDropdown) {
-            profileIcon.addEventListener('click', function(e) {
-                e.stopPropagation();
-                profileDropdown.classList.toggle('show');
-            });
-            
-            // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
-                if (!profileIcon.contains(e.target)) {
-                    profileDropdown.classList.remove('show');
-                }
-            });
-            
-            // Prevent dropdown from closing when clicking inside it
-            profileDropdown.addEventListener('click', function(e) {
-                e.stopPropagation();
-            });
+class CartManager {
+    constructor() {
+        this.cartBtn = document.getElementById('addToCartBtn');
+        this.cartCountElement = document.getElementById('cart-count');
+        this.notificationContainer = document.getElementById('notificationContainer');
+        this.init();
+    }
+
+    init() {
+        if (this.cartBtn) {
+            this.cartBtn.addEventListener('click', (e) => this.handleCartToggle(e));
+            this.checkCartStatus();
         }
-        
-        // Add to cart functionality
-        document.getElementById('addToCartBtn').addEventListener('click', async function() {
-            {% if not user.is_authenticated %}
-                window.location.href = "{% url 'login' %}";
-                return;
-            {% endif %}
-            
-            const productId = this.dataset.productId;
-            const isCustom = this.dataset.isCustom === 'true';
-            const endpoint = isCustom ? `/cart/add/${productId}/` : `/cart/add-api/${productId}/`;
+    }
+
+    // Check if product is already in cart on page load
+    async checkCartStatus() {
+        {% if user.is_authenticated %}
+            const productId = this.cartBtn.dataset.productId;
+            const isCustom = this.cartBtn.dataset.isCustom === 'true';
+            const endpoint = isCustom ? `/cart/check/${productId}/` : `/cart/check-api/${productId}/`;
             
             try {
                 const response = await fetch(endpoint, {
-                    method: 'POST',
+                    method: 'GET',
                     headers: {
                         'Content-Type': 'application/json',
                         'X-CSRFToken': '{{ csrf_token }}',
@@ -659,44 +943,336 @@
                 
                 if (response.ok) {
                     const data = await response.json();
-                    const cartCountElement = document.getElementById('cart-count');
-                    if (cartCountElement) {
-                        cartCountElement.textContent = data.cart_count;
-                    }
-                    alert('Product added to cart!');
-                } else {
-                    const errorData = await response.json();
-                    alert(errorData.message || 'Failed to add to cart');
+                    this.updateCartButton(data.in_cart);
                 }
             } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while adding to cart');
+                console.error('Error checking cart status:', error);
+            }
+        {% endif %}
+    }
+
+    // Handle cart toggle (add/remove)
+    async handleCartToggle(e) {
+        e.preventDefault();
+        
+        {% if not user.is_authenticated %}
+            window.location.href = "{% url 'login' %}";
+            return;
+        {% endif %}
+        
+        const isInCart = this.cartBtn.dataset.inCart === 'true';
+        
+        if (isInCart) {
+            await this.removeFromCart();
+        } else {
+            await this.addToCart();
+        }
+    }
+
+    // Add product to cart
+    async addToCart() {
+        const productId = this.cartBtn.dataset.productId;
+        const isCustom = this.cartBtn.dataset.isCustom === 'true';
+        const endpoint = isCustom ? `/cart/add/${productId}/` : `/cart/add-api/${productId}/`;
+        
+        this.setButtonLoading(true);
+        
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                credentials: 'same-origin'
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                this.updateCartButton(true);
+                this.updateCartCount(data.cart_count);
+                this.showNotification('Product added to cart!', 'success');
+            } else {
+                this.showNotification(data.message || 'Failed to add to cart', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showNotification('An error occurred while adding to cart', 'error');
+        } finally {
+            this.setButtonLoading(false);
+        }
+    }
+
+    // Remove product from cart
+    async removeFromCart() {
+        const productId = this.cartBtn.dataset.productId;
+        const isCustom = this.cartBtn.dataset.isCustom === 'true';
+        const endpoint = isCustom ? `/cart/remove/${productId}/` : `/cart/remove-api/${productId}/`;
+        
+        this.setButtonLoading(true);
+        this.cartBtn.classList.add('removing');
+        
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                credentials: 'same-origin'
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                this.updateCartButton(false);
+                this.updateCartCount(data.cart_count);
+                this.showNotification('Product removed from cart!', 'info');
+            } else {
+                this.showNotification(data.message || 'Failed to remove from cart', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.showNotification('An error occurred while removing from cart', 'error');
+        } finally {
+            this.setButtonLoading(false);
+            this.cartBtn.classList.remove('removing');
+        }
+    }
+
+    // Update cart button appearance and state
+    updateCartButton(inCart) {
+        const btnText = this.cartBtn.querySelector('.btn-text');
+        const icon = this.cartBtn.querySelector('i');
+        
+        if (inCart) {
+            this.cartBtn.classList.add('added');
+            this.cartBtn.classList.remove('removing');
+            this.cartBtn.dataset.inCart = 'true';
+            btnText.textContent = 'ADDED TO CART';
+            icon.className = 'fas fa-check-circle';
+        } else {
+            this.cartBtn.classList.remove('added', 'removing');
+            this.cartBtn.dataset.inCart = 'false';
+            btnText.textContent = 'ADD TO CART';
+            icon.className = 'fas fa-shopping-cart';
+        }
+    }
+
+    // Set button loading state
+    setButtonLoading(loading) {
+        if (loading) {
+            this.cartBtn.classList.add('loading');
+            this.cartBtn.disabled = true;
+        } else {
+            this.cartBtn.classList.remove('loading');
+            this.cartBtn.disabled = false;
+        }
+    }
+
+    // Update cart count with animation
+    updateCartCount(count) {
+        if (this.cartCountElement) {
+            this.cartCountElement.textContent = count;
+            this.cartCountElement.classList.add('cart-count-animate');
+            
+            setTimeout(() => {
+                this.cartCountElement.classList.remove('cart-count-animate');
+            }, 500);
+        }
+    }
+
+    // Show notification
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        this.notificationContainer.appendChild(notification);
+        
+        // Show notification
+        setTimeout(() => {
+            notification.classList.add('show');
+        }, 100);
+        
+        // Hide and remove notification
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => {
+                if (notification.parentNode) {
+                    notification.parentNode.removeChild(notification);
+                }
+            }, 300);
+        }, 3000);
+    }
+}
+
+// Wishlist Manager (existing functionality)
+class WishlistManager {
+    constructor() {
+        this.wishlistBtn = document.getElementById('addToWishlistBtn');
+        this.init();
+    }
+
+    init() {
+        if (this.wishlistBtn) {
+            this.wishlistBtn.addEventListener('click', (e) => this.handleWishlistToggle(e));
+            this.checkWishlistStatus();
+        }
+    }
+
+    async checkWishlistStatus() {
+        {% if user.is_authenticated %}
+            const productId = this.wishlistBtn.dataset.productId;
+            const isCustom = this.wishlistBtn.dataset.isCustom === 'true';
+            const endpoint = isCustom ? `/wishlist/check/${productId}/` : `/wishlist/check-api/${productId}/`;
+            
+            try {
+                const response = await fetch(endpoint, {
+                    method: 'GET',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': '{{ csrf_token }}',
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    this.updateWishlistButton(data.in_wishlist);
+                }
+            } catch (error) {
+                console.error('Error checking wishlist:', error);
+            }
+        {% endif %}
+    }
+
+    async handleWishlistToggle(e) {
+        e.preventDefault();
+        
+        {% if not user.is_authenticated %}
+            window.location.href = "{% url 'login' %}";
+            return;
+        {% endif %}
+        
+        const productId = this.wishlistBtn.dataset.productId;
+        const isCustom = this.wishlistBtn.dataset.isCustom === 'true';
+        const endpoint = isCustom ? `/wishlist/add/${productId}/` : `/wishlist/add-api/${productId}/`;
+        
+        try {
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': '{{ csrf_token }}',
+                },
+                credentials: 'same-origin'
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                this.updateWishlistButton(data.added);
+                
+                const message = data.added ? 'Product added to wishlist!' : 'Product removed from wishlist!';
+                const type = data.added ? 'success' : 'info';
+                cartManager.showNotification(message, type);
+            } else {
+                const errorData = await response.json();
+                cartManager.showNotification(errorData.message || 'Failed to update wishlist', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            cartManager.showNotification('An error occurred while updating wishlist', 'error');
+        }
+    }
+
+    updateWishlistButton(inWishlist) {
+        if (inWishlist) {
+            this.wishlistBtn.classList.add('added');
+            this.wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> WISHLISTED';
+        } else {
+            this.wishlistBtn.classList.remove('added');
+            this.wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> WISHLIST';
+        }
+    }
+}
+
+// Initialize managers when DOM is loaded
+let cartManager, wishlistManager;
+
+document.addEventListener('DOMContentLoaded', function() {
+    cartManager = new CartManager();
+    wishlistManager = new WishlistManager();
+    
+    // Profile dropdown functionality (existing)
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    
+    if (profileIcon && profileDropdown) {
+        profileIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!profileIcon.contains(e.target)) {
+                profileDropdown.classList.remove('show');
             }
         });
-
-        // Buy now button functionality
-        document.querySelector('.btn-buy').addEventListener('click', function() {
-            {% if not user.is_authenticated %}
-                window.location.href = "{% url 'login' %}";
-                return;
-            {% endif %}
-            // Implement buy now functionality
-            alert('Proceeding to checkout!');
+        
+        profileDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
         });
-
-        // Search functionality
-        document.querySelector('.search-btn').addEventListener('click', function() {
-            const searchTerm = document.querySelector('.search-input').value.trim();
+    }
+    
+    // Buy now button functionality
+    document.querySelector('.btn-buy').addEventListener('click', function() {
+        {% if not user.is_authenticated %}
+            window.location.href = "{% url 'login' %}";
+            return;
+        {% endif %}
+        cartManager.showNotification('Proceeding to checkout!', 'info');
+    });
+    
+    // Search functionality
+    const searchBtn = document.querySelector('.search-btn');
+    const searchInput = document.querySelector('.search-input');
+    const mobileSearchBtn = document.querySelector('.mobile-search-container .search-btn');
+    const mobileSearchInput = document.querySelector('.mobile-search-container .search-input');
+    
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', function() {
+            const searchTerm = searchInput.value.trim();
             if (searchTerm) {
                 window.location.href = `{% url 'home' %}?search=${encodeURIComponent(searchTerm)}`;
             }
         });
-
-        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+        
+        searchInput.addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
-                document.querySelector('.search-btn').click();
+                searchBtn.click();
             }
         });
-    </script>
+    }
+    
+    if (mobileSearchBtn && mobileSearchInput) {
+        mobileSearchBtn.addEventListener('click', function() {
+            const searchTerm = mobileSearchInput.value.trim();
+            if (searchTerm) {
+                window.location.href = `{% url 'home' %}?search=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+        
+        mobileSearchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                mobileSearchBtn.click();
+            }
+        });
+    }
+});
+</script>
+
 </body>
+
 </html>

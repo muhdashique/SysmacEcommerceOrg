@@ -1,7 +1,7 @@
-
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
@@ -25,7 +25,7 @@
         /* Header */
         .header {
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -59,6 +59,14 @@
             flex: 1;
             max-width: 500px;
             margin: 0 40px;
+            position: relative;
+        }
+
+        .mobile-search-container {
+            display: none;
+            width: 100%;
+            padding: 0 15px;
+            margin: 10px 0;
             position: relative;
         }
 
@@ -102,7 +110,8 @@
             gap: 20px;
         }
 
-        .cart-icon, .profile-icon {
+        .cart-icon,
+        .profile-icon {
             width: 40px;
             height: 40px;
             border-radius: 50%;
@@ -116,7 +125,8 @@
             position: relative;
         }
 
-        .cart-icon:hover, .profile-icon:hover {
+        .cart-icon:hover,
+        .profile-icon:hover {
             background: #e9ecef;
         }
 
@@ -128,7 +138,7 @@
             background: white;
             min-width: 200px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             border: 1px solid #e9ecef;
             opacity: 0;
             visibility: hidden;
@@ -217,7 +227,7 @@
         }
 
         .nav-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
             display: flex;
@@ -236,7 +246,8 @@
             border-bottom: 2px solid transparent;
         }
 
-        .nav-item:hover, .nav-item.active {
+        .nav-item:hover,
+        .nav-item.active {
             color: #ff6b35;
             border-bottom-color: #ff6b35;
         }
@@ -263,7 +274,7 @@
         }
 
         .hero-content {
-            max-width: 1400px;
+            max-width: 1200px;
             margin: 0 auto;
             padding: 0 20px;
             text-align: center;
@@ -275,7 +286,7 @@
             font-size: 48px;
             font-weight: 800;
             margin-bottom: 20px;
-            text-shadow: 2px 2px 4px rgba(0,0,0,0.3);
+            text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.3);
         }
 
         .hero-subtitle {
@@ -325,7 +336,7 @@
         .product-section {
             background: white;
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             padding: 30px;
             margin-bottom: 40px;
         }
@@ -335,6 +346,8 @@
             justify-content: space-between;
             align-items: center;
             margin-bottom: 25px;
+            flex-wrap: wrap;
+            gap: 15px;
         }
 
         .section-title {
@@ -346,16 +359,19 @@
         .filter-sort-container {
             display: flex;
             align-items: center;
-            gap: 20px;
+            gap: 15px;
+            flex-wrap: wrap;
         }
 
-        .sort-container, .category-container {
+        .sort-container,
+        .category-container {
             display: flex;
             align-items: center;
             gap: 10px;
         }
 
-        .sort-dropdown, .category-dropdown {
+        .sort-dropdown,
+        .category-dropdown {
             padding: 8px 15px;
             border: 2px solid #e9ecef;
             border-radius: 8px;
@@ -366,13 +382,14 @@
             cursor: pointer;
         }
 
-        .sort-dropdown:focus, .category-dropdown:focus {
+        .sort-dropdown:focus,
+        .category-dropdown:focus {
             border-color: #F98F15;
         }
 
         .product-grid {
             display: grid;
-            grid-template-columns: repeat(4, minmax(280px, 1fr));
+            grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
             gap: 25px;
         }
 
@@ -387,7 +404,7 @@
 
         .product-card:hover {
             transform: translateY(-8px);
-            box-shadow: 0 15px 35px rgba(0,0,0,0.15);
+            box-shadow: 0 15px 35px rgba(0, 0, 0, 0.15);
             border-color: #ff6b35;
         }
 
@@ -425,12 +442,14 @@
             width: 30px;
             height: 30px;
             border-radius: 50%;
-            background: rgba(255,255,255,0.8);
+            background: rgba(255, 255, 255, 0.8);
             display: flex;
             align-items: center;
             justify-content: center;
             color: #ff6b35;
             transition: all 0.3s ease;
+            cursor: pointer;
+            z-index: 2;
         }
 
         .wishlist-btn:hover {
@@ -461,7 +480,9 @@
             overflow: hidden;
         }
 
-        .product-brand, .product-company, .product-type {
+        .product-brand,
+        .product-company,
+        .product-type {
             font-size: 13px;
             color: #6c757d;
             margin-bottom: 5px;
@@ -504,6 +525,54 @@
             transform: translateY(-2px);
         }
 
+        .add-to-cart-btn.loading {
+            background: #ccc;
+            pointer-events: none;
+        }
+
+        /* Pagination */
+        .pagination {
+            display: flex;
+            justify-content: center;
+            margin-top: 30px;
+            gap: 8px;
+        }
+
+        .page-item {
+            list-style: none;
+        }
+
+        .page-link {
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 8px;
+            background: white;
+            color: #2c3e50;
+            text-decoration: none;
+            font-weight: 600;
+            border: 1px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .page-link:hover {
+            background: #f8f9fa;
+            color: #ff6b35;
+        }
+
+        .page-item.active .page-link {
+            background: #ff6b35;
+            color: white;
+            border-color: #ff6b35;
+        }
+
+        .page-item.disabled .page-link {
+            opacity: 0.5;
+            pointer-events: none;
+        }
+
         /* Footer */
         .footer {
             background: #2c3e50;
@@ -526,65 +595,231 @@
             font-size: 14px;
         }
 
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                height: auto;
-                padding: 15px 20px;
+        /* Prevent card navigation when clicking buttons */
+
+        .product-card .add-to-cart-btn {
+            position: relative;
+            z-index: 10;
+        }
+
+
+
+        /* Enhanced Responsive Styles */
+        @media (max-width: 1024px) {
+            .product-grid {
+                grid-template-columns: repeat(3, 1fr);
+                gap: 20px;
+            }
+
+            .main-container {
+                padding: 0 15px 30px;
             }
 
             .search-container {
-                margin: 15px 0;
-                max-width: none;
+                margin: 0 20px;
+            }
+        }
+
+        @media (max-width: 768px) {
+
+            /* Show mobile search bar */
+            .mobile-search-container {
+                display: block;
             }
 
-            .nav-content {
-                flex-wrap: wrap;
+            /* Hide desktop search bar */
+            .search-container {
+                display: none;
+            }
+
+            /* Adjust header layout */
+            .header-content {
+                padding: 10px 15px;
                 height: auto;
-                padding: 10px 20px;
+                justify-content: space-between;
             }
 
-            .hero-title {
-                font-size: 32px;
+            /* Make logo smaller in mobile */
+            .logos {
+                width: 80px !important;
+                height: auto !important;
             }
 
-            .hero-subtitle {
-                font-size: 16px;
-            }
-
-            .section-header {
-                flex-direction: column;
-                align-items: flex-start;
+            /* Adjust product grid for mobile */
+            .product-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
                 gap: 15px;
             }
 
+            /* Adjust product card for mobile */
+            .product-image {
+                height: 150px;
+            }
+
+            .product-info {
+                padding: 15px;
+            }
+
+            .product-name {
+                font-size: 16px;
+            }
+
+            .current-price {
+                font-size: 18px;
+            }
+
+            /* Navigation adjustments */
+            .nav-content {
+                overflow-x: auto;
+                padding: 10px 15px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+
+            .nav-content::-webkit-scrollbar {
+                display: none;
+            }
+
+            .nav-item {
+                white-space: nowrap;
+                margin-right: 20px;
+                font-size: 13px;
+            }
+
+            /* Adjust filter/sort layout */
+            .filter-sort-container {
+                width: 100%;
+                justify-content: space-between;
+            }
+
+            .sort-container,
+            .category-container {
+                flex: 1;
+                min-width: 150px;
+            }
+        }
+
+        @media (max-width: 480px) {
+
+            /* Very small screens */
+            .product-grid {
+                grid-template-columns: 1fr;
+                gap: 15px;
+            }
+
+            .hero-title {
+                font-size: 24px;
+            }
+
+            .hero-subtitle {
+                font-size: 14px;
+            }
+
+            .section-title {
+                font-size: 18px;
+            }
+
+            .product-image {
+                height: 180px;
+            }
+
+            .product-name {
+                font-size: 15px;
+            }
+
+            .current-price {
+                font-size: 16px;
+            }
+
+            /* Ensure dropdowns don't exceed screen width */
+            .profile-dropdown {
+                right: 0;
+                left: auto;
+                min-width: calc(100vw - 40px);
+                max-width: 250px;
+            }
+
+            /* Adjust filter/sort for very small screens */
             .filter-sort-container {
                 flex-direction: column;
                 align-items: flex-start;
                 gap: 10px;
+            }
+
+            .sort-container,
+            .category-container {
                 width: 100%;
             }
 
-            .sort-container, .category-container {
+            .sort-dropdown,
+            .category-dropdown {
                 width: 100%;
-            }
-
-            .sort-dropdown, .category-dropdown {
-                width: 100%;
-            }
-
-            .product-grid {
-                grid-template-columns: 1fr;
-            }
-
-            .profile-dropdown {
-                right: -10px;
-                min-width: 180px;
             }
         }
+
+        @media (max-width: 360px) {
+
+            /* Extra small screens */
+            .main-container {
+                padding: 0 8px 20px;
+            }
+
+            .product-section {
+                padding: 15px 10px;
+            }
+
+            .hero-banner {
+                padding: 30px 0;
+            }
+
+            .hero-content {
+                padding: 0 15px;
+            }
+        }
+
+        /* Prevent horizontal scroll */
+        html,
+        body {
+            overflow-x: hidden;
+        }
+
+        /* Touch-friendly improvements */
+        @media (hover: none) and (pointer: coarse) {
+            .product-card:hover {
+                transform: none;
+            }
+
+            .add-to-cart-btn:hover {
+                transform: none;
+            }
+
+            .hero-cta:hover {
+                transform: none;
+            }
+        }
+
+        .added-to-cart {
+            background: #4CAF50 !important;
+            /* Green color */
+            pointer-events: none;
+            /* Disable further clicks */
+        }
+
+        .wishlist-btn.in-wishlist {
+            background: #ff6b35 !important;
+            color: white !important;
+        }
+
+        .wishlist-btn.in-wishlist i {
+            color: white !important;
+        }
+        .added-to-cart {
+    background: #4CAF50 !important; /* Green color */
+    pointer-events: none; /* Disable further clicks */
+}
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
@@ -597,61 +832,65 @@
             </div>
             <div class="header-actions">
                 <div class="cart-icon relative">
-                   <a href="{% url 'cart' %}" class="dropdown-item">
-                                    <i class="fa-solid fa-shopping-cart"></i>
-                                   
-                                </a>
-                    {% if user.is_authenticated %}
-                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">0</span>
-                    {% endif %}
+                    <a href="{% url 'cart' %}">
+                        <i class="fa-solid fa-shopping-cart"></i>
+                        <span
+                            class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center"
+                            id="cart-count">
+                            {% if user.is_authenticated %}{{ cart_count }}{% else %}0{% endif %}
+                        </span>
+                    </a>
                 </div>
                 <div class="profile-icon" id="profileIcon">
                     {% if user.is_authenticated %}
-                        {% if user.profile_picture %}
-                            <img src="{{ user.profile_picture }}" class="w-full h-full rounded-full object-cover" alt="Profile">
-                        {% else %}
-                            <div class="w-full h-full rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold" title="{{ user.email }}">
-                                {{ user.email|first|upper }}
-                            </div>
-                        {% endif %}
-                        
-                        <!-- Profile Dropdown -->
-                        <div class="profile-dropdown" id="profileDropdown">
-                            <div class="profile-info">
-                                <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:"" }}</div>
-                                <div class="profile-email">{{ user.email }}</div>
-                            </div>
-                            <div class="dropdown-menu">
-                                {% comment %} <a href="#" class="dropdown-item">
-                                    <i class="fa-solid fa-user"></i>
-                                    My Profile
-                                </a> {% endcomment %}
-                                <a href="#" class="dropdown-item">
-                                    <i class="fa-solid fa-box"></i>
-                                    My Orders
-                                </a>
-                                <a href="{% url 'wishlist' %}" class="dropdown-item">
-                                    <i class="fa-solid fa-heart"></i>
-                                    My Wishlist
-                                </a>
-                                <a href="{% url 'cart' %}" class="dropdown-item">
-                                    <i class="fa-solid fa-shopping-cart"></i>
-                                    My Cart
-                                </a>
-                                <div class="dropdown-divider"></div>
-                                <a href="{% url 'logout' %}" class="dropdown-item">
-                                    <i class="fa-solid fa-sign-out-alt"></i>
-                                    Logout
-                                </a>
-                            </div>
-                        </div>
+                    {% if user.profile_picture %}
+                    <img src="{{ user.profile_picture }}" class="w-full h-full rounded-full object-cover" alt="Profile">
                     {% else %}
-                        <a href="login"><i class="fa-solid fa-user"></i></a>
+                    <div class="w-full h-full rounded-full bg-blue-500 flex items-center justify-center text-white font-semibold"
+                        title="{{ user.email }}">
+                        {{ user.email|first|upper }}
+                    </div>
+                    {% endif %}
+
+                    <!-- Profile Dropdown -->
+                    <div class="profile-dropdown" id="profileDropdown">
+                        <div class="profile-info">
+                            <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:"" }}</div>
+                            <div class="profile-email">{{ user.email }}</div>
+                        </div>
+                        <div class="dropdown-menu">
+                            <!-- <a href="#" class="dropdown-item">
+                                <i class="fa-solid fa-box"></i>
+                                My Orders
+                            </a> -->
+                            <a href="{% url 'wishlist' %}" class="dropdown-item">
+                                <i class="fa-solid fa-heart"></i>
+                                My Wishlist
+                            </a>
+                            <a href="{% url 'cart' %}" class="dropdown-item">
+                                <i class="fa-solid fa-shopping-cart"></i>
+                                My Cart
+                            </a>
+                            <div class="dropdown-divider"></div>
+                            <a href="{% url 'logout' %}" class="dropdown-item">
+                                <i class="fa-solid fa-sign-out-alt"></i>
+                                Logout
+                            </a>
+                        </div>
+                    </div>
+                    {% else %}
+                    <a href="{% url 'login' %}"><i class="fa-solid fa-user"></i></a>
                     {% endif %}
                 </div>
             </div>
         </div>
-        
+
+        <!-- Mobile Search Bar (hidden on desktop) -->
+        <div class="mobile-search-container">
+            <input type="text" class="search-input" placeholder="Search products...">
+            <button class="search-btn">Search</button>
+        </div>
+
         <!-- Simplified Navigation - Only show main categories -->
         <nav class="nav-bar">
             <div class="nav-content">
@@ -706,16 +945,20 @@
                     </div>
                 </div>
             </div>
-            
+
             <div class="product-grid">
                 {% for product in products %}
-                <div class="product-card" data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}">
-   
-   
+                <div class="product-card"
+                    data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}">
                     <div class="product-image">
                         <img src="{% static 'images/productdemo.jpg' %}" class="w-full h-full object-cover">
-                        <div class="wishlist-btn" data-wishlist-action="{% if product.id in wishlist_ids %}remove{% else %}add{% endif %}">
-                            <i class="fa-{% if product.id in wishlist_ids %}solid{% else %}regular{% endif %} fa-heart"></i>
+
+                        <div class="wishlist-btn {% if product.id in wishlist_ids or product.code in wishlist_api_ids %}in-wishlist{% endif %}"
+                            data-wishlist-action="{% if product.id in wishlist_ids or product.code in wishlist_api_ids %}remove{% else %}add{% endif %}"
+                            data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+                            data-is-custom="{% if product.id %}true{% else %}false{% endif %}">
+                            <i
+                                class="fa-{% if product.id in wishlist_ids or product.code in wishlist_api_ids %}solid{% else %}regular{% endif %} fa-heart"></i>
                         </div>
                     </div>
                     <div class="product-info">
@@ -725,13 +968,71 @@
                         <div class="product-company">{{ product.company }}</div>
                         <div class="product-type">{{ product.product }}</div>
                         <div class="price-section">
-                            <div class="current-price"> {{ product.price|default:"299.00" }} /-</div>
-                            <div class="original-price"> {{ product.original_price|default:"399.00" }} /-</div>
+                            <div class="current-price"> {{ product.price|default:"0.00" }} /-</div>
+                            <div class="original-price"> {{ product.original_price|default:"0.00" }} /-</div>
                         </div>
-                        <button class="add-to-cart-btn" data-product-id="{{ product.id }}">ADD TO CART</button>
+                        <!-- Updated Add to Cart Button HTML Structure -->
+                        <button
+    class="add-to-cart-btn {% if product.id in cart_ids or product.code in cart_api_ids %}added-to-cart{% endif %}"
+    data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+    data-is-custom="{% if product.id %}true{% else %}false{% endif %}"
+    data-cart-action="{% if product.id in cart_ids or product.code in cart_api_ids %}remove{% else %}add{% endif %}">
+    {% if product.id in cart_ids or product.code in cart_api_ids %}
+    <i class="fas fa-check"></i> Added to Cart
+    {% else %}
+    ADD TO CART
+    {% endif %}
+</button>
+
                     </div>
                 </div>
                 {% endfor %}
+            </div>
+
+            <!-- Pagination -->
+            <div class="pagination">
+                {% if products.has_previous %}
+                <li class="page-item">
+                    <a class="page-link" href="?page=1">&laquo; First</a>
+                </li>
+                <li class="page-item">
+                    <a class="page-link" href="?page={{ products.previous_page_number }}">Previous</a>
+                </li>
+                {% else %}
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">&laquo; First</a>
+                </li>
+                <li class="page-item disabled">
+                    <a class="page-link" href="#">Previous</a>
+                </li>
+                {% endif %}
+
+                {% for num in products.paginator.page_range %}
+                {% if products.number == num %}
+                <li class="page-item active">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                </li>
+                {% elif num > products.number|add:'-3' and num < products.number|add:'3' %} <li class="page-item">
+                    <a class="page-link" href="?page={{ num }}">{{ num }}</a>
+                    </li>
+                    {% endif %}
+                    {% endfor %}
+
+                    {% if products.has_next %}
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.next_page_number }}">Next</a>
+                    </li>
+                    <li class="page-item">
+                        <a class="page-link" href="?page={{ products.paginator.num_pages }}">Last &raquo;</a>
+                    </li>
+                    {% else %}
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Next</a>
+                    </li>
+                    <li class="page-item disabled">
+                        <a class="page-link" href="#">Last &raquo;</a>
+                    </li>
+                    {% endif %}
             </div>
         </div>
     </div>
@@ -747,37 +1048,42 @@
 
     <script>
         // Check if user is authenticated
-        const isAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
-        
+        const isAuthenticated = {% if user.is_authenticated %}true{% else %} false{% endif %};
+
         // Profile dropdown functionality
         const profileIcon = document.getElementById('profileIcon');
         const profileDropdown = document.getElementById('profileDropdown');
-        
+
         if (profileIcon && profileDropdown) {
-            profileIcon.addEventListener('click', function(e) {
+            profileIcon.addEventListener('click', function (e) {
                 e.stopPropagation();
                 profileDropdown.classList.toggle('show');
             });
-            
+
             // Close dropdown when clicking outside
-            document.addEventListener('click', function(e) {
+            document.addEventListener('click', function (e) {
                 if (!profileIcon.contains(e.target)) {
                     profileDropdown.classList.remove('show');
                 }
             });
-            
+
             // Prevent dropdown from closing when clicking inside it
-            profileDropdown.addEventListener('click', function(e) {
+            profileDropdown.addEventListener('click', function (e) {
                 e.stopPropagation();
             });
         }
-        
-            
+
+        // Mobile search functionality
+        document.querySelector('.mobile-search-container .search-btn').addEventListener('click', performSearch);
+        document.querySelector('.mobile-search-container .search-input').addEventListener('keypress', function (e) {
+            if (e.key === 'Enter') performSearch();
+        });
+
         // Category filter functionality
-        document.getElementById('categoryFilter').addEventListener('change', function() {
+        document.getElementById('categoryFilter').addEventListener('change', function () {
             const category = this.value.toLowerCase();
             const productCards = document.querySelectorAll('.product-card');
-            
+
             productCards.forEach(card => {
                 const productCategory = card.querySelector('.product-category').textContent.toLowerCase();
                 if (category === 'all' || productCategory.includes(category)) {
@@ -790,21 +1096,21 @@
 
         // Search functionality
         document.querySelector('.search-btn').addEventListener('click', performSearch);
-        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+        document.querySelector('.search-input').addEventListener('keypress', function (e) {
             if (e.key === 'Enter') performSearch();
         });
 
         function performSearch() {
             const searchTerm = document.querySelector('.search-input').value.toLowerCase();
             const productCards = document.querySelectorAll('.product-card');
-            
+
             productCards.forEach(card => {
                 const productName = card.querySelector('.product-name').textContent.toLowerCase();
                 const productBrand = card.querySelector('.product-brand').textContent.toLowerCase();
                 const productCategory = card.querySelector('.product-category').textContent.toLowerCase();
-                
-                if (productName.includes(searchTerm) || 
-                    productBrand.includes(searchTerm) || 
+
+                if (productName.includes(searchTerm) ||
+                    productBrand.includes(searchTerm) ||
                     productCategory.includes(searchTerm)) {
                     card.style.display = 'block';
                 } else {
@@ -814,16 +1120,16 @@
         }
 
         // Sort functionality
-        document.querySelector('.sort-dropdown').addEventListener('change', function() {
+        document.querySelector('.sort-dropdown').addEventListener('change', function () {
             const sortOption = this.value;
             const productGrid = document.querySelector('.product-grid');
             const productCards = Array.from(document.querySelectorAll('.product-card'));
-            
+
             productCards.sort((a, b) => {
-                const priceA = parseFloat(a.querySelector('.current-price').textContent.replace('৳', '').trim());
-                const priceB = parseFloat(b.querySelector('.current-price').textContent.replace('৳', '').trim());
-                
-                switch(sortOption) {
+                const priceA = parseFloat(a.querySelector('.current-price').textContent.replace(/[^\d.]/g, ''));
+                const priceB = parseFloat(b.querySelector('.current-price').textContent.replace(/[^\d.]/g, ''));
+
+                switch (sortOption) {
                     case 'Price: Low to High':
                         return priceA - priceB;
                     case 'Price: High to Low':
@@ -836,104 +1142,252 @@
                         return 0;
                 }
             });
-            
+
             productCards.forEach(card => productGrid.appendChild(card));
         });
 
-        // Wishlist functionality
+
+        // Enhanced Wishlist Functionality - UPDATED with CSRF token and better error handling
         document.querySelectorAll('.wishlist-btn').forEach(btn => {
-            btn.addEventListener('click', async function(e) {
+            btn.addEventListener('click', async function (e) {
+                e.preventDefault();
                 e.stopPropagation();
-                
+
                 if (!isAuthenticated) {
                     window.location.href = '/login/';
                     return;
                 }
-                
-                const productId = this.closest('.product-card').dataset.productId;
+
+                const productId = this.dataset.productId;
+                const isCustom = this.dataset.isCustom === 'true';
                 const action = this.dataset.wishlistAction;
                 const icon = this.querySelector('i');
-                
-                try {
-                    const response = await fetch(`/wishlist/${action}/${productId}/`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                        credentials: 'same-origin'
-                    });
-                    
-                    if (response.ok) {
-                        if (action === 'add') {
-                            icon.classList.remove('fa-regular');
-                            icon.classList.add('fa-solid');
-                            this.style.backgroundColor = '#ff6b35';
-                            this.style.color = 'white';
-                            this.dataset.wishlistAction = 'remove';
-                        } else {
-                            icon.classList.remove('fa-solid');
-                            icon.classList.add('fa-regular');
-                            this.style.backgroundColor = 'rgba(255,255,255,0.8)';
-                            this.style.color = '#ff6b35';
-                            this.dataset.wishlistAction = 'add';
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            });
-        });
 
-        // Add to cart functionality
-        document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
-            btn.addEventListener('click', async function(e) {
-                e.stopPropagation();
-                
-                if (!isAuthenticated) {
-                    window.location.href = '/login/';
-                    return;
-                }
-                
-                const productId = this.dataset.productId;
-                
+                // Get CSRF token
+                const csrftoken = getCookie('csrftoken');
+
                 try {
-                    const response = await fetch(`/cart/add/${productId}/`, {
+                    // Show loading state
+                    this.style.pointerEvents = 'none';
+
+                    const url = action === 'add'
+                        ? `/wishlist/add/${productId}/`
+                        : `/wishlist/remove/${productId}/`;
+
+                    const response = await fetch(url, {
                         method: 'POST',
                         headers: {
                             'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}',
+                            'X-CSRFToken': csrftoken,
                         },
+                        body: JSON.stringify({
+                            is_custom: isCustom
+                        }),
                         credentials: 'same-origin'
                     });
-                    
+
                     if (response.ok) {
                         const data = await response.json();
-                        document.getElementById('cart-count').textContent = data.cart_count;
-                        alert('Product added to cart!');
+                        if (data.success) {
+                            // Toggle the button state
+                            if (action === 'add') {
+                                this.classList.add('in-wishlist');
+                                this.dataset.wishlistAction = 'remove';
+                                icon.classList.remove('far');
+                                icon.classList.add('fas');
+                            } else {
+                                this.classList.remove('in-wishlist');
+                                this.dataset.wishlistAction = 'add';
+                                icon.classList.remove('fas');
+                                icon.classList.add('far');
+                            }
+                        } else {
+                            console.error('Wishlist operation failed:', data.message);
+                        }
+                    } else {
+                        console.error('HTTP error:', response.status);
                     }
                 } catch (error) {
-                    console.error('Error:', error);
+                    console.error('Wishlist Error:', error);
+                } finally {
+                    this.style.pointerEvents = 'auto';
                 }
             });
         });
 
- document.querySelectorAll('.product-card').forEach(card => {
-    card.addEventListener('click', function(e) {
-        // Don't navigate if clicking on buttons inside the card
-        if (e.target.closest('.wishlist-btn') || e.target.closest('.add-to-cart-btn')) {
+        // Function to get CSRF token from cookies
+     // Function to get CSRF token from cookies
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
+}
+       // Enhanced Cart Functionality - UPDATED with better state management
+// Enhanced Cart Functionality - with better error handling
+document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
+    btn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+
+        if (!isAuthenticated) {
+            window.location.href = '/login/';
             return;
         }
-        
+
         const productId = this.dataset.productId;
-        if (productId) {
-            window.location.href = `/products/${productId}/`;
-        } else {
-            console.error('Product identifier not found');
+        const isCustom = this.dataset.isCustom === 'true';
+        const action = this.dataset.cartAction;
+        const originalHTML = this.innerHTML;
+
+        try {
+            // Show loading state
+            this.style.pointerEvents = 'none';
+            this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + 
+                (action === 'add' ? 'Adding...' : 'Removing...');
+            this.disabled = true;
+
+            const csrftoken = getCookie('csrftoken');
+            const endpoint = action === 'add'
+                ? (isCustom ? `/cart/add/${productId}/` : `/cart/add-api/${productId}/`)
+                : (isCustom ? `/cart/remove/${productId}/` : `/cart/remove-api/${productId}/`);
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': csrftoken,
+                },
+                credentials: 'same-origin'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    // Update cart count
+                    const cartCountElement = document.getElementById('cart-count');
+                    if (cartCountElement) {
+                        cartCountElement.textContent = data.cart_count || 0;
+                    }
+
+                    // Toggle button state
+                    const newAction = action === 'add' ? 'remove' : 'add';
+                    this.dataset.cartAction = newAction;
+
+                    if (newAction === 'remove') {
+                        this.classList.add('added-to-cart');
+                        this.innerHTML = '<i class="fas fa-check"></i> Added to Cart';
+                        this.style.background = '#4CAF50';
+                    } else {
+                        this.classList.remove('added-to-cart');
+                        this.innerHTML = 'ADD TO CART';
+                        this.style.background = '#ff6b35';
+                    }
+                } else {
+                    showErrorToast(data.message || 'Operation failed');
+                    this.innerHTML = originalHTML;
+                }
+            } else {
+                const errorData = await response.json().catch(() => ({}));
+                showErrorToast(errorData.message || `Server error: ${response.status}`);
+                this.innerHTML = originalHTML;
+            }
+        } catch (error) {
+            console.error('Cart Error:', error);
+            showErrorToast('Network error - please try again');
+            this.innerHTML = originalHTML;
+        } finally {
+            this.disabled = false;
+            this.style.pointerEvents = 'auto';
         }
     });
 });
+
+// Helper function to show error messages
+function showErrorToast(message) {
+    // Create a toast element
+    const toast = document.createElement('div');
+    toast.style.position = 'fixed';
+    toast.style.bottom = '20px';
+    toast.style.right = '20px';
+    toast.style.backgroundColor = '#ff4444';
+    toast.style.color = 'white';
+    toast.style.padding = '15px';
+    toast.style.borderRadius = '5px';
+    toast.style.zIndex = '10000';
+    toast.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+    toast.textContent = message;
+
+    document.body.appendChild(toast);
+
+    setTimeout(() => {
+        toast.style.opacity = '0';
+        setTimeout(() => toast.remove(), 500);
+    }, 3000);
+}
+// Helper function to show error messages
+function showErrorToast(message) {
+    // Implement your preferred error notification method
+    alert(message); // Simple alert for now - replace with toast notification
+}
+
+        // Fixed Product card click handler - UPDATED to properly exclude buttons
+        document.querySelectorAll('.product-card').forEach(card => {
+            card.addEventListener('click', function (e) {
+                // Don't navigate if clicking on buttons or interactive elements inside the card
+                if (e.target.closest('.add-to-cart-btn') ||
+                    e.target.closest('.wishlist-btn') ||
+                    e.target.closest('button') ||
+                    e.target.closest('a') ||
+                    e.target.tagName === 'BUTTON' ||
+                    e.target.tagName === 'INPUT' ||
+                    e.target.tagName === 'SELECT' ||
+                    e.target.tagName === 'I') { // Also exclude icon clicks
+                    e.preventDefault();
+                    e.stopPropagation();
+                    return false;
+                }
+
+                const productId = this.dataset.productId;
+                if (productId) {
+                    window.location.href = `/products/${productId}/`;
+                }
+            });
+        });
+
+        // Also add this additional fix for the cart and wishlist buttons
+        document.querySelectorAll('.add-to-cart-btn, .wishlist-btn').forEach(btn => {
+            btn.addEventListener('click', function (e) {
+                e.preventDefault();
+                e.stopPropagation();
+                // The rest of your existing click handler code follows...
+            });
+        });
+
+        // Initialize pagination with different items per page based on screen size
+        function updatePagination() {
+            const isMobile = window.innerWidth <= 768;
+            const productCards = document.querySelectorAll('.product-card');
+            const itemsPerPage = isMobile ? 6 : 15;
+
+            // You would typically handle pagination server-side,
+            // but this is a client-side example for demonstration
+            // In a real implementation, you would modify the Django view
+            // to return different pagination based on screen size
+        }
+
+        // Call on load and resize
+        window.addEventListener('load', updatePagination);
+        window.addEventListener('resize', updatePagination);
     </script>
-    
 </body>
+
 </html>

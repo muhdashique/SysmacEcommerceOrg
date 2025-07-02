@@ -1,12 +1,13 @@
 {% load static %}
 <!DOCTYPE html>
 <html lang="en">
+
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Shopping Cart - SYSMAC</title>
     <script src="https://cdn.tailwindcss.com"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
-    <title>Shopping Cart - SYSMAC</title>
     <style>
         * {
             margin: 0;
@@ -24,7 +25,7 @@
         /* Header */
         .header {
             background: white;
-            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
             z-index: 100;
@@ -53,6 +54,14 @@
             flex: 1;
             max-width: 500px;
             margin: 0 40px;
+            position: relative;
+        }
+
+        .mobile-search-container {
+            display: none;
+            width: 100%;
+            padding: 0 15px;
+            margin: 10px 0;
             position: relative;
         }
 
@@ -122,7 +131,7 @@
             background: white;
             min-width: 200px;
             border-radius: 12px;
-            box-shadow: 0 10px 40px rgba(0,0,0,0.15);
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.15);
             border: 1px solid #e9ecef;
             opacity: 0;
             visibility: hidden;
@@ -217,7 +226,7 @@
             display: flex;
             align-items: center;
             height: 50px;
-            gap: 30px;
+            gap: 15px;
         }
 
         .nav-item {
@@ -239,76 +248,47 @@
         .main-container {
             max-width: 1400px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 20px;
         }
 
         .page-title {
             font-size: 28px;
             font-weight: 700;
             color: #2c3e50;
-            margin-bottom: 30px;
+            margin-bottom: 20px;
         }
 
         .cart-container {
             display: flex;
-            gap: 30px;
+            flex-direction: column;
+            gap: 20px;
             background: white;
             border-radius: 15px;
-            box-shadow: 0 5px 20px rgba(0,0,0,0.08);
+            box-shadow: 0 5px 20px rgba(0, 0, 0, 0.08);
             overflow: hidden;
         }
 
         .cart-items {
-            flex: 2;
-            padding: 30px;
+            padding: 20px;
         }
 
         .cart-summary {
-            flex: 1;
+            padding: 20px;
             background: #f8f9fa;
-            padding: 30px;
-            border-left: 1px solid #e9ecef;
-        }
-
-        .delivery-header {
-            background-color: #f8f9fa;
-            padding: 15px 20px;
-            margin: -30px -30px 20px -30px;
-            border-bottom: 1px solid #e9ecef;
-        }
-
-        .delivery-info {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-        }
-
-        .delivery-address {
-            font-size: 14px;
-            color: #333;
-        }
-
-        .change-btn {
-            background: none;
-            border: 1px solid #007bff;
-            color: #007bff;
-            padding: 6px 12px;
-            border-radius: 4px;
-            cursor: pointer;
-            font-size: 12px;
-            transition: all 0.3s ease;
-        }
-
-        .change-btn:hover {
-            background-color: #007bff;
-            color: white;
+            border-top: 1px solid #e9ecef;
         }
 
         .cart-item {
             display: flex;
-            gap: 20px;
-            padding: 20px 0;
+            flex-direction: column;
+            gap: 15px;
+            padding: 15px 0;
             border-bottom: 1px solid #eee;
+        }
+
+        .item-row {
+            display: flex;
+            gap: 15px;
         }
 
         .item-image {
@@ -370,7 +350,7 @@
             display: flex;
             align-items: center;
             gap: 10px;
-            margin: 15px 0;
+            margin: 10px 0;
         }
 
         .original-price {
@@ -394,22 +374,10 @@
             font-weight: 600;
         }
 
-        .offers {
-            color: #28a745;
-            font-size: 12px;
-            margin-left: 5px;
-        }
-
-        .payment-options {
-            font-size: 12px;
-            color: #6c757d;
-            margin-bottom: 10px;
-        }
-
         .item-actions {
             display: flex;
-            gap: 15px;
-            align-items: center;
+            flex-direction: column;
+            gap: 10px;
         }
 
         .quantity-controls {
@@ -453,9 +421,27 @@
             padding: 8px 12px;
             border-radius: 4px;
             transition: all 0.3s ease;
+            text-align: left;
         }
 
         .action-btn:hover {
+            background: #f8f9fa;
+            color: #ff6b35;
+        }
+
+        .remove-btn {
+            background: none;
+            border: none;
+            color: #6c757d;
+            font-size: 13px;
+            cursor: pointer;
+            padding: 8px 12px;
+            border-radius: 4px;
+            transition: all 0.3s ease;
+            text-align: left;
+        }
+
+        .remove-btn:hover {
             background: #f8f9fa;
             color: #ff6b35;
         }
@@ -464,7 +450,7 @@
             font-size: 18px;
             font-weight: 700;
             color: #2c3e50;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
             padding-bottom: 10px;
             border-bottom: 1px solid #e9ecef;
         }
@@ -472,13 +458,13 @@
         .price-row {
             display: flex;
             justify-content: space-between;
-            margin-bottom: 15px;
+            margin-bottom: 12px;
             font-size: 15px;
         }
 
         .price-row.total {
             font-weight: 700;
-            padding-top: 15px;
+            padding-top: 12px;
             border-top: 1px solid #ddd;
             font-size: 18px;
             color: #2c3e50;
@@ -487,7 +473,7 @@
         .savings {
             color: #28a745;
             font-size: 15px;
-            margin: 20px 0;
+            margin: 15px 0;
             font-weight: 600;
             text-align: center;
             padding: 10px;
@@ -501,7 +487,7 @@
             gap: 10px;
             font-size: 13px;
             color: #6c757d;
-            margin: 20px 0;
+            margin: 15px 0;
         }
 
         .security-icon {
@@ -514,30 +500,28 @@
             background-color: #ff6b35;
             color: white;
             border: none;
-            padding: 15px;
+            padding: 12px;
             font-size: 16px;
             font-weight: 600;
             border-radius: 8px;
             cursor: pointer;
-            margin-top: 20px;
+            margin-top: 15px;
             transition: all 0.3s ease;
         }
 
         .place-order-btn:hover {
             background-color: #e55a2b;
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(255, 107, 53, 0.3);
         }
 
         .empty-cart {
             text-align: center;
-            padding: 50px 0;
+            padding: 40px 0;
         }
 
         .empty-cart-icon {
             font-size: 60px;
             color: #e9ecef;
-            margin-bottom: 20px;
+            margin-bottom: 15px;
         }
 
         .empty-cart-message {
@@ -562,16 +546,81 @@
 
         .shop-btn:hover {
             background: #e55a2b;
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(255, 107, 53, 0.4);
+        }
+
+        /* Responsive Styles */
+        @media (min-width: 768px) {
+            .cart-container {
+                flex-direction: row;
+            }
+            
+            .cart-items {
+                flex: 2;
+            }
+            
+            .cart-summary {
+                flex: 1;
+                border-left: 1px solid #e9ecef;
+                border-top: none;
+            }
+            
+            .cart-item {
+                flex-direction: row;
+            }
+            
+            .item-actions {
+                flex-direction: row;
+                align-items: center;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .header-content {
+                height: auto;
+                padding: 10px 15px;
+            }
+            
+            .search-container {
+                margin: 10px 0;
+                max-width: none;
+                width: 100%;
+            }
+            
+            .mobile-search-container {
+                display: block;
+            }
+            
+            .search-container {
+                display: none;
+            }
+            
+            .header-actions {
+                width: 100%;
+                justify-content: flex-end;
+            }
+            
+            .nav-content {
+                overflow-x: auto;
+                padding: 10px 15px;
+                -webkit-overflow-scrolling: touch;
+                scrollbar-width: none;
+            }
+            
+            .nav-content::-webkit-scrollbar {
+                display: none;
+            }
+            
+            .nav-item {
+                white-space: nowrap;
+            }
         }
 
         /* Footer */
         .footer {
             background: #2c3e50;
             color: white;
-            padding: 50px 0 20px;
-            margin-top: 50px;
+            padding: 40px 0 20px;
+            margin-top: 40px;
         }
 
         .footer-content {
@@ -587,53 +636,27 @@
             color: #bdc3c7;
             font-size: 14px;
         }
-
-        /* Responsive */
-        @media (max-width: 768px) {
-            .header-content {
-                flex-direction: column;
-                height: auto;
-                padding: 15px 20px;
-            }
-
-            .search-container {
-                margin: 15px 0;
-                max-width: none;
-            }
-
-            .nav-content {
-                flex-wrap: wrap;
-                height: auto;
-                padding: 10px 20px;
-            }
-
-            .cart-container {
-                flex-direction: column;
-            }
-
-            .cart-summary {
-                border-left: none;
-                border-top: 1px solid #e9ecef;
-            }
-        }
     </style>
 </head>
+
 <body>
     <!-- Header -->
     <header class="header">
         <div class="header-content">
             <div class="logos w-28 h-26"><img src="{% static 'images/SYSMAC LOGO-01.png' %}"></div>
 
-            <div class="search-container">
+            <!-- <div class="search-container">
                 <input type="text" class="search-input" placeholder="Search products...">
                 <button class="search-btn">Search</button>
-            </div>
+            </div> -->
             <div class="header-actions">
                 <div class="cart-icon relative">
-                    <i class="fa-solid fa-cart-shopping"></i>
-                    {% if user.is_authenticated %}
-                    <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">{{ cart_count|default:"0" }}</span>
-                    {% endif %}
+                    <a href="{% url 'cart' %}">
+                        <i class="fa-solid fa-shopping-cart"></i>
+                        <span class="absolute -top-2 -right-2 bg-red-500 text-white text-xs rounded-full h-5 w-5 flex items-center justify-center" id="cart-count">
+                            {% if user.is_authenticated %}{{ cart_count|default:"0" }}{% else %}0{% endif %}
+                        </span>
+                    </a>
                 </div>
                 <div class="profile-icon" id="profileIcon">
                     {% if user.is_authenticated %}
@@ -652,14 +675,10 @@
                                 <div class="profile-email">{{ user.email }}</div>
                             </div>
                             <div class="dropdown-menu">
-                                {% comment %} <a href="#" class="dropdown-item">
-                                    <i class="fa-solid fa-user"></i>
-                                    My Profile
-                                </a> {% endcomment %}
-                                <a href="#" class="dropdown-item">
+                                <!-- <a href="#" class="dropdown-item">
                                     <i class="fa-solid fa-box"></i>
                                     My Orders
-                                </a>
+                                </a> -->
                                 <a href="{% url 'wishlist' %}" class="dropdown-item">
                                     <i class="fa-solid fa-heart"></i>
                                     My Wishlist
@@ -676,20 +695,24 @@
                             </div>
                         </div>
                     {% else %}
-                        <a href="login"><i class="fa-solid fa-user"></i></a>
+                        <a href="{% url 'login' %}"><i class="fa-solid fa-user"></i></a>
                     {% endif %}
                 </div>
             </div>
         </div>
         
+        <!-- Mobile Search Bar (hidden on desktop) -->
+        <!-- <div class="mobile-search-container">
+            <input type="text" class="search-input" placeholder="Search products...">
+            <button class="search-btn">Search</button>
+        </div> -->
+        
         <!-- Navigation -->
         <nav class="nav-bar">
             <div class="nav-content">
                 <a href="{% url 'home' %}" class="nav-item">Home</a>
-                {% comment %} <a href="#" class="nav-item">Electronics</a>
-                <a href="#" class="nav-item">Computers</a>
-                <a href="#" class="nav-item">Mobile</a>
-                <a href="#" class="nav-item">Accessories</a> {% endcomment %}
+                <a href="#" class="nav-item">></a>
+                <a href="{% url 'cart' %}" class="nav-item">Cart</a>
             </div>
         </nav>
     </header>
@@ -700,51 +723,52 @@
         
         <div class="cart-container">
             <div class="cart-items">
-                <div class="delivery-header">
-                    <div class="delivery-info">
-                        <div>
-                            <div style="font-weight: 600; margin-bottom: 3px;">Deliver to: {{ user.first_name|default:"User" }} {{ user.last_name|default:"" }}, {{ user.profile.zip_code|default:"000000" }}</div>
-                            <div class="delivery-address">{{ user.profile.address|default:"No address provided" }}</div>
-                        </div>
-                        <button class="change-btn">Change</button>
-                    </div>
-                </div>
-
                 {% if cart_items %}
                     {% for item in cart_items %}
-                    <div class="cart-item" data-product-id="{{ item.product.id }}">
-                        <div class="item-image">
-                            <img src="{% static 'images/productdemo.jpg' %}" alt="{{ item.product.name }}">
-                        </div>
-                        <div class="item-details">
-                            <div class="item-title">{{ item.product.name }}</div>
-                            <div class="item-subtitle">{{ item.product.brand }} - {{ item.product.product_type }}</div>
-                            
-                            {% if item.product.stock > 0 %}
-                                <div class="in-stock">Delivery in 2-3 days</div>
-                            {% else %}
-                                <div class="out-of-stock">Currently out of stock</div>
-                            {% endif %}
-                            
-                            <div class="seller-info">Seller: SYSMAC {% if item.product.assured %}✓Assured{% endif %}</div>
-                            
-                            <div class="price-section">
-                                <span class="original-price">₹{{ item.product.original_price }}</span>
-                                <span class="current-price">₹{{ item.product.price }}</span>
-                                <span class="discount">{{ item.product.discount_percentage }}% Off</span>
-                                <span class="offers">Offers available</span>
+                    <div class="cart-item" data-product-id="{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}">
+                        <div class="item-row">
+                            <div class="item-image">
+                                <img src="{% static 'images/productdemo.jpg' %}" alt="{% if item.product %}{{ item.product.name }}{% else %}{{ item.api_product_name }}{% endif %}">
                             </div>
-                            
-                            <div class="item-actions">
-                                <div class="quantity-controls">
-                                    <button class="qty-btn" onclick="updateQuantity({{ item.product.id }}, -1)">−</button>
-                                    <input type="text" value="{{ item.quantity }}" class="qty-input" id="qty-{{ item.product.id }}" readonly>
-                                    <button class="qty-btn" onclick="updateQuantity({{ item.product.id }}, 1)">+</button>
+                            <div class="item-details">
+                                <div class="item-title">{% if item.product %}{{ item.product.name }}{% else %}{{ item.api_product_name }}{% endif %}</div>
+                                <div class="item-subtitle">{% if item.product %}{{ item.product.brand }} - {{ item.product.product_type }}{% else %}SYSMAC Product{% endif %}</div>
+                                
+                                {% if item.product %}
+                                    {% if item.product.stock > 0 %}
+                                        <div class="in-stock">Delivery in 2-3 days</div>
+                                    {% else %}
+                                        <div class="out-of-stock">Currently out of stock</div>
+                                    {% endif %}
+                                {% else %}
+                                    <div class="in-stock">Delivery in 2-3 days</div>
+                                {% endif %}
+                                
+                                <div class="seller-info">Seller: SYSMAC {% if item.product and item.product.assured %}✓Assured{% endif %}</div>
+                                
+                                <div class="price-section">
+                                    {% if item.product %}
+                                        <span class="original-price">₹{{ item.product.original_price }}</span>
+                                        <span class="current-price">₹{{ item.product.price }}</span>
+                                        <span class="discount">{{ item.product.discount_percentage }}% Off</span>
+                                    {% else %}
+                                        <span class="current-price">₹{{ item.api_product_price }}</span>
+                                    {% endif %}
                                 </div>
-                                <button class="action-btn" onclick="moveToWishlist({{ item.product.id }})">
+                            </div>
+                        </div>
+                        
+                        <div class="item-actions">
+                            <div class="quantity-controls">
+                                <button class="qty-btn" onclick="updateQuantity('{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}', -1)">−</button>
+                                <input type="text" value="{{ item.quantity }}" class="qty-input" id="qty-{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}" readonly>
+                                <button class="qty-btn" onclick="updateQuantity('{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}', 1)">+</button>
+                            </div>
+                            <div>
+                                <button class="action-btn" onclick="moveToWishlist('{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}')">
                                     <i class="fa-regular fa-heart"></i> SAVE FOR LATER
                                 </button>
-                                <button class="action-btn" onclick="removeFromCart({{ item.product.id }})">
+                                <button class="remove-btn" onclick="removeFromCart('{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}', this)">
                                     <i class="fa-solid fa-trash"></i> REMOVE
                                 </button>
                             </div>
@@ -814,7 +838,268 @@
     <script>
         // Check if user is authenticated
         const isAuthenticated = {% if user.is_authenticated %}true{% else %}false{% endif %};
+
+        // Function to get CSRF token from cookies
+        function getCookie(name) {
+            let cookieValue = null;
+            if (document.cookie && document.cookie !== '') {
+                const cookies = document.cookie.split(';');
+                for (let i = 0; i < cookies.length; i++) {
+                    const cookie = cookies[i].trim();
+                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                        break;
+                    }
+                }
+            }
+            return cookieValue;
+        }
+
+        // Show empty cart message
+        function showEmptyCart() {
+            document.querySelector('.cart-items').innerHTML = `
+                <div class="empty-cart">
+                    <div class="empty-cart-icon">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </div>
+                    <div class="empty-cart-message">Your cart is empty</div>
+                    <a href="{% url 'home' %}" class="shop-btn">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        Continue Shopping
+                    </a>
+                </div>
+            `;
+            
+            // Remove summary section
+            const summarySection = document.querySelector('.cart-summary');
+            if (summarySection) summarySection.remove();
+        }
+
+        // Remove from cart function
+        async function removeFromCart(productId, button = null) {
+            if (!productId) {
+                console.error('Product ID is required');
+                alert('Error: Could not identify product to remove');
+                return;
+            }
+
+            if (!isAuthenticated) {
+                window.location.href = '/login/';
+                return;
+            }
+            
+            if (confirm('Are you sure you want to remove this item from your cart?')) {
+                try {
+                    // Add loading state
+                    if (button) {
+                        button.disabled = true;
+                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> REMOVING...';
+                    }
+
+                    // Determine if this is an API product (has letters in ID) or custom product (numeric ID)
+                    const isApiProduct = isNaN(productId);
+                    const endpoint = isApiProduct ? 
+                        `/cart/remove-api/${productId}/` : 
+                        `/cart/remove/${productId}/`;
+
+                    const response = await fetch(endpoint, {
+                        method: 'POST',
+                        headers: {
+                            'Content-Type': 'application/json',
+                            'X-CSRFToken': getCookie('csrftoken'),
+                        },
+                        credentials: 'same-origin'
+                    });
+                    
+                    if (!response.ok) {
+                        throw new Error(`Server responded with ${response.status}`);
+                    }
+                    
+                    let data;
+                    try {
+                        data = await response.json();
+                    } catch {
+                        throw new Error("Invalid JSON response from server");
+                    }
+
+                    
+                    if (data.success) {
+                        // Remove item from DOM
+                        const itemElement = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
+                        if (itemElement) itemElement.remove();
+                        
+                        // Update cart count
+                        document.getElementById('cart-count').textContent = data.cart_count;
+                        
+                        // Update prices if cart not empty
+                        if (data.cart_count > 0 && data.total_price !== undefined) {
+                            updateCartPrices(data);
+                        } else {
+                            showEmptyCart();
+                        }
+                    } else {
+                        throw new Error(data.error || 'Failed to remove item');
+                    }
+                    
+                } catch (error) {
+                    console.error('Remove failed:', error);
+                    alert(error.message || 'Failed to remove item. Please try again.');
+                } finally {
+                    // Reset button state
+                    if (button) {
+                        button.disabled = false;
+                        button.innerHTML = '<i class="fa-solid fa-trash"></i> REMOVE';
+                    }
+                }
+            }
+        }
+
+        // Helper function to update prices in the UI
+        function updateCartPrices(data) {
+            // Update the price details in the summary section
+            const priceRows = document.querySelectorAll('.price-row');
+            if (priceRows.length > 0) {
+                priceRows[0].querySelector('span:last-child').textContent = `₹${data.total_price}`;
+                priceRows[1].querySelector('span:last-child').textContent = `− ₹${data.total_discount}`;
+                priceRows[2].querySelector('span:last-child').textContent =
+                    data.delivery_charge == 0 ? 'FREE' : `₹${data.delivery_charge}`;
+                priceRows[3].querySelector('span:last-child').textContent = `₹${data.grand_total}`;
+                
+                // Update savings message
+                const savingsElement = document.querySelector('.savings');
+                if (savingsElement) {
+                    savingsElement.textContent = `You will save ₹${data.total_discount} on this order`;
+                }
+            }
+        }
+
+        // Update quantity function
+        async function updateQuantity(productId, change) {
+            if (!isAuthenticated) {
+                window.location.href = '/login/';
+                return;
+            }
+
+            const qtyInput = document.getElementById(`qty-${productId}`);
+            let newQty = parseInt(qtyInput.value) + change;
+            
+            // Ensure quantity doesn't go below 1
+            if (newQty < 1) {
+                // If decreasing below 1, ask if they want to remove
+                if (confirm('Do you want to remove this item from your cart?')) {
+                    const button = document.querySelector(`.remove-btn[onclick*="${productId}"]`);
+                    await removeFromCart(productId, button);
+                }
+                return;
+            }
+            
+            try {
+                // Determine if this is an API product (has letters in ID) or custom product (numeric ID)
+                const isApiProduct = isNaN(productId);
+                const endpoint = isApiProduct ? 
+                    `/cart/update-api/${productId}/` : 
+                    `/cart/update/${productId}/`;
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    body: JSON.stringify({
+                        quantity: newQty
+                    }),
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        qtyInput.value = data.quantity;
+                        document.getElementById('cart-count').textContent = data.cart_count;
+                        
+                        // Update the UI with new prices
+                        if (data.total_price !== undefined) {
+                            updateCartPrices(data);
+                        }
+                    }
+                } else {
+                    // Handle server-side validation (like max stock)
+                    const errorData = await response.json();
+                    alert(errorData.message || 'Failed to update quantity');
+                }
+            } catch (error) {
+                console.error('Error:', error);
+                alert('An error occurred while updating quantity');
+            }
+        }
+
+        // Move to wishlist function
+        async function moveToWishlist(productId) {
+            if (!isAuthenticated) {
+                window.location.href = '/login/';
+                return;
+            }
+            
+            try {
+                // Determine if this is an API product (has letters in ID) or custom product (numeric ID)
+                const isApiProduct = isNaN(productId);
+                const endpoint = isApiProduct ? 
+                    `/wishlist/add-api/${productId}/` : 
+                    `/wishlist/add/${productId}/`;
+
+                const response = await fetch(endpoint, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'X-CSRFToken': getCookie('csrftoken'),
+                    },
+                    credentials: 'same-origin'
+                });
+                
+                if (response.ok) {
+                    const data = await response.json();
+                    if (data.success) {
+                        // Remove from cart after adding to wishlist
+                        const button = document.querySelector(`.remove-btn[onclick*="${productId}"]`);
+                        await removeFromCart(productId, button);
+                        alert('Item moved to your wishlist');
+                    }
+                }
+            } catch (error) {
+                console.error('Error:', error);
+            }
+        }
         
+        // Place order function
+        function placeOrder() {
+            if (!isAuthenticated) {
+                window.location.href = '/login/';
+                return;
+            }
+            
+            // Here you would typically redirect to checkout page
+            window.location.href = '/checkout/';
+        }
+        
+        // Search functionality
+        document.querySelector('.search-btn').addEventListener('click', performSearch);
+        document.querySelector('.mobile-search-container .search-btn').addEventListener('click', performSearch);
+        document.querySelector('.search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+        document.querySelector('.mobile-search-container .search-input').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') performSearch();
+        });
+        
+        function performSearch() {
+            const searchTerm = document.querySelector('.search-input').value || 
+                              document.querySelector('.mobile-search-container .search-input').value;
+            if (searchTerm.trim()) {
+                window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
+            }
+        }
+
         // Profile dropdown functionality
         const profileIcon = document.getElementById('profileIcon');
         const profileDropdown = document.getElementById('profileDropdown');
@@ -836,134 +1121,6 @@
             profileDropdown.addEventListener('click', function(e) {
                 e.stopPropagation();
             });
-        }
-        
-        // Update quantity function
-        async function updateQuantity(productId, change) {
-            if (!isAuthenticated) {
-                window.location.href = '/login/';
-                return;
-            }
-            
-            const qtyInput = document.getElementById(`qty-${productId}`);
-            let newQty = parseInt(qtyInput.value) + change;
-            
-            if (newQty < 1) newQty = 1;
-            
-            try {
-                const response = await fetch(`/cart/update/${productId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                    body: JSON.stringify({
-                        quantity: newQty
-                    }),
-                    credentials: 'same-origin'
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    qtyInput.value = data.quantity;
-                    document.getElementById('cart-count').textContent = data.cart_count;
-                    // You might want to update the total prices here as well
-                    window.location.reload(); // Simple way to refresh all prices
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        // Remove from cart function
-        async function removeFromCart(productId) {
-            if (!isAuthenticated) {
-                window.location.href = '/login/';
-                return;
-            }
-            
-            if (confirm('Are you sure you want to remove this item from your cart?')) {
-                try {
-                    const response = await fetch(`/cart/remove/${productId}/`, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': '{{ csrf_token }}',
-                        },
-                        credentials: 'same-origin'
-                    });
-                    
-                    if (response.ok) {
-                        const data = await response.json();
-                        document.getElementById('cart-count').textContent = data.cart_count;
-                        document.querySelector(`.cart-item[data-product-id="${productId}"]`).remove();
-                        
-                        // If cart is now empty, show empty cart message
-                        if (data.cart_count == 0) {
-                            window.location.reload();
-                        } else {
-                            // Update summary section if needed
-                            window.location.reload();
-                        }
-                    }
-                } catch (error) {
-                    console.error('Error:', error);
-                }
-            }
-        }
-        
-        // Move to wishlist function
-        async function moveToWishlist(productId) {
-            if (!isAuthenticated) {
-                window.location.href = '/login/';
-                return;
-            }
-            
-            try {
-                const response = await fetch(`/wishlist/add/${productId}/`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                    credentials: 'same-origin'
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        // Remove from cart after adding to wishlist
-                        await removeFromCart(productId);
-                        alert('Item moved to your wishlist');
-                    }
-                }
-            } catch (error) {
-                console.error('Error:', error);
-            }
-        }
-        
-        // Place order function
-        function placeOrder() {
-            if (!isAuthenticated) {
-                window.location.href = '/login/';
-                return;
-            }
-            
-            // Here you would typically redirect to checkout page
-            // For now, just show an alert
-            alert('Redirecting to checkout page...');
-            // window.location.href = '/checkout/';
-        }
-        
-        // Search functionality
-        document.querySelector('.search-btn').addEventListener('click', performSearch);
-        document.querySelector('.search-input').addEventListener('keypress', function(e) {
-            if (e.key === 'Enter') performSearch();
-        });
-        
-        function performSearch() {
-            const searchTerm = document.querySelector('.search-input').value.toLowerCase();
-            window.location.href = `/?search=${encodeURIComponent(searchTerm)}`;
         }
     </script>
 </body>
