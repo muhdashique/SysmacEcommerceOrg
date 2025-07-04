@@ -13,7 +13,8 @@ from .models import CartItem, CustomProduct, CustomUser, Wishlist, Cart
 from .forms import CustomProductForm, CustomUserCreationForm
 from django.views.decorators.http import require_POST
 from decimal import Decimal
-
+from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+ 
 def home(request):
     api_url = "https://sysmacsynctoolapi.imcbs.com/api/upload-products/"
     try:
@@ -29,6 +30,13 @@ def home(request):
     cart_api_ids = []
     cart_count = 0
     
+    # Move items_per_page initialization outside the authentication check
+    items_per_page = int(request.GET.get('per_page', 12))  # Default 12 items per page
+    
+    # Limit items per page to reasonable values
+    if items_per_page not in [8, 12, 24, 48]:
+        items_per_page = 12
+    
     if request.user.is_authenticated:
         # Get IDs of custom products in wishlist
         wishlist_ids = list(request.user.wishlist.filter(product__isnull=False)
@@ -43,13 +51,25 @@ def home(request):
                             .values_list('api_product_code', flat=True))
         cart_count = request.user.cart_items.count()
     
+    # Pagination logic moved outside authentication check
+    paginator = Paginator(products, items_per_page)
+    page = request.GET.get('page', 1)
+    
+    try:
+        products = paginator.page(page)
+    except PageNotAnInteger:
+        products = paginator.page(1)
+    except EmptyPage:
+        products = paginator.page(paginator.num_pages)
+    
     return render(request, 'home.html', {
         'products': products,
         'wishlist_ids': wishlist_ids,
         'wishlist_api_ids': wishlist_api_ids,
         'cart_ids': cart_ids,
         'cart_api_ids': cart_api_ids,
-        'cart_count': cart_count
+        'cart_count': cart_count,
+        'items_per_page': items_per_page,
     })
 
 
@@ -240,88 +260,110 @@ def wishlist_view(request):
     print(f"Cart info - Custom IDs: {cart_ids}, API IDs: {cart_api_ids}")
     
     return render(request, 'wishlist.html', context)
- 
+
+
+from django.views.decorators.http import require_POST, require_GET
+from django.http import JsonResponse
+import json
+import logging
+
+logger = logging.getLogger(__name__)
+
 @require_POST
 @login_required
 def add_to_wishlist(request, product_id):
+    """Handle both custom and API product additions"""
     try:
-        data = json.loads(request.body)
+        data = json.loads(request.body) if request.body else {}
         is_custom = data.get('is_custom', False)
         
         if is_custom:
-            # Handle custom product
             product = CustomProduct.objects.get(id=product_id)
             Wishlist.objects.get_or_create(
                 user=request.user, 
                 product=product
             )
         else:
-            # Handle API product
+            # For API products, we only store the code
             Wishlist.objects.get_or_create(
                 user=request.user,
                 api_product_code=product_id
             )
             
-        return JsonResponse({'success': True})
-    except CustomProduct.DoesNotExist:
         return JsonResponse({
-            'success': False, 
-            'error': 'Product not found'
-        }, status=404)
+            'success': True,
+            'added': True,
+            'message': 'Product added to wishlist'
+        })
+        
     except Exception as e:
+        logger.error(f"Error adding to wishlist: {str(e)}")
         return JsonResponse({
-            'success': False, 
+            'success': False,
             'error': str(e)
-        }, status=500)
-
+        }, status=400)
 
 @require_POST
 @login_required
 def remove_from_wishlist(request, product_id):
+    """Handle both custom and API product removals"""
     try:
-        # Parse request body to get product type
         data = json.loads(request.body) if request.body else {}
         is_custom = data.get('is_custom', False)
         
         if is_custom:
-            # Remove custom product from wishlist
-            wishlist_item = Wishlist.objects.get(
-                user=request.user, 
+            Wishlist.objects.filter(
+                user=request.user,
                 product_id=product_id
-            )
+            ).delete()
         else:
-            # Remove API product from wishlist
-            wishlist_item = Wishlist.objects.get(
+            Wishlist.objects.filter(
                 user=request.user,
                 api_product_code=product_id
-            )
-        
-        wishlist_item.delete()
-        
+            ).delete()
+            
         return JsonResponse({
             'success': True,
-            'message': 'Item removed from wishlist'
+            'removed': True,
+            'message': 'Product removed from wishlist'
         })
         
-    except Wishlist.DoesNotExist:
-        return JsonResponse({
-            'success': False, 
-            'error': 'Item not found in wishlist'
-        }, status=404)
-    except json.JSONDecodeError:
-        return JsonResponse({
-            'success': False, 
-            'error': 'Invalid request data'
-        }, status=400)
     except Exception as e:
-        print(f"Error removing from wishlist: {str(e)}")
+        logger.error(f"Error removing from wishlist: {str(e)}")
         return JsonResponse({
-            'success': False, 
+            'success': False,
             'error': str(e)
-        }, status=500)
-    
+        }, status=400)
 
-    
+@require_GET
+@login_required
+def check_wishlist_status(request, product_id):
+    """Check status for both product types"""
+    try:
+        is_custom = request.GET.get('is_custom', 'false').lower() == 'true'
+        
+        if is_custom:
+            exists = Wishlist.objects.filter(
+                user=request.user,
+                product_id=product_id
+            ).exists()
+        else:
+            exists = Wishlist.objects.filter(
+                user=request.user,
+                api_product_code=product_id
+            ).exists()
+            
+        return JsonResponse({
+            'in_wishlist': exists,
+            'is_custom': is_custom
+        })
+        
+    except Exception as e:
+        logger.error(f"Error checking wishlist status: {str(e)}")
+        return JsonResponse({
+            'in_wishlist': False,
+            'error': str(e)
+        }, status=400)
 # CART
 
 from decimal import Decimal

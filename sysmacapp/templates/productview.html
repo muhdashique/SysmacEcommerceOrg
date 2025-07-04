@@ -765,15 +765,14 @@
                     <!-- Profile Dropdown -->
                     <div class="profile-dropdown" id="profileDropdown">
                         <div class="profile-info">
-                            <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:""
-                                }}</div>
+                            <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:"" }}</div>
                             <div class="profile-email">{{ user.email }}</div>
                         </div>
                         <div class="dropdown-menu">
-                            <a href="#" class="dropdown-item">
+                            <!-- <a href="#" class="dropdown-item">
                                 <i class="fa-solid fa-box"></i>
                                 My Orders
-                            </a>
+                            </a> -->
                             <a href="{% url 'wishlist' %}" class="dropdown-item">
                                 <i class="fa-solid fa-heart"></i>
                                 My Wishlist
@@ -898,11 +897,12 @@
                 <button class="btn btn-buy">
                     <i class="fas fa-bolt"></i> BUY NOW
                 </button>
-                <button class="btn btn-wishlist" id="addToWishlistBtn"
-                    data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-                    data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}">
-                    <i class="fas fa-heart"></i> WISHLIST
-                </button>
+            <button class="btn btn-wishlist" id="addToWishlistBtn"
+                data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+                data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-wishlist-action="add">
+                <i class="far fa-heart"></i>
+                <span class="btn-text">WISHLIST</span>
+            </button>
             </div>
         </div>
         <div id="notificationContainer"></div>
@@ -1108,94 +1108,238 @@ class CartManager {
     }
 }
 
-// Wishlist Manager (existing functionality)
 class WishlistManager {
     constructor() {
         this.wishlistBtn = document.getElementById('addToWishlistBtn');
-        this.init();
-    }
-
-    init() {
-        if (this.wishlistBtn) {
-            this.wishlistBtn.addEventListener('click', (e) => this.handleWishlistToggle(e));
-            this.checkWishlistStatus();
+        this.notificationContainer = document.getElementById('notificationContainer');
+        
+        // Initialize only if elements exist
+        if (this.wishlistBtn && this.notificationContainer) {
+            this.init();
+        } else {
+            console.error('Wishlist elements not found in DOM');
         }
     }
 
-    async checkWishlistStatus() {
-        {% if user.is_authenticated %}
+    init() {
+        // Don't set initial state here - let the server check happen first
+        // this.updateButtonState(false); // REMOVE THIS LINE
+        
+        // Check actual status from server first
+        this.checkInitialStatus();
+        
+        // Add event listener
+        this.wishlistBtn.addEventListener('click', (e) => this.handleWishlistToggle(e));
+    }
+
+    async checkInitialStatus() {
+        try {
             const productId = this.wishlistBtn.dataset.productId;
             const isCustom = this.wishlistBtn.dataset.isCustom === 'true';
-            const endpoint = isCustom ? `/wishlist/check/${productId}/` : `/wishlist/check-api/${productId}/`;
             
-            try {
-                const response = await fetch(endpoint, {
-                    method: 'GET',
-                    headers: {
-                        'Content-Type': 'application/json',
-                        'X-CSRFToken': '{{ csrf_token }}',
-                    },
-                    credentials: 'same-origin'
-                });
-                
-                if (response.ok) {
-                    const data = await response.json();
-                    this.updateWishlistButton(data.in_wishlist);
-                }
-            } catch (error) {
-                console.error('Error checking wishlist:', error);
+            const response = await fetch(`/wishlist/check/${productId}/?is_custom=${isCustom}`, {
+                method: 'GET',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(), // Add CSRF token
+                },
+                credentials: 'same-origin'
+            });
+
+            if (response.ok) {
+                const data = await response.json();
+                this.updateButtonState(data.in_wishlist);
+            } else {
+                // If API call fails, assume product is not in wishlist
+                this.updateButtonState(false);
             }
-        {% endif %}
+        } catch (error) {
+            console.error('Error checking wishlist status:', error);
+            // If there's an error, assume product is not in wishlist
+            this.updateButtonState(false);
+        }
     }
 
     async handleWishlistToggle(e) {
         e.preventDefault();
         
+        // Check if user is authenticated
         {% if not user.is_authenticated %}
             window.location.href = "{% url 'login' %}";
             return;
         {% endif %}
+
+        const action = this.wishlistBtn.dataset.wishlistAction;
         
-        const productId = this.wishlistBtn.dataset.productId;
-        const isCustom = this.wishlistBtn.dataset.isCustom === 'true';
-        const endpoint = isCustom ? `/wishlist/add/${productId}/` : `/wishlist/add-api/${productId}/`;
-        
-        try {
-            const response = await fetch(endpoint, {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': '{{ csrf_token }}',
-                },
-                credentials: 'same-origin'
-            });
-            
-            if (response.ok) {
-                const data = await response.json();
-                this.updateWishlistButton(data.added);
-                
-                const message = data.added ? 'Product added to wishlist!' : 'Product removed from wishlist!';
-                const type = data.added ? 'success' : 'info';
-                cartManager.showNotification(message, type);
-            } else {
-                const errorData = await response.json();
-                cartManager.showNotification(errorData.message || 'Failed to update wishlist', 'error');
-            }
-        } catch (error) {
-            console.error('Error:', error);
-            cartManager.showNotification('An error occurred while updating wishlist', 'error');
+        if (action === 'add') {
+            await this.addToWishlist();
+        } else {
+            await this.removeFromWishlist();
         }
     }
 
-    updateWishlistButton(inWishlist) {
-        if (inWishlist) {
-            this.wishlistBtn.classList.add('added');
-            this.wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> WISHLISTED';
-        } else {
-            this.wishlistBtn.classList.remove('added');
-            this.wishlistBtn.innerHTML = '<i class="fas fa-heart"></i> WISHLIST';
+    async addToWishlist() {
+        const productId = this.wishlistBtn.dataset.productId;
+        const isCustom = this.wishlistBtn.dataset.isCustom === 'true';
+        
+        this.setButtonLoading(true);
+        
+        try {
+            const response = await fetch(`/wishlist/add/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
+                },
+                body: JSON.stringify({
+                    is_custom: isCustom
+                }),
+                credentials: 'same-origin'
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                this.setButtonLoading(false);
+                this.updateButtonState(true);
+                this.showNotification('Product added to wishlist!', 'success');
+            } else {
+                this.setButtonLoading(false);
+                this.showNotification(data.message || 'Failed to add to wishlist', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.setButtonLoading(false);
+            this.showNotification('An error occurred while adding to wishlist', 'error');
         }
     }
+
+    async removeFromWishlist() {
+        const productId = this.wishlistBtn.dataset.productId;
+        const isCustom = this.wishlistBtn.dataset.isCustom === 'true';
+        
+        this.setButtonLoading(true);
+        
+        try {
+            const response = await fetch(`/wishlist/remove/${productId}/`, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': this.getCSRFToken(),
+                },
+                body: JSON.stringify({
+                    is_custom: isCustom
+                }),
+                credentials: 'same-origin'
+            });
+            
+            const data = await response.json();
+            
+            if (response.ok) {
+                this.setButtonLoading(false);
+                this.updateButtonState(false);
+                this.showNotification('Product removed from wishlist!', 'info');
+            } else {
+                this.setButtonLoading(false);
+                this.showNotification(data.message || 'Failed to remove from wishlist', 'error');
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            this.setButtonLoading(false);
+            this.showNotification('An error occurred while removing from wishlist', 'error');
+        }
+    }
+
+    updateButtonState(isInWishlist) {
+        // Safely get elements
+        const icon = this.wishlistBtn.querySelector('i');
+        const btnText = this.wishlistBtn.querySelector('.btn-text');
+        
+        // Check if elements exist before manipulating
+        if (!icon || !btnText) {
+            console.error('Wishlist button elements not found');
+            return;
+        }
+
+        // Clear existing classes to ensure clean state
+        this.wishlistBtn.classList.remove('added');
+        icon.classList.remove('fas', 'far', 'fa-heart');
+
+        if (isInWishlist) {
+            this.wishlistBtn.classList.add('added');
+            this.wishlistBtn.dataset.wishlistAction = 'remove';
+            icon.classList.add('fas', 'fa-heart'); // Filled heart
+            btnText.textContent = 'WISHLISTED';
+        } else {
+            this.wishlistBtn.dataset.wishlistAction = 'add';
+            icon.classList.add('far', 'fa-heart'); // Empty heart
+            btnText.textContent = 'WISHLIST';
+        }
+    }
+
+    setButtonLoading(loading) {
+        const icon = this.wishlistBtn.querySelector('i');
+        const btnText = this.wishlistBtn.querySelector('.btn-text');
+        
+        if (loading) {
+            this.wishlistBtn.disabled = true;
+            if (icon) {
+                // Clear existing heart classes and add spinner
+                icon.classList.remove('fas', 'far', 'fa-heart');
+                icon.classList.add('fas', 'fa-spinner', 'fa-spin');
+            }
+            if (btnText) {
+                btnText.textContent = 'Processing...';
+            }
+        } else {
+            this.wishlistBtn.disabled = false;
+            // The button state will be updated by updateButtonState method
+            // so we don't need to set the final state here
+        }
+    }
+
+    getCSRFToken() {
+        // Try to get CSRF token from meta tag first
+        const csrfMeta = document.querySelector('meta[name="csrf-token"]');
+        if (csrfMeta) {
+            return csrfMeta.getAttribute('content');
+        }
+        
+        // Fallback to cookie method
+        const csrfCookie = document.cookie.split('; ')
+            .find(row => row.startsWith('csrftoken='));
+        return csrfCookie ? csrfCookie.split('=')[1] : '';
+    }
+
+    showNotification(message, type = 'info') {
+        const notification = document.createElement('div');
+        notification.className = `notification ${type}`;
+        notification.textContent = message;
+        
+        this.notificationContainer.appendChild(notification);
+        
+        setTimeout(() => notification.classList.add('show'), 100);
+        setTimeout(() => {
+            notification.classList.remove('show');
+            setTimeout(() => notification.remove(), 300);
+        }, 3000);
+    }
+}
+
+// Helper function to get CSRF token
+function getCookie(name) {
+    let cookieValue = null;
+    if (document.cookie && document.cookie !== '') {
+        const cookies = document.cookie.split(';');
+        for (let i = 0; i < cookies.length; i++) {
+            const cookie = cookies[i].trim();
+            if (cookie.substring(0, name.length + 1) === (name + '=')) {
+                cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
+                break;
+            }
+        }
+    }
+    return cookieValue;
 }
 
 // Initialize managers when DOM is loaded
@@ -1271,6 +1415,9 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     }
 });
+
+
+
 </script>
 
 </body>
