@@ -33,6 +33,14 @@ urlpatterns = [
 #  path('wishlist/add/<str:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
     # path('wishlist/remove/<str:product_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
     path('wishlist/check/<str:product_id>/', views.check_wishlist_status, name='check_wishlist_status'),
+
+
+    # AP{I product ,delete and edit}
+    path('cart/add-api/<str:product_code>/', views.add_api_product_to_cart, name='add_api_product_to_cart'),
+    path('sysmac-products/edit/<str:product_code>/', views.edit_api_product, name='edit_api_product'),
+    path('sysmac-products/delete/<str:product_code>/', views.delete_api_product, name='delete_api_product'),
+    
+    
 ]
 
 # Serve media files during development

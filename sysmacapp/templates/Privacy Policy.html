@@ -1,0 +1,698 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Privacy Policy | Sysmac Hardware Platform</title>
+    <meta name="description" content="Read our Privacy Policy to understand how we collect, use, and protect your personal data at Sysmac Hardware Platform.">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background-color: #f9fafb;
+            min-height: 100vh;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        header {
+            background-color: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transition: all 0.3s ease;
+            padding: 1rem 0;
+        }
+
+        header.scrolled {
+            padding: 0.5rem 0;
+        }
+
+        header h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #4f46e5;
+            margin-bottom: 0.25rem;
+        }
+
+        header p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        /* Main Layout */
+        main {
+            padding: 2rem 0;
+        }
+
+        .layout {
+            display: flex;
+            gap: 2rem;
+            flex-wrap: wrap;
+        }
+
+        /* Sidebar */
+        .sidebar {
+            flex: 0 0 300px;
+            min-width: 250px;
+        }
+
+        .nav-card {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 6rem;
+        }
+
+        .nav-card h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .nav-list {
+            list-style: none;
+        }
+
+        .nav-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-btn {
+            display: block;
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            color: #374151;
+            text-decoration: none;
+            border: none;
+            background: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .nav-btn:hover {
+            color: #4f46e5;
+            background-color: #eef2ff;
+        }
+
+        .nav-divider {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .back-to-top {
+            color: #4f46e5;
+            text-decoration: none;
+            font-size: 0.875rem;
+            display: flex;
+            align-items: center;
+            transition: color 0.2s ease;
+        }
+
+        .back-to-top:hover {
+            color: #3730a3;
+        }
+
+        /* Main Content */
+        .content {
+            flex: 1;
+            min-width: 0;
+        }
+
+        .content-card {
+            background: white;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        /* Typography */
+        h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            color: #1f2937;
+            margin-bottom: 1rem;
+            padding-bottom: 0.5rem;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+
+        h4 {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #374151;
+            margin-bottom: 0.5rem;
+        }
+
+        p {
+            margin-bottom: 1rem;
+            color: #374151;
+        }
+
+        section {
+            margin-bottom: 2.5rem;
+        }
+
+        section:last-child {
+            margin-bottom: 0;
+        }
+
+        /* Lists */
+        ul {
+            margin-bottom: 1rem;
+            padding-left: 1.25rem;
+        }
+
+        li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Links */
+        a {
+            color: #4f46e5;
+            text-decoration: none;
+        }
+
+        a:hover {
+            text-decoration: underline;
+        }
+
+        /* Definition Cards */
+        .definition-card {
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+            margin-bottom: 1rem;
+        }
+
+        .definition-card h4 {
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 0.5rem;
+        }
+
+        .definition-card p {
+            margin-bottom: 0;
+            font-size: 0.875rem;
+        }
+
+        /* Contact Cards */
+        .contact-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 1.5rem;
+            margin-top: 1.5rem;
+        }
+
+        .contact-card {
+            background-color: #eef2ff;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .contact-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-icon {
+            color: #4f46e5;
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .contact-card h3 {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 0;
+        }
+
+        /* Floating Back to Top Button */
+        .floating-btn {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background-color: #4f46e5;
+            color: white;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .floating-btn:hover {
+            background-color: #3730a3;
+            transform: translateY(-2px);
+        }
+
+        .floating-btn.show {
+            display: flex;
+        }
+
+        /* Responsive Design */
+        @media (max-width: 1024px) {
+            .layout {
+                flex-direction: column;
+            }
+            
+            .sidebar {
+                flex: none;
+                order: 2;
+            }
+            
+            .content {
+                order: 1;
+            }
+            
+            .nav-card {
+                position: static;
+            }
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                padding: 0 0.5rem;
+            }
+            
+            .content-card {
+                padding: 1.5rem;
+            }
+            
+            header h1 {
+                font-size: 1.5rem;
+            }
+            
+            .contact-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        @media (max-width: 640px) {
+            main {
+                padding: 1rem 0;
+            }
+            
+            .content-card {
+                padding: 1rem;
+            }
+            
+            h2 {
+                font-size: 1.25rem;
+            }
+            
+            h3 {
+                font-size: 1.125rem;
+            }
+        }
+
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Focus styles for accessibility */
+        .nav-btn:focus,
+        .back-to-top:focus,
+        .floating-btn:focus {
+            outline: 2px solid #4f46e5;
+            outline-offset: 2px;
+        }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header id="header">
+        <div class="container">
+            <h1>Privacy Policy</h1>
+            <p>Last updated: June 30, 2025</p>
+        </div>
+    </header>
+
+    <main>
+        <div class="container">
+            <div class="layout">
+                <!-- Sidebar Navigation -->
+                <aside class="sidebar">
+                    <div class="nav-card">
+                        <h2>Quick Navigation</h2>
+                        <nav>
+                            <ul class="nav-list">
+                                <li><button class="nav-btn" onclick="scrollToSection('interpretation')">Interpretation and Definitions</button></li>
+                                <li><button class="nav-btn" onclick="scrollToSection('data-collection')">Collecting and Using Your Personal Data</button></li>
+                                <li><button class="nav-btn" onclick="scrollToSection('data-sharing')">Disclosure of Your Personal Data</button></li>
+                                <li><button class="nav-btn" onclick="scrollToSection('data-security')">Security of Your Personal Data</button></li>
+                                <li><button class="nav-btn" onclick="scrollToSection('children')">Children's Privacy</button></li>
+                                <li><button class="nav-btn" onclick="scrollToSection('links')">Links to Other Websites</button></li>
+                                <li><button class="nav-btn" onclick="scrollToSection('changes')">Changes to this Privacy Policy</button></li>
+                                <li><button class="nav-btn" onclick="scrollToSection('contact')">Contact Us</button></li>
+                            </ul>
+                        </nav>
+                        <div class="nav-divider">
+                            <a href="#" class="back-to-top" onclick="scrollToTop()">Back to top</a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="content">
+                    <div class="content-card">
+                        <section>
+                            <p>This Privacy Policy describes Our policies and procedures on the collection, use and disclosure of Your information when You use the Service and tells You about Your privacy rights and how the law protects You.</p>
+                            <p>We use Your Personal data to provide and improve the Service. By using the Service, You agree to the collection and use of information in accordance with this Privacy Policy. This Privacy Policy has been created with the help of the <a href="https://www.freeprivacypolicy.com/free-privacy-policy-generator/" target="_blank" rel="noopener noreferrer">Free Privacy Policy Generator</a>.</p>
+                        </section>
+
+                        <!-- Interpretation and Definitions -->
+                        <section id="interpretation">
+                            <h2>Interpretation and Definitions</h2>
+                            
+                            <div>
+                                <h3>Interpretation</h3>
+                                <p>The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.</p>
+                            </div>
+                            
+                            <div>
+                                <h3>Definitions</h3>
+                                <p>For the purposes of this Privacy Policy:</p>
+                                
+                                <div class="definition-card">
+                                    <h4>Account</h4>
+                                    <p>means a unique account created for You to access our Service or parts of our Service.</p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>Affiliate</h4>
+                                    <p>means an entity that controls, is controlled by or is under common control with a party, where "control" means ownership of 50% or more of the shares, equity interest or other securities entitled to vote for election of directors or other managing authority.</p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>Company</h4>
+                                    <p>(referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Sysmac.</p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>Cookies</h4>
+                                    <p>are small files that are placed on Your computer, mobile device or any other device by a website, containing the details of Your browsing history on that website among its many uses.</p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>Country</h4>
+                                    <p>refers to: Kerala, India</p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>Device</h4>
+                                    <p>means any device that can access the Service such as a computer, a cellphone or a digital tablet.</p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>Personal Data</h4>
+                                    <p>is any information that relates to an identified or identifiable individual.</p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>Service</h4>
+                                    <p>refers to the Website.</p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>Website</h4>
+                                    <p>refers to Sysmac Hardware Platform, accessible from <a href="https://sysmac.in/" target="_blank" rel="noopener noreferrer">https://sysmac.in/</a></p>
+                                </div>
+                                
+                                <div class="definition-card">
+                                    <h4>You</h4>
+                                    <p>means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</p>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- Collecting and Using Your Personal Data -->
+                        <section id="data-collection">
+                            <h2>Collecting and Using Your Personal Data</h2>
+                            
+                            <div>
+                                <h3>Types of Data Collected</h3>
+                                
+                                <div>
+                                    <h4>Personal Data</h4>
+                                    <p>While using Our Service, We may ask You to provide Us with certain personally identifiable information that can be used to contact or identify You. Personally identifiable information may include, but is not limited to:</p>
+                                    <ul>
+                                        <li>Email address</li>
+                                        <li>First name and last name</li>
+                                        <li>Phone number</li>
+                                        <li>Address, State, Province, ZIP/Postal code, City</li>
+                                        <li>Usage Data</li>
+                                    </ul>
+                                </div>
+                                
+                                <div>
+                                    <h4>Usage Data</h4>
+                                    <p>Usage Data is collected automatically when using the Service.</p>
+                                    <p>Usage Data may include information such as Your Device's Internet Protocol address (e.g. IP address), browser type, browser version, the pages of our Service that You visit, the time and date of Your visit, the time spent on those pages, unique device identifiers and other diagnostic data.</p>
+                                    <p>When You access the Service by or through a mobile device, We may collect certain information automatically, including, but not limited to, the type of mobile device You use, Your mobile device unique ID, the IP address of Your mobile device, Your mobile operating system, the type of mobile Internet browser You use, unique device identifiers and other diagnostic data.</p>
+                                </div>
+                                
+                                <div>
+                                    <h4>Tracking Technologies and Cookies</h4>
+                                    <p>We use Cookies and similar tracking technologies to track the activity on Our Service and store certain information. Tracking technologies used are beacons, tags, and scripts to collect and track information and to improve and analyze Our Service. The technologies We use may include:</p>
+                                    <ul>
+                                        <li><strong>Cookies or Browser Cookies.</strong> A cookie is a small file placed on Your Device. You can instruct Your browser to refuse all Cookies or to indicate when a Cookie is being sent. However, if You do not accept Cookies, You may not be able to use some parts of our Service. Unless you have adjusted Your browser setting so that it will refuse Cookies, our Service may use Cookies.</li>
+                                        <li><strong>Web Beacons.</strong> Certain sections of our Service and our emails may contain small electronic files known as web beacons (also referred to as clear gifs, pixel tags, and single-pixel gifs) that permit the Company, for example, to count users who have visited those pages or opened an email and for other related website statistics (for example, recording the popularity of a certain section and verifying system and server integrity).</li>
+                                    </ul>
+                                    <p>Cookies can be "Persistent" or "Session" Cookies. Persistent Cookies remain on Your personal computer or mobile device when You go offline, while Session Cookies are deleted as soon as You close Your web browser. Learn more about cookies on the <a href="https://www.freeprivacypolicy.com/blog/sample-privacy-policy-template/#Use_Of_Cookies_And_Tracking" target="_blank" rel="noopener noreferrer">Free Privacy Policy website</a> article.</p>
+                                </div>
+                            </div>
+                            
+                            <div>
+                                <h3>Use of Your Personal Data</h3>
+                                <p>The Company may use Personal Data for the following purposes:</p>
+                                <ul>
+                                    <li><strong>To provide and maintain our Service</strong>, including to monitor the usage of our Service.</li>
+                                    <li><strong>To manage Your Account:</strong> to manage Your registration as a user of the Service. The Personal Data You provide can give You access to different functionalities of the Service that are available to You as a registered user.</li>
+                                    <li><strong>For the performance of a contract:</strong> the development, compliance and undertaking of the service contract for the hardware information, technical specifications, or services You have requested or of any other contract with Us through the Service.</li>
+                                    <li><strong>To contact You:</strong> To contact You by email, telephone calls, SMS, or other equivalent forms of electronic communication, such as a mobile application's push notifications regarding updates or informative communications related to the functionalities, hardware products or contracted services, including the security updates, when necessary or reasonable for their implementation.</li>
+                                    <li><strong>To provide You</strong> with news, special offers and general information about other hardware products, services and events which we offer that are similar to those that you have already inquired about unless You have opted not to receive such information.</li>
+                                    <li><strong>To manage Your requests:</strong> To attend and manage Your requests to Us.</li>
+                                    <li><strong>For business transfers:</strong> We may use Your information to evaluate or conduct a merger, divestiture, restructuring, reorganization, dissolution, or other sale or transfer of some or all of Our assets, whether as a going concern or as part of bankruptcy, liquidation, or similar proceeding, in which Personal Data held by Us about our Service users is among the assets transferred.</li>
+                                    <li><strong>For other purposes</strong>: We may use Your information for other purposes, such as data analysis, identifying usage trends, determining the effectiveness of our promotional campaigns and to evaluate and improve our Service, products, services, marketing and your experience.</li>
+                                </ul>
+                            </div>
+                            
+                            <div>
+                                <h3>Retention of Your Personal Data</h3>
+                                <p>The Company will retain Your Personal Data only for as long as is necessary for the purposes set out in this Privacy Policy. We will retain and use Your Personal Data to the extent necessary to comply with our legal obligations (for example, if we are required to retain your data to comply with applicable laws), resolve disputes, and enforce our legal agreements and policies.</p>
+                                <p>The Company will also retain Usage Data for internal analysis purposes. Usage Data is generally retained for a shorter period of time, except when this data is used to strengthen the security or to improve the functionality of Our Service, or We are legally obligated to retain this data for longer time periods.</p>
+                            </div>
+                            
+                            <div>
+                                <h3>Transfer of Your Personal Data</h3>
+                                <p>Your information, including Personal Data, is processed at the Company's operating offices and in any other places where the parties involved in the processing are located. It means that this information may be transferred to — and maintained on — computers located outside of Your state, province, country or other governmental jurisdiction where the data protection laws may differ than those from Your jurisdiction.</p>
+                                <p>Your consent to this Privacy Policy followed by Your submission of such information represents Your agreement to that transfer.</p>
+                                <p>The Company will take all steps reasonably necessary to ensure that Your data is treated securely and in accordance with this Privacy Policy and no transfer of Your Personal Data will take place to an organization or a country unless there are adequate controls in place including the security of Your data and other personal information.</p>
+                            </div>
+                            
+                            <div>
+                                <h3>Delete Your Personal Data</h3>
+                                <p>You have the right to delete or request that We assist in deleting the Personal Data that We have collected about You.</p>
+                                <p>Our Service may give You the ability to delete certain information about You from within the Service.</p>
+                                <p>You may update, amend, or delete Your information at any time by signing in to Your Account, if you have one, and visiting the account settings section that allows you to manage Your personal information. You may also contact Us to request access to, correct, or delete any personal information that You have provided to Us.</p>
+                                <p>Please note, however, that We may need to retain certain information when we have a legal obligation or lawful basis to do so.</p>
+                            </div>
+                        </section>
+
+                        <!-- Disclosure of Your Personal Data -->
+                        <section id="data-sharing">
+                            <h2>Disclosure of Your Personal Data</h2>
+                            
+                            <div>
+                                <h3>Business Transactions</h3>
+                                <p>If the Company is involved in a merger, acquisition or asset sale, Your Personal Data may be transferred. We will provide notice before Your Personal Data is transferred and becomes subject to a different Privacy Policy.</p>
+                            </div>
+                            
+                            <div>
+                                <h3>Law enforcement</h3>
+                                <p>Under certain circumstances, the Company may be required to disclose Your Personal Data if required to do so by law or in response to valid requests by public authorities (e.g. a court or a government agency).</p>
+                            </div>
+                            
+                            <div>
+                                <h3>Other legal requirements</h3>
+                                <p>The Company may disclose Your Personal Data in the good faith belief that such action is necessary to:</p>
+                                <ul>
+                                    <li>Comply with a legal obligation</li>
+                                    <li>Protect and defend the rights or property of the Company</li>
+                                    <li>Prevent or investigate possible wrongdoing in connection with the Service</li>
+                                    <li>Protect the personal safety of Users of the Service or the public</li>
+                                    <li>Protect against legal liability</li>
+                                </ul>
+                            </div>
+                        </section>
+
+                        <!-- Security of Your Personal Data -->
+                        <section id="data-security">
+                            <h2>Security of Your Personal Data</h2>
+                            <p>The security of Your Personal Data is important to Us, but remember that no method of transmission over the Internet, or method of electronic storage is 100% secure. While We strive to use commercially acceptable means to protect Your Personal Data, We cannot guarantee its absolute security.</p>
+                        </section>
+
+                        <!-- Children's Privacy -->
+                        <section id="children">
+                            <h2>Children's Privacy</h2>
+                            <p>Our Service does not address anyone under the age of 13. We do not knowingly collect personally identifiable information from anyone under the age of 13. If You are a parent or guardian and You are aware that Your child has provided Us with Personal Data, please contact Us. If We become aware that We have collected Personal Data from anyone under the age of 13 without verification of parental consent, We take steps to remove that information from Our servers.</p>
+                            <p>If We need to rely on consent as a legal basis for processing Your information and Your country requires consent from a parent, We may require Your parent's consent before We collect and use that information.</p>
+                        </section>
+
+                        <!-- Links to Other Websites -->
+                        <section id="links">
+                            <h2>Links to Other Websites</h2>
+                            <p>Our Service may contain links to other websites that are not operated by Us. If You click on a third party link, You will be directed to that third party's site. We strongly advise You to review the Privacy Policy of every site You visit.</p>
+                            <p>We have no control over and assume no responsibility for the content, privacy policies or practices of any third party sites or services.</p>
+                        </section>
+
+                        <!-- Changes to this Privacy Policy -->
+                        <section id="changes">
+                            <h2>Changes to this Privacy Policy</h2>
+                            <p>We may update Our Privacy Policy from time to time. We will notify You of any changes by posting the new Privacy Policy on this page.</p>
+                            <p>We will let You know via email and/or a prominent notice on Our Service, prior to the change becoming effective and update the "Last updated" date at the top of this Privacy Policy.</p>
+                            <p>You are advised to review this Privacy Policy periodically for any changes. Changes to this Privacy Policy are effective when they are posted on this page.</p>
+                        </section>
+
+                        <!-- Contact Us -->
+                        <section id="contact">
+                            <h2>Contact Us</h2>
+                            <p>If you have any questions about this Privacy Policy, You can contact us:</p>
+                            
+                            <div class="contact-grid">
+                                <div class="contact-card">
+                                    <div class="contact-header">
+                                        <i class="fas fa-envelope contact-icon"></i>
+                                        <h3>By email</h3>
+                                    </div>
+                                    <a href="mailto:info@sysmac.in">info@sysmac.in</a>
+                                </div>
+                                
+                                <div class="contact-card">
+                                    <div class="contact-header">
+                                        <i class="fas fa-external-link-alt contact-icon"></i>
+                                        <h3>Through our website</h3>
+                                    </div>
+                                    <a href="https://sysmac.in/contact" target="_blank" rel="noopener noreferrer">https://sysmac.in/contact</a>
+                                </div>
+                                
+                                <div class="contact-card">
+                                    <div class="contact-header">
+                                        <i class="fas fa-phone contact-icon"></i>
+                                        <h3>By phone</h3>
+                                    </div>
+                                    <a href="tel:+919400361911">+91 9400361911</a>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Floating Back to Top Button -->
+    <button id="floatingBtn" class="floating-btn" onclick="scrollToTop()" aria-label="Back to top">
+        <i class="fas fa-chevron-up"></i>
+    </button>
+
+    <script>
+        // Header scroll effect
+        let lastScrollY = 0;
+        const header = document.getElementById('header');
+        const floatingBtn = document.getElementById('floatingBtn');
+
+        function handleScroll() {
+            const scrollY = window.scrollY;
+            
+            // Header shrink effect
+            if (scrollY > 50) {
+                header.classList.add('scrolled');
+            } else {
+                header.classList.remove('scrolled');
+            }
+            
+            // Show/hide floating button
+            if (scrollY > 300) {
+                floatingBtn.classList.add('show');
+            } else {
+                floatingBtn.classList.remove('show');
+            }
+            
+            lastScrollY = scrollY;
+        }
+
+        // Smooth scroll to section
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                const headerHeight = header.offsetHeight;
+                const elementPosition = element.offsetTop - headerHeight - 20;
+                
+                window.scrollTo({
+                    top: elementPosition,
+                    behavior: 'smooth'
+                });
+            }
+        }
+
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        // Event listeners
+        window.addEventListener('scroll', handleScroll);
+        
+        // Prevent default anchor behavior for navigation
+        document.querySelectorAll('.nav-btn').forEach(btn => {
+            btn.addEventListener('click', (e) => {
+                e.preventDefault();
+            });
+        });
+
+        // Initialize
+        handleScroll();
+    </script>
+</body>
+</html>

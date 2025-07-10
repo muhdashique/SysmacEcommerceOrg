@@ -889,6 +889,64 @@
             pointer-events: none;
             /* Disable further clicks */
         }
+
+
+    {% comment %} search bar clear button {% endcomment %}
+    .search-input {
+        width: 100%;
+        padding: 12px 80px 12px 20px; /* Increased right padding for both buttons */
+        border: 2px solid #e9ecef;
+        border-radius: 25px;
+        font-size: 14px;
+        outline: none;
+        transition: all 0.3s ease;
+    }
+    
+    .clear-btn {
+        position: absolute;
+        right: 85px; /* Position before the search button */
+        top: 50%;
+        transform: translateY(-50%);
+        background: #6c757d;
+        color: white;
+        border: none;
+        width: 24px;
+        height: 24px;
+        border-radius: 50%;
+        cursor: pointer;
+        font-size: 12px;
+        transition: all 0.3s ease;
+        display: none; /* Hidden by default */
+        align-items: center;
+        justify-content: center;
+        z-index: 2;
+    }
+    
+    .clear-btn:hover {
+        background: #5a6268;
+    }
+    
+    .clear-btn.show {
+        display: flex;
+    }
+    
+    /* Mobile specific adjustments */
+    @media (max-width: 480px) {
+        .search-input {
+            padding: 12px 75px 12px 15px;
+        }
+        
+        .search-btn {
+            right: 8px;
+        }
+        
+        .clear-btn {
+            right: 78px;
+            width: 22px;
+            height: 22px;
+            font-size: 11px;
+        }
+    }
     </style>
 </head>
 
@@ -900,6 +958,9 @@
 
             <div class="search-container">
                 <input type="text" class="search-input" placeholder="Search products...">
+                <button class="clear-btn" title="Clear search">
+                    <i class="fas fa-times"></i>
+                </button>
                 <button class="search-btn">Search</button>
             </div>
             <div class="header-actions">
@@ -1008,12 +1069,12 @@
                     </div>
                     <div class="sort-container">
                         <span style="color: #6c757d; font-size: 14px;">Sort by</span>
-                        <select class="sort-dropdown">
-                            <option>Featured</option>
-                            <option>Price: Low to High</option>
-                            <option>Price: High to Low</option>
-                            <option>Newest</option>
-                            <option>Popular</option>
+                        <select class="sort-dropdown" id="sortFilter">
+                            <option value="featured" {% if current_sort == 'featured' %}selected{% endif %}>Featured</option>
+                            <option value="price_low_high" {% if current_sort == 'price_low_high' %}selected{% endif %}>Price: Low to High</option>
+                            <option value="price_high_low" {% if current_sort == 'price_high_low' %}selected{% endif %}>Price: High to Low</option>
+                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest</option>
+                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Popular</option>
                         </select>
                     </div>
                 </div>
@@ -1024,27 +1085,44 @@
                 <div class="product-card"
                     data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}">
                     <div class="product-image">
-                        <img src="{% static 'images/productdemo.jpg' %}" class="w-full h-full object-cover">
-
+                        {% if product.edited_image %}
+                            <img src="{{ product.edited_image.url }}" class="w-full h-full object-cover">
+                        {% elif product.main_image %}
+                            <img src="{{ product.main_image.url }}" class="w-full h-full object-cover">
+                        {% elif product.image %}
+                            <img src="{{ product.image }}" class="w-full h-full object-cover">
+                        {% else %}
+                            <img src="{% static 'images/productdemo.jpg' %}" class="w-full h-full object-cover">
+                        {% endif %}
+                    
+                        <!-- Wishlist button remains the same -->
                         <div class="wishlist-btn {% if product.id in wishlist_ids or product.code in wishlist_api_ids %}in-wishlist{% endif %}"
                             data-wishlist-action="{% if product.id in wishlist_ids or product.code in wishlist_api_ids %}remove{% else %}add{% endif %}"
                             data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
                             data-is-custom="{% if product.id %}true{% else %}false{% endif %}">
-                            <i
-                                class="fa-{% if product.id in wishlist_ids or product.code in wishlist_api_ids %}solid{% else %}regular{% endif %} fa-heart"></i>
+                            <i class="fa-{% if product.id in wishlist_ids or product.code in wishlist_api_ids %}solid{% else %}regular{% endif %} fa-heart"></i>
                         </div>
                     </div>
                     <div class="product-info">
-                        <div class="product-category">{{ product.catagory|upper }}</div>
-                        <div class="product-name">{{ product.name }}</div>
-                        <div class="product-brand">{{ product.brand }}</div>
-                        <div class="product-company">{{ product.company }}</div>
-                        <div class="product-type">{{ product.product }}</div>
+                        <div class="product-category">{{ product.edited_category|default:product.catagory|upper }}</div>
+                        <div class="product-name">{{ product.edited_name|default:product.name }}</div>
+                        <div class="product-brand">{{ product.edited_brand|default:product.brand }}</div>
+                        <div class="product-company">{{ product.edited_company|default:product.company }}</div>
+                        <div class="product-type">{{ product.edited_product|default:product.product }}</div>
                         <div class="price-section">
-                            <div class="current-price"> {{ product.price|default:"0.00" }} /-</div>
-                            <div class="original-price"> {{ product.original_price|default:"0.00" }} /-</div>
+                            <div class="current-price">
+                                {% if product.edited_price %}
+                                    {{ product.edited_price }} /-
+                                {% elif product.price %}
+                                    {{ product.price }} /-
+                                {% else %}
+                                    0.00 /-
+                                {% endif %}
+                            </div>
+                            {% if product.original_price and product.original_price != product.edited_price|default:product.price|default:"0.00" %}
+                                <div class="original-price">{{ product.original_price }} /-</div>
+                            {% endif %}
                         </div>
-                        <!-- Updated Add to Cart Button HTML Structure -->
                         <button
                             class="add-to-cart-btn {% if product.id in cart_ids or product.code in cart_api_ids %}added-to-cart{% endif %}"
                             data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
@@ -1056,7 +1134,6 @@
                             ADD TO CART
                             {% endif %}
                         </button>
-
                     </div>
                 </div>
                 {% endfor %}
@@ -1253,28 +1330,62 @@ document.getElementById('categoryFilter').addEventListener('change', function ()
         }
         
         
-        // Update sort functionality to work with pagination
-document.querySelector('.sort-dropdown').addEventListener('change', function () {
+// Update sort functionality to work with pagination
+// Set current sort value on page load
+document.addEventListener('DOMContentLoaded', function() {
+    const urlParams = new URLSearchParams(window.location.search);
+    const sortParam = urlParams.get('sort');
+    
+    if (sortParam) {
+        document.querySelector('.sort-dropdown').value = sortParam;
+    }
+});
+
+// Sort functionality
+document.querySelector('.sort-dropdown').addEventListener('change', function() {
     const sortOption = this.value;
     const currentUrl = new URL(window.location.href);
     
-    const sortMap = {
-        'Featured': 'featured',
-        'Price: Low to High': 'price_low_high',
-        'Price: High to Low': 'price_high_low',
-        'Newest': 'newest',
-        'Popular': 'popular'
-    };
+    // Update or remove sort parameter
+    if (sortOption && sortOption !== 'featured') {
+        currentUrl.searchParams.set('sort', sortOption);
+    } else {
+        currentUrl.searchParams.delete('sort');
+    }
     
-    const sortValue = sortMap[sortOption] || 'featured';
-    currentUrl.searchParams.set('sort', sortValue);
+    // Keep other existing parameters (like category)
+    const category = currentUrl.searchParams.get('category');
     
     // Reset to first page when sorting
     currentUrl.searchParams.set('page', '1');
     
     window.location.href = currentUrl.toString();
-});   
+});
 
+
+function sortProducts(sortOption) {
+    const productCards = Array.from(document.querySelectorAll('.product-card'));
+    
+    productCards.sort((a, b) => {
+        const priceA = parseFloat(a.querySelector('.current-price').textContent.replace(/[^\d.]/g, ''));
+        const priceB = parseFloat(b.querySelector('.current-price').textContent.replace(/[^\d.]/g, ''));
+        
+        if (sortOption === 'price_low_high') {
+            return priceA - priceB;
+        } else if (sortOption === 'price_high_low') {
+            return priceB - priceA;
+        }
+        return 0;
+    });
+    
+    const productGrid = document.querySelector('.product-grid');
+    productCards.forEach(card => productGrid.appendChild(card));
+}
+
+// Add this to your sort dropdown event listener if using client-side sorting
+document.querySelector('.sort-dropdown').addEventListener('change', function() {
+    sortProducts(this.value);
+});
 // Set current values on page load
 document.addEventListener('DOMContentLoaded', function() {
     const urlParams = new URLSearchParams(window.location.search);
@@ -1578,6 +1689,61 @@ function handleScrollBehavior() {
         }
     });
 }
+
+
+// Function to handle search input and clear button visibility
+function initializeSearchBar(container) {
+    const searchInput = container.querySelector('.search-input');
+    const clearBtn = container.querySelector('.clear-btn');
+    
+    // Show/hide clear button based on input content
+    function toggleClearButton() {
+        if (searchInput.value.trim().length > 0) {
+            clearBtn.classList.add('show');
+        } else {
+            clearBtn.classList.remove('show');
+        }
+    }
+
+    // Clear search input
+    function clearSearch() {
+        searchInput.value = '';
+        clearBtn.classList.remove('show');
+        searchInput.focus();
+        
+        // Clear any existing search filters
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete('search');
+        currentUrl.searchParams.set('page', '1');
+        window.location.href = currentUrl.toString();
+    }
+
+    // Event listeners
+    searchInput.addEventListener('input', toggleClearButton);
+    
+    clearBtn.addEventListener('click', function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        clearSearch();
+    });
+
+    // Initialize clear button state
+    toggleClearButton();
+}
+
+// Initialize both search bars when DOM is loaded
+document.addEventListener('DOMContentLoaded', function() {
+    const desktopSearchContainer = document.querySelector('.search-container');
+    const mobileSearchContainer = document.querySelector('.mobile-search-container');
+
+    if (desktopSearchContainer) {
+        initializeSearchBar(desktopSearchContainer);
+    }
+
+    if (mobileSearchContainer) {
+        initializeSearchBar(mobileSearchContainer);
+    }
+});
     </script>
 </body>
 

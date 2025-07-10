@@ -1,0 +1,599 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Terms and Conditions | Chinju Store</title>
+    <meta name="description" content="Review the Terms and Conditions governing your use of Chinju Store's website and services.">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+            line-height: 1.6;
+            color: #374151;
+            background-color: #f9fafb;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 1rem;
+        }
+
+        /* Header Styles */
+        .header {
+            background: white;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 10;
+            transition: all 0.3s ease;
+            padding: 1rem 0;
+        }
+
+        .header.scrolled {
+            padding: 0.5rem 0;
+        }
+
+        .header h1 {
+            font-size: 1.875rem;
+            font-weight: bold;
+            color: #4338ca;
+            margin-bottom: 0.25rem;
+        }
+
+        .header p {
+            color: #6b7280;
+            font-size: 0.875rem;
+        }
+
+        @media (min-width: 768px) {
+            .header h1 {
+                font-size: 2.25rem;
+            }
+        }
+
+        /* Main Content Layout */
+        .main-content {
+            padding: 2rem 0;
+        }
+
+        .content-wrapper {
+            display: flex;
+            flex-direction: column;
+            gap: 2rem;
+        }
+
+        @media (min-width: 1024px) {
+            .content-wrapper {
+                flex-direction: row;
+            }
+        }
+
+        /* Sidebar Styles */
+        .sidebar {
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .sidebar {
+                width: 25%;
+            }
+        }
+
+        .sidebar-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 6rem;
+        }
+
+        .sidebar h2 {
+            font-size: 1.125rem;
+            font-weight: 600;
+            margin-bottom: 1rem;
+            color: #1f2937;
+        }
+
+        .nav-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .nav-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        .nav-button {
+            width: 100%;
+            text-align: left;
+            padding: 0.5rem 0.75rem;
+            color: #374151;
+            background: none;
+            border: none;
+            border-radius: 0.25rem;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            font-size: 0.875rem;
+        }
+
+        .nav-button:hover {
+            color: #4338ca;
+            background-color: #eef2ff;
+        }
+
+        .back-to-top-sidebar {
+            margin-top: 1.5rem;
+            padding-top: 1rem;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .back-to-top-link {
+            font-size: 0.875rem;
+            color: #4338ca;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+        }
+
+        .back-to-top-link:hover {
+            color: #3730a3;
+        }
+
+        /* Main Article Styles */
+        .main-article {
+            width: 100%;
+        }
+
+        @media (min-width: 1024px) {
+            .main-article {
+                width: 75%;
+            }
+        }
+
+        .article-content {
+            background: white;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        }
+
+        @media (min-width: 768px) {
+            .article-content {
+                padding: 2rem;
+            }
+        }
+
+        /* Typography */
+        .intro-section {
+            margin-bottom: 2rem;
+        }
+
+        .intro-section p {
+            color: #374151;
+            margin-bottom: 1rem;
+        }
+
+        .section {
+            margin-bottom: 2.5rem;
+        }
+
+        .section h2 {
+            font-size: 1.5rem;
+            font-weight: bold;
+            margin-bottom: 1rem;
+            color: #1f2937;
+            border-bottom: 1px solid #e5e7eb;
+            padding-bottom: 0.5rem;
+        }
+
+        .section h3 {
+            font-size: 1.25rem;
+            font-weight: 600;
+            margin-bottom: 0.75rem;
+            color: #374151;
+        }
+
+        .section p {
+            color: #374151;
+            margin-bottom: 0.75rem;
+        }
+
+        .definition-grid {
+            display: grid;
+            gap: 1rem;
+        }
+
+        .definition-item {
+            background-color: #f9fafb;
+            padding: 1rem;
+            border-radius: 0.5rem;
+        }
+
+        .definition-item h4 {
+            font-weight: 500;
+            color: #1f2937;
+            margin-bottom: 0.25rem;
+        }
+
+        .definition-item p {
+            color: #374151;
+            margin: 0;
+        }
+
+        .definition-item a {
+            color: #4338ca;
+            text-decoration: none;
+        }
+
+        .definition-item a:hover {
+            text-decoration: underline;
+        }
+
+        /* List Styles */
+        .prohibited-list {
+            list-style-type: disc;
+            padding-left: 1.25rem;
+            color: #374151;
+        }
+
+        .prohibited-list li {
+            margin-bottom: 0.5rem;
+        }
+
+        /* Contact Section */
+        .contact-grid {
+            display: grid;
+            gap: 1.5rem;
+        }
+
+        @media (min-width: 768px) {
+            .contact-grid {
+                grid-template-columns: repeat(2, 1fr);
+            }
+        }
+
+        .contact-card {
+            background-color: #eef2ff;
+            padding: 1.5rem;
+            border-radius: 0.5rem;
+        }
+
+        .contact-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 0.75rem;
+        }
+
+        .contact-icon {
+            color: #4338ca;
+            margin-right: 0.75rem;
+            font-size: 1.25rem;
+        }
+
+        .contact-header h3 {
+            font-size: 1.125rem;
+            font-weight: 500;
+            color: #1f2937;
+            margin: 0;
+        }
+
+        .contact-link {
+            color: #4338ca;
+            text-decoration: none;
+        }
+
+        .contact-link:hover {
+            text-decoration: underline;
+        }
+
+        /* Back to Top Button */
+        .back-to-top-fab {
+            position: fixed;
+            bottom: 1.5rem;
+            right: 1.5rem;
+            background-color: #4338ca;
+            color: white;
+            width: 3rem;
+            height: 3rem;
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+            transition: all 0.2s ease;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.25rem;
+        }
+
+        .back-to-top-fab:hover {
+            background-color: #3730a3;
+        }
+
+        .back-to-top-fab.visible {
+            display: flex;
+        }
+
+        /* Smooth Scrolling */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* Icons using Unicode */
+        .icon-envelope::before { content: '✉'; }
+        .icon-phone::before { content: '☎'; }
+        .icon-external::before { content: '🔗'; }
+        .icon-up::before { content: '↑'; }
+    </style>
+</head>
+<body>
+    <!-- Header -->
+    <header class="header" id="header">
+        <div class="container">
+            <h1>Terms and Conditions</h1>
+            <p>Last updated: June 11, 2025</p>
+        </div>
+    </header>
+
+    <main class="main-content">
+        <div class="container">
+            <div class="content-wrapper">
+                <!-- Sidebar Navigation -->
+                <aside class="sidebar">
+                    <div class="sidebar-content">
+                        <h2>Quick Navigation</h2>
+                        <nav>
+                            <ul class="nav-list">
+                                <li><button class="nav-button" onclick="scrollToSection('interpretation')">Interpretation and Definitions</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('accounts')">User Accounts</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('content')">User-Generated Content</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('purchases')">Purchases and Payments</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('intellectual')">Intellectual Property</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('prohibited')">Prohibited Activities</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('termination')">Termination</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('liability')">Limitation of Liability</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('changes')">Changes to Terms</button></li>
+                                <li><button class="nav-button" onclick="scrollToSection('contact')">Contact Us</button></li>
+                            </ul>
+                        </nav>
+                        <div class="back-to-top-sidebar">
+                            <a href="#" class="back-to-top-link" onclick="scrollToTop()">Back to top</a>
+                        </div>
+                    </div>
+                </aside>
+
+                <!-- Main Content -->
+                <div class="main-article">
+                    <div class="article-content">
+                        <section class="intro-section">
+                            <p>Welcome to Chinju Store! These Terms and Conditions outline the rules and regulations for the use of Chinju Store's Website, located at https://chinjustore.in/.</p>
+                            <p>By accessing this website we assume you accept these terms and conditions. Do not continue to use Chinju Store if you do not agree to take all of the terms and conditions stated on this page.</p>
+                            <p>The following terminology applies to these Terms and Conditions, Privacy Statement and Disclaimer Notice and all Agreements: "Client", "You" and "Your" refers to you, the person log on this website and compliant to the Company's terms and conditions. "The Company", "Ourselves", "We", "Our" and "Us", refers to our Company. "Party", "Parties", or "Us", refers to both the Client and ourselves.</p>
+                        </section>
+
+                        <!-- Interpretation and Definitions -->
+                        <section id="interpretation" class="section">
+                            <h2>Interpretation and Definitions</h2>
+                            
+                            <div style="margin-bottom: 1.5rem;">
+                                <h3>Interpretation</h3>
+                                <p>The words of which the initial letter is capitalized have meanings defined under the following conditions. The following definitions shall have the same meaning regardless of whether they appear in singular or in plural.</p>
+                            </div>
+                            
+                            <div>
+                                <h3>Definitions</h3>
+                                <p>For the purposes of these Terms and Conditions:</p>
+                                
+                                <div class="definition-grid">
+                                    <div class="definition-item">
+                                        <h4>Account</h4>
+                                        <p>means a unique account created for You to access our Service or parts of our Service.</p>
+                                    </div>
+                                    
+                                    <div class="definition-item">
+                                        <h4>Company</h4>
+                                        <p>(referred to as either "the Company", "We", "Us" or "Our" in this Agreement) refers to Chinju Store, an individual business entity based in Kerala, India.</p>
+                                    </div>
+                                    
+                                    <div class="definition-item">
+                                        <h4>Content</h4>
+                                        <p>refers to content such as text, images, or other information that can be posted, uploaded, linked to or otherwise made available by You, regardless of the form of that content.</p>
+                                    </div>
+                                    
+                                    <div class="definition-item">
+                                        <h4>Country</h4>
+                                        <p>refers to: Kerala, India</p>
+                                    </div>
+                                    
+                                    <div class="definition-item">
+                                        <h4>Device</h4>
+                                        <p>means any device that can access the Service such as a computer, a cellphone or a digital tablet.</p>
+                                    </div>
+                                    
+                                    <div class="definition-item">
+                                        <h4>Service</h4>
+                                        <p>refers to the Website.</p>
+                                    </div>
+                                    
+                                    <div class="definition-item">
+                                        <h4>Website</h4>
+                                        <p>refers to Chinju Store, accessible from <a href="https://chinjustore.in/" target="_blank" rel="noopener noreferrer">https://chinjustore.in/</a></p>
+                                    </div>
+                                    
+                                    <div class="definition-item">
+                                        <h4>You</h4>
+                                        <p>means the individual accessing or using the Service, or the company, or other legal entity on behalf of which such individual is accessing or using the Service, as applicable.</p>
+                                    </div>
+                                </div>
+                            </div>
+                        </section>
+
+                        <!-- User Accounts -->
+                        <section id="accounts" class="section">
+                            <h2>User Accounts</h2>
+                            <p>When You create an account with Us, You must provide Us information that is accurate, complete, and current at all times. Failure to do so constitutes a breach of the Terms, which may result in immediate termination of Your account on Our Service.</p>
+                            <p>You are responsible for safeguarding the password that You use to access the Service and for any activities or actions under Your password, whether Your password is with Our Service or a third-party service.</p>
+                            <p>You agree not to disclose Your password to any third party. You must notify Us immediately upon becoming aware of any breach of security or unauthorized use of Your account.</p>
+                        </section>
+
+                        <!-- User-Generated Content -->
+                        <section id="content" class="section">
+                            <h2>User-Generated Content</h2>
+                            <p>Our Service allows You to post Content such as product reviews. You are responsible for the Content that You post to the Service, including its legality, reliability, and appropriateness.</p>
+                            <p>By posting Content to the Service, You grant Us the right and license to use, modify, publicly perform, publicly display, reproduce, and distribute such Content on and through the Service. You retain any and all of Your rights to any Content You submit, post or display on or through the Service and You are responsible for protecting those rights.</p>
+                            <p>You represent and warrant that: (i) the Content is Yours (You own it) or You have the right to use it and grant Us the rights and license as provided in these Terms, and (ii) the posting of Your Content on or through the Service does not violate the privacy rights, publicity rights, copyrights, contract rights or any other rights of any person.</p>
+                            <p>We reserve the right to terminate the account of anyone found to be infringing on a copyright or posting inappropriate or offensive content.</p>
+                        </section>
+
+                        <!-- Purchases and Payments -->
+                        <section id="purchases" class="section">
+                            <h2>Purchases and Payments</h2>
+                            <p>If You wish to purchase any product or service made available through the Service ("Purchase"), You may be asked to supply certain information relevant to Your Purchase including, without limitation, Your credit card number, the expiration date of Your credit card, Your billing address, and Your shipping information.</p>
+                            <p>You represent and warrant that: (i) You have the legal right to use any credit card(s) or other payment method(s) in connection with any Purchase; and that (ii) the information You supply to us is true, correct and complete.</p>
+                            <p>The Service may employ the use of third party services for the purpose of facilitating payment and the completion of Purchases. By submitting Your information, You grant Us the right to provide the information to these third parties subject to our Privacy Policy.</p>
+                            <p>We reserve the right to refuse or cancel Your order at any time for certain reasons including but not limited to: product or service availability, errors in the description or price of the product or service, error in Your order or other reasons.</p>
+                        </section>
+
+                        <!-- Intellectual Property -->
+                        <section id="intellectual" class="section">
+                            <h2>Intellectual Property</h2>
+                            <p>The Service and its original content (excluding Content provided by users), features and functionality are and will remain the exclusive property of Chinju Store and its licensors. Our trademarks and trade dress may not be used in connection with any product or service without the prior written consent of Chinju Store.</p>
+                            <p>Our content including but not limited to logo, visual design, trademarks, etc. is our exclusive property and protected by copyright and trademark laws.</p>
+                            <p>You may not duplicate, copy, or reuse any portion of the HTML/CSS, Javascript, or visual design elements without express written permission from Chinju Store.</p>
+                        </section>
+
+                        <!-- Prohibited Activities -->
+                        <section id="prohibited" class="section">
+                            <h2>Prohibited Activities</h2>
+                            <p>You may not access or use the Service for any purpose other than that for which We make the Service available. The Service may not be used in connection with any commercial endeavors except those that are specifically endorsed or approved by Us.</p>
+                            <p>As a user of the Service, You agree not to:</p>
+                            <ul class="prohibited-list">
+                                <li>Systematically retrieve data or other content from the Service to create or compile, directly or indirectly, a collection, compilation, database, or directory without written permission from Us.</li>
+                                <li>Make any unauthorized use of the Service, including collecting usernames and/or email addresses of users by electronic or other means for the purpose of sending unsolicited email, or creating user accounts by automated means or under false pretenses.</li>
+                                <li>Use the Service to advertise or offer to sell goods and services.</li>
+                                <li>Circumvent, disable, or otherwise interfere with security-related features of the Service, including features that prevent or restrict the use or copying of any Content or enforce limitations on the use of the Service and/or the Content contained therein.</li>
+                                <li>Engage in unauthorized framing of or linking to the Service.</li>
+                                <li>Trick, defraud, or mislead Us and other users, especially in any attempt to learn sensitive account information such as user passwords.</li>
+                                <li>Make improper use of our support services or submit false reports of abuse or misconduct.</li>
+                                <li>Engage in any automated use of the system, such as using scripts to send comments or messages, or using any data mining, robots, or similar data gathering and extraction tools.</li>
+                                <li>Interfere with, disrupt, or create an undue burden on the Service or the networks or services connected to the Service.</li>
+                                <li>Attempt to impersonate another user or person or use the username of another user.</li>
+                                <li>Sell or otherwise transfer Your profile.</li>
+                                <li>Use any information obtained from the Service in order to harass, abuse, or harm another person.</li>
+                                <li>Use the Service as part of any effort to compete with Us or otherwise use the Service and/or the Content for any revenue-generating endeavor or commercial enterprise.</li>
+                                <li>Decipher, decompile, disassemble, or reverse engineer any of the software comprising or in any way making up a part of the Service.</li>
+                                <li>Attempt to bypass any measures of the Service designed to prevent or restrict access to the Service, or any portion of the Service.</li>
+                                <li>Harass, annoy, intimidate, or threaten any of Our employees or agents engaged in providing any portion of the Service to You.</li>
+                                <li>Delete the copyright or other proprietary rights notice from any Content.</li>
+                                <li>Upload or transmit (or attempt to upload or to transmit) viruses, Trojan horses, or other material, including excessive use of capital letters and spamming (continuous posting of repetitive text), that interferes with any party's uninterrupted use and enjoyment of the Service or modifies, impairs, disrupts, alters, or interferes with the use, features, functions, operation, or maintenance of the Service.</li>
+                                <li>Except as may be the result of standard search engine or Internet browser usage, use, launch, develop, or distribute any automated system, including without limitation, any spider, robot, cheat utility, scraper, or offline reader that accesses the Service, or using or launching any unauthorized script or other software.</li>
+                                <li>Disparage, tarnish, or otherwise harm, in Our opinion, Us and/or the Service.</li>
+                                <li>Use the Service in a manner inconsistent with any applicable laws or regulations.</li>
+                            </ul>
+                        </section>
+
+                        <!-- Termination -->
+                        <section id="termination" class="section">
+                            <h2>Termination</h2>
+                            <p>We may terminate or suspend Your Account immediately, without prior notice or liability, for any reason whatsoever, including without limitation if You breach these Terms and Conditions.</p>
+                            <p>Upon termination, Your right to use the Service will cease immediately. If You wish to terminate Your Account, You may simply discontinue using the Service.</p>
+                            <p>All provisions of the Terms which by their nature should survive termination shall survive termination, including, without limitation, ownership provisions, warranty disclaimers, indemnity and limitations of liability.</p>
+                        </section>
+
+                        <!-- Limitation of Liability -->
+                        <section id="liability" class="section">
+                            <h2>Limitation of Liability</h2>
+                            <p>Notwithstanding any damages that You might incur, the entire liability of Chinju Store and any of its suppliers under any provision of this Terms and Your exclusive remedy for all of the foregoing shall be limited to the amount actually paid by You through the Service or 100 USD if You haven't purchased anything through the Service.</p>
+                            <p>To the maximum extent permitted by applicable law, in no event shall Chinju Store or its suppliers be liable for any special, incidental, indirect, or consequential damages whatsoever (including, but not limited to, damages for loss of profits, loss of data or other information, for business interruption, for personal injury, loss of privacy arising out of or in any way related to the use of or inability to use the Service, third-party software and/or third-party hardware used with the Service, or otherwise in connection with any provision of this Terms), even if Chinju Store or any supplier has been advised of the possibility of such damages and even if the remedy fails of its essential purpose.</p>
+                            <p>Some states do not allow the exclusion of implied warranties or limitation of liability for incidental or consequential damages, which means that some of the above limitations may not apply. In these states, each party's liability will be limited to the greatest extent permitted by law.</p>
+                        </section>
+
+                        <!-- Changes to Terms -->
+                        <section id="changes" class="section">
+                            <h2>Changes to Terms</h2>
+                            <p>We reserve the right, at Our sole discretion, to modify or replace these Terms at any time. If a revision is material We will make reasonable efforts to provide at least 30 days' notice prior to any new terms taking effect. What constitutes a material change will be determined at Our sole discretion.</p>
+                            <p>By continuing to access or use Our Service after those revisions become effective, You agree to be bound by the revised terms. If You do not agree to the new terms, in whole or in part, please stop using the website and the Service.</p>
+                            <p>You are advised to review these Terms periodically for any changes. Changes to these Terms are effective when they are posted on this page.</p>
+                        </section>
+
+                        <!-- Contact Us -->
+                        <section id="contact" class="section">
+                            <h2>Contact Us</h2>
+                            <p>If you have any questions about these Terms and Conditions, You can contact us:</p>
+                            
+                            <div class="contact-grid">
+                                <div class="contact-card">
+                                    <div class="contact-header">
+                                        <span class="contact-icon icon-envelope"></span>
+                                        <h3>By email</h3>
+                                    </div>
+                                    <a href="mailto:akshaypayakkal@gmail.com" class="contact-link">akshaypayakkal@gmail.com</a>
+                                </div>
+                                
+                                <div class="contact-card">
+                                    <div class="contact-header">
+                                        <span class="contact-icon icon-external"></span>
+                                        <h3>Through our website</h3>
+                                    </div>
+                                    <a href="https://chinjustore.in/contact" target="_blank" rel="noopener noreferrer" class="contact-link">https://chinjustore.in/contact</a>
+                                </div>
+                                
+                                <div class="contact-card">
+                                    <div class="contact-header">
+                                        <span class="contact-icon icon-phone"></span>
+                                        <h3>By phone</h3>
+                                    </div>
+                                    <a href="tel:9400361911" class="contact-link">9400361911</a>
+                                </div>
+                            </div>
+                        </section>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </main>
+
+    <!-- Back to top button -->
+    <button class="back-to-top-fab" id="backToTopBtn" onclick="scrollToTop()" aria-label="Back to top">
+        <span class="icon-up"></span>
+    </button>
+
+    <script>
+        // Handle scroll effects
+        let scrolled = false;
+        const header = document.getElementById('header');
+        const backToTopBtn = document.getElementById('backToTopBtn');
+
+        window.addEventListener('scroll', () => {
+            const isScrolled = window.scrollY > 50;
+            
+            if (isScrolled !== scrolled) {
+                scrolled = isScrolled;
+                header.classList.toggle('scrolled', scrolled);
+                backToTopBtn.classList.toggle('visible', scrolled);
+            }
+        });
+
+        // Scroll to section function
+        function scrollToSection(sectionId) {
+            const element = document.getElementById(sectionId);
+            if (element) {
+                element.scrollIntoView({ behavior: 'smooth' });
+            }
+        }
+
+        // Scroll to top function
+        function scrollToTop() {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+    </script>
+</body>
+</html>

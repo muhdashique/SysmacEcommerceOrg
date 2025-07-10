@@ -817,94 +817,130 @@
     <div class="main-container">
         <div class="image-section">
             {% load static %}
-            <img src="{% if is_custom_product and product.main_image %}{{ product.main_image.url }}{% else %}{% static 'images/productdemo.jpg' %}{% endif %}"
+            <img src="{% if is_custom_product and product.main_image %}
+                        {{ product.main_image.url }}
+                      {% elif not is_custom_product and product.edited_image %}
+                        {{ product.edited_image.url }}
+                      {% elif not is_custom_product and product.image %}
+                        {{ product.image }}
+                      {% else %}
+                        {% static 'images/productdemo.jpg' %}
+                      {% endif %}"
                 alt="{{ product.name }}" class="main-image">
-
+        
             <div class="thumbnail-list">
-                <img src="{% if is_custom_product and product.main_image %}{{ product.main_image.url }}{% else %}{% static 'images/productdemo.jpg' %}{% endif %}"
+                <img src="{% if is_custom_product and product.main_image %}
+                            {{ product.main_image.url }}
+                          {% elif not is_custom_product and product.edited_image %}
+                            {{ product.edited_image.url }}
+                          {% elif not is_custom_product and product.image %}
+                            {{ product.image }}
+                          {% else %}
+                            {% static 'images/productdemo.jpg' %}
+                          {% endif %}"
                     alt="Thumbnail" class="thumbnail active">
                 <!-- Add more thumbnails if available -->
             </div>
         </div>
 
-        <div class="product-details">
-            <h1 class="product-title">
-                {% if is_custom_product %}
-                {{ product.name }}
+        <!-- In the product-details section of productview.html -->
+<div class="product-details">
+    <h1 class="product-title">
+        {% if is_custom_product %}
+            {{ product.name }}
+        {% else %}
+            {{ product.edited_name|default:product.name }}
+        {% endif %}
+    </h1>
+
+    <div class="rating-section">
+        <span class="rating">4.4 ★</span>
+        <span class="rating-details">0 Ratings & Reviews</span>
+        <span class="assured-badge">✓ Assured</span>
+    </div>
+
+    <div class="pricing-section">
+        <div class="special-price">Special price</div>
+        <div>
+            <span class="current-price">
+                ₹{% if is_custom_product %}
+                    {{ product.price }}
                 {% else %}
-                {{ product.name|default:"Product Name" }}
+                    {{ product.edited_price|default:product.price }}
                 {% endif %}
-            </h1>
-
-            <div class="rating-section">
-                <span class="rating">4.4 ★</span>
-                <span class="rating-details">0 Ratings & Reviews</span>
-                <span class="assured-badge">✓ Assured</span>
-            </div>
-
-            <div class="pricing-section">
-                <div class="special-price">Special price</div>
-                <div>
-                    <span class="current-price">
-                        ₹{% if is_custom_product %}{{ product.price }}{% else %}{{ product.price|default:"299.00" }}
-                        {% endif %}
-                    </span>
-                    <span class="original-price">
-                        ₹{% if is_custom_product %}{{ product.original_price|default:product.price|add:"1000" }}{% else
-                        %}{{ product.original_price|default:"399.00" }}{% endif %}
-                    </span>
-                    <span class="discount">25% off</span>
-                </div>
-            </div>
-
-            <div class="delivery-info">
-                <strong>Delivery available</strong><br>
-                Check availability in your area
-            </div>
-
-            <div class="highlights">
-                <h3 class="section-title">Product Details</h3>
-                <div class="highlight-item">
-                    Brand: {% if is_custom_product %}{{ product.brand|default:"Not specified" }}{% else %}{{
-                    product.brand|default:"Not specified" }}{% endif %}
-                </div>
-                <div class="highlight-item">
-                    Company: {% if is_custom_product %}{{ product.company|default:"Not specified" }}{% else %}{{
-                    product.company|default:"Not specified" }}{% endif %}
-                </div>
-                <div class="highlight-item">
-                    Category: {% if is_custom_product %}{{ product.category|default:"Not specified" }}{% else %}{{
-                    product.catagory|default:"Not specified" }}{% endif %}
-                </div>
-                <div class="highlight-item">
-                    Product Type: {% if is_custom_product %}{{ product.product_type|default:"Not specified" }}{% else
-                    %}{{ product.product|default:"Not specified" }}{% endif %}
-                </div>
-                {% if product.description %}
-                <div class="highlight-item">Description: {{ product.description }}</div>
+            </span>
+            <span class="original-price">
+                ₹{% if is_custom_product %}
+                    {{ product.original_price|default:product.price|add:"1000" }}
+                {% else %}
+                    {{ product.edited_original_price|default:product.original_price|default:product.price|add:"1000" }}
                 {% endif %}
-            </div>
-
-            <!-- Action buttons -->
-            <!-- Action buttons -->
-            <div class="action-buttons">
-                <button class="btn btn-cart" id="addToCartBtn"
-                    data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-                    data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-in-cart="false">
-                    <i class="fas fa-shopping-cart"></i>
-                    <span class="btn-text">ADD TO CART</span>
-                </button>
-                <button class="btn btn-buy">
-                    <i class="fas fa-bolt"></i> BUY NOW
-                </button>
-            <button class="btn btn-wishlist" id="addToWishlistBtn"
-                data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-                data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-wishlist-action="add">
-                <i class="far fa-heart"></i>
-                <span class="btn-text">WISHLIST</span>
-            </button>
-            </div>
+            </span>
+            <span class="discount">25% off</span>
         </div>
+    </div>
+
+    <div class="delivery-info">
+        <strong>Delivery available</strong><br>
+        Check availability in your area
+    </div>
+
+    <div class="highlights">
+        <h3 class="section-title">Product Details</h3>
+        <div class="highlight-item">
+            Brand: {% if is_custom_product %}
+                {{ product.brand|default:"Not specified" }}
+            {% else %}
+                {{ product.edited_brand|default:product.brand|default:"Not specified" }}
+            {% endif %}
+        </div>
+        <div class="highlight-item">
+            Company: {% if is_custom_product %}
+                {{ product.company|default:"Not specified" }}
+            {% else %}
+                {{ product.edited_company|default:product.company|default:"Not specified" }}
+            {% endif %}
+        </div>
+        <div class="highlight-item">
+            Category: {% if is_custom_product %}
+                {{ product.category|default:"Not specified" }}
+            {% else %}
+                {{ product.edited_category|default:product.catagory|default:"Not specified" }}
+            {% endif %}
+        </div>
+        <div class="highlight-item">
+            Product Type: {% if is_custom_product %}
+                {{ product.product_type|default:"Not specified" }}
+            {% else %}
+                {{ product.edited_product|default:product.product|default:"Not specified" }}
+            {% endif %}
+        </div>
+        {% if product.description or product.edited_description %}
+        <div class="highlight-item">
+            Description: {{ product.edited_description|default:product.description }}
+        </div>
+        {% endif %}
+    </div>
+
+    <!-- Action buttons -->
+    <div class="action-buttons">
+        <button class="btn btn-cart" id="addToCartBtn"
+            data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+            data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-in-cart="false">
+            <i class="fas fa-shopping-cart"></i>
+            <span class="btn-text">ADD TO CART</span>
+        </button>
+        <button class="btn btn-buy">
+            <i class="fas fa-bolt"></i> BUY NOW
+        </button>
+        <button class="btn btn-wishlist" id="addToWishlistBtn"
+            data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+            data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-wishlist-action="add">
+            <i class="far fa-heart"></i>
+            <span class="btn-text">WISHLIST</span>
+        </button>
+    </div>
+</div>
         <div id="notificationContainer"></div>
     </div>
 

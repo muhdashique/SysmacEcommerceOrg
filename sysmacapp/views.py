@@ -14,45 +14,94 @@ from .forms import CustomProductForm, CustomUserCreationForm
 from django.views.decorators.http import require_POST
 from decimal import Decimal
 from django.core.paginator import Paginator, PageNotAnInteger, EmptyPage
+from .models import CartItem, CustomProduct, CustomUser, Wishlist, Cart, EditedAPIProduct
+from .forms import EditedAPIProductForm
+
  
 def home(request):
     api_url = "https://sysmacsynctoolapi.imcbs.com/api/upload-products/"
     try:
         response = requests.get(api_url)
         response.raise_for_status()
-        products = response.json()
+        api_products = response.json()
     except requests.RequestException:
-        products = []
+        api_products = []
     
+    # Get all edited products
+    edited_products = EditedAPIProduct.objects.all()
+    edited_product_map = {p.original_code: p for p in edited_products}
+    
+    # Merge API products with edited data
+    processed_products = []
+    for product in api_products:
+        product_code = str(product.get('code', ''))
+        edited_product = edited_product_map.get(product_code)
+        
+        processed_product = {
+            'code': product_code,
+            'name': product.get('name', 'Unknown Product'),
+            'product': product.get('product', ''),
+            'catagory': product.get('catagory', ''),
+            'unit': product.get('unit', ''),
+            'taxcode': product.get('taxcode', ''),
+            'company': product.get('company', ''),
+            'brand': product.get('brand', ''),
+            'text6': product.get('text6', ''),
+            'price': product.get('price', '0.00'),
+            'original_price': product.get('original_price', '0.00'),
+            'image': product.get('image', ''),
+            # Add edited fields if they exist
+            'edited_name': edited_product.name if edited_product else None,
+            'edited_product': edited_product.product if edited_product else None,
+            'edited_category': edited_product.category if edited_product else None,
+            'edited_unit': edited_product.unit if edited_product else None,
+            'edited_taxcode': edited_product.tax_code if edited_product else None,
+            'edited_company': edited_product.company if edited_product else None,
+            'edited_brand': edited_product.brand if edited_product else None,
+            'edited_text6': edited_product.text6 if edited_product else None,
+            'edited_price': edited_product.price if edited_product else None,
+            'edited_image': edited_product.image if edited_product else None,
+        }
+        processed_products.append(processed_product)
+
+    # Sorting logic
+    sort_option = request.GET.get('sort', 'featured')
+    
+    if sort_option == 'price_low_high':
+        processed_products.sort(key=lambda x: float(x['edited_price'] if x['edited_price'] is not None else float(x['price'])))
+    elif sort_option == 'price_high_low':
+        processed_products.sort(key=lambda x: float(x['edited_price'] if x['edited_price'] is not None else float(x['price'])), reverse=True)
+    elif sort_option == 'newest':
+        # If you have a creation date field, you can sort by it
+        # For now, we'll keep the original order
+        pass
+    elif sort_option == 'popular':
+        # If you have a popularity metric (views, sales, etc.), you can sort by it
+        # For now, we'll keep the original order
+        pass
+
     wishlist_ids = []
     wishlist_api_ids = []
     cart_ids = []
     cart_api_ids = []
     cart_count = 0
     
-    # Move items_per_page initialization outside the authentication check
-    items_per_page = int(request.GET.get('per_page', 12))  # Default 12 items per page
-    
-    # Limit items per page to reasonable values
+    items_per_page = int(request.GET.get('per_page', 12))
     if items_per_page not in [8, 12, 24, 48]:
         items_per_page = 12
     
     if request.user.is_authenticated:
-        # Get IDs of custom products in wishlist
         wishlist_ids = list(request.user.wishlist.filter(product__isnull=False)
                           .values_list('product_id', flat=True))
-        # Get codes of API products in wishlist
         wishlist_api_ids = list(request.user.wishlist.filter(api_product_code__isnull=False)
                               .values_list('api_product_code', flat=True))
-        # Get cart information
         cart_ids = list(request.user.cart_items.filter(product__isnull=False)
                         .values_list('product_id', flat=True))
         cart_api_ids = list(request.user.cart_items.filter(api_product_code__isnull=False)
                             .values_list('api_product_code', flat=True))
         cart_count = request.user.cart_items.count()
     
-    # Pagination logic moved outside authentication check
-    paginator = Paginator(products, items_per_page)
+    paginator = Paginator(processed_products, items_per_page)
     page = request.GET.get('page', 1)
     
     try:
@@ -70,6 +119,7 @@ def home(request):
         'cart_api_ids': cart_api_ids,
         'cart_count': cart_count,
         'items_per_page': items_per_page,
+        'current_sort': sort_option,
     })
 
 
@@ -371,17 +421,33 @@ from django.shortcuts import render
 from django.contrib.auth.decorators import login_required
 
 @login_required
+@login_required
 def cart_view(request):
     """Display user's cart with all items and calculations"""
     # Get all cart items for the user
     cart_items = request.user.cart_items.select_related('product').all()
+    
+    # Get all edited products
+    edited_products = EditedAPIProduct.objects.all()
+    edited_product_map = {p.original_code: p for p in edited_products}
+    
+    # Process cart items to include edited data for API products
+    processed_cart_items = []
+    for item in cart_items:
+        if item.api_product_code:
+            edited_product = edited_product_map.get(item.api_product_code)
+            if edited_product:
+                item.api_product_name = edited_product.name
+                item.api_product_price = edited_product.price
+                item.edited_image = edited_product.image
+        processed_cart_items.append(item)
     
     # Initialize totals
     total_price = Decimal('0.00')
     total_original_price = Decimal('0.00')
     cart_count = 0
     
-    for item in cart_items:
+    for item in processed_cart_items:
         # Get price from the item (handles both custom and API products)
         item_price = item.get_price
         quantity = Decimal(str(item.quantity))
@@ -391,16 +457,14 @@ def cart_view(request):
         
         # Handle original price (if available)
         if item.product and hasattr(item.product, 'price'):
-            # Assuming original_price is a field in CustomProduct
             original_price = getattr(item.product, 'original_price', item_price)
             total_original_price += Decimal(str(original_price)) * quantity
         else:
             # For API products or when original_price isn't available
             total_original_price += item_price * quantity
         
-            cart_count = request.user.cart_items.count()
+        cart_count = request.user.cart_items.count()
 
-    
     total_discount = max(total_original_price - total_price, Decimal('0.00'))
     
     # Calculate delivery charges (free for orders above ₹500)
@@ -408,7 +472,7 @@ def cart_view(request):
     grand_total = total_price + delivery_charge
     
     context = {
-        'cart_items': cart_items,
+        'cart_items': processed_cart_items,
         'cart_count': cart_count,
         'total_price': total_price,
         'total_original_price': total_original_price,
@@ -916,10 +980,57 @@ def product_detail(request, product_identifier):
             api_products = response.json()
             
             # Find product by code in API response
-            product = next((p for p in api_products if str(p.get('code')) == str(product_identifier)), None)
+            api_product = next((p for p in api_products if str(p.get('code')) == str(product_identifier)), None)
             
-            if not product:
+            if not api_product:
                 raise Http404("Product not found")
+            
+            # Get all edited products
+            edited_products = EditedAPIProduct.objects.all()
+            edited_product_map = {p.original_code: p for p in edited_products}
+            
+            # Check if this product has been edited
+            edited_product = edited_product_map.get(str(product_identifier))
+            
+            # Create a processed product with all necessary fields
+            product = {
+                'code': str(api_product.get('code', '')),
+                'name': api_product.get('name', 'Unknown Product'),
+                'product': api_product.get('product', ''),
+                'catagory': api_product.get('catagory', ''),
+                'unit': api_product.get('unit', ''),
+                'taxcode': api_product.get('taxcode', ''),
+                'company': api_product.get('company', ''),
+                'brand': api_product.get('brand', ''),
+                'text6': api_product.get('text6', ''),
+                'price': api_product.get('price', '0.00'),
+                'original_price': api_product.get('original_price', '0.00'),
+                'image': api_product.get('image', ''),
+                # Add edited fields if they exist
+                'edited_name': edited_product.name if edited_product else None,
+                'edited_product': edited_product.product if edited_product else None,
+                'edited_category': edited_product.category if edited_product else None,
+                'edited_unit': edited_product.unit if edited_product else None,
+                'edited_taxcode': edited_product.tax_code if edited_product else None,
+                'edited_company': edited_product.company if edited_product else None,
+                'edited_brand': edited_product.brand if edited_product else None,
+                'edited_text6': edited_product.text6 if edited_product else None,
+                'edited_price': edited_product.price if edited_product else None,
+                'edited_image': edited_product.image if edited_product else None,
+                'edited_original_price': edited_product.original_price if edited_product else None,
+            }
+            
+            # Use edited values if available, otherwise use original values
+            if edited_product:
+                product['display_name'] = edited_product.name or product['name']
+                product['display_price'] = edited_product.price or product['price']
+                product['display_original_price'] = edited_product.original_price or product['original_price']
+                product['display_image'] = edited_product.image or product['image']
+            else:
+                product['display_name'] = product['name']
+                product['display_price'] = product['price']
+                product['display_original_price'] = product['original_price']
+                product['display_image'] = product['image']
                 
         except requests.RequestException as e:
             logger.error(f"API request failed: {str(e)}")
@@ -927,6 +1038,8 @@ def product_detail(request, product_identifier):
     
     # Handle wishlist and cart
     in_wishlist = False
+    in_cart = False
+    cart_quantity = 0
     cart_count = 0
     
     if request.user.is_authenticated:
@@ -935,18 +1048,34 @@ def product_detail(request, product_identifier):
                 user=request.user,
                 product_id=product.id
             ).exists()
+            cart_item = CartItem.objects.filter(
+                user=request.user,
+                product_id=product.id
+            ).first()
+            if cart_item:
+                in_cart = True
+                cart_quantity = cart_item.quantity
         else:
             # For API products, check by api_product_code
             in_wishlist = Wishlist.objects.filter(
                 user=request.user,
                 api_product_code=product.get('code')
             ).exists()
+            cart_item = CartItem.objects.filter(
+                user=request.user,
+                api_product_code=product.get('code')
+            ).first()
+            if cart_item:
+                in_cart = True
+                cart_quantity = cart_item.quantity
         
         cart_count = request.user.cart_items.count()
     
     context = {
         'product': product,
         'in_wishlist': in_wishlist,
+        'in_cart': in_cart,
+        'cart_quantity': cart_quantity,
         'cart_count': cart_count,
         'is_custom_product': is_custom_product,
         'product_identifier': product_identifier,
@@ -1018,6 +1147,146 @@ def debug_wishlist_api(request):
 
 # Add this URL to your urls.py temporarily:
 # path('debug/wishlist-api/', debug_wishlist_api, name='debug_wishlist_api'),
+
+def sysmac_products(request):
+    if not request.user.is_superuser:
+        auth_logout(request)
+        messages.error(request, 'You do not have permission to access this page.')
+        return redirect('login')
+    
+    api_url = "https://sysmacsynctoolapi.imcbs.com/api/upload-products/"
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        api_products = response.json()
+        
+        processed_products = []
+        for product in api_products:
+            processed_product = {
+                'code': str(product.get('code', '')),
+                'name': product.get('name', 'Unknown Product'),
+                'product': product.get('product', ''),
+                'catagory': product.get('catagory', ''),
+                'unit': product.get('unit', ''),
+                'taxcode': product.get('taxcode', ''),
+                'company': product.get('company', ''),
+                'brand': product.get('brand', ''),
+                'text6': product.get('text6', ''),
+                'price': product.get('price', '0.00'),
+                'original_price': product.get('original_price', '0.00')
+            }
+            processed_products.append(processed_product)
+        
+        edited_products = EditedAPIProduct.objects.filter(
+            original_code__in=[p['code'] for p in processed_products]
+        )
+        
+        edited_map = {p.original_code: p for p in edited_products}
+        
+        # Merge API products with edited data
+        for product in processed_products:
+            edited = edited_map.get(product['code'])
+            if edited:
+                product['edited_name'] = edited.name
+                product['edited_product'] = edited.product
+                product['edited_category'] = edited.category
+                product['edited_unit'] = edited.unit
+                product['edited_taxcode'] = edited.tax_code
+                product['edited_company'] = edited.company
+                product['edited_brand'] = edited.brand
+                product['edited_text6'] = edited.text6
+                product['edited_price'] = edited.price
+                product['edited_image'] = edited.image
+                product['original_price'] = edited.original_price or product['original_price']
+                
+    except requests.RequestException as e:
+        print(f"Error fetching API products: {e}")
+        processed_products = []
+        edited_products = []
+    
+    return render(request, 'sysmac_products.html', {
+        'products': processed_products,
+        'edited_products': [p.original_code for p in edited_products]
+    })
+
+# Add these new views for editing API products
+
+@login_required
+def edit_api_product(request, product_code):
+    if not request.user.is_superuser:
+        auth_logout(request)
+        messages.error(request, 'You do not have permission to access this page.')
+        return redirect('login')
+
+    # Try to get existing edited product
+    try:
+        edited_product = EditedAPIProduct.objects.get(original_code=product_code)
+        instance = edited_product
+    except EditedAPIProduct.DoesNotExist:
+        instance = None
+        # Fetch from API if no edited version exists
+        api_url = "https://sysmacsynctoolapi.imcbs.com/api/upload-products/"
+        try:
+            response = requests.get(api_url)
+            response.raise_for_status()
+            api_products = response.json()
+            api_product = next((p for p in api_products if str(p.get('code')) == product_code), None)
+            
+            if api_product:
+                initial_data = {
+                    'name': api_product.get('name'),
+                    'product': api_product.get('product'),
+                    'category': api_product.get('catagory'),
+                    'unit': api_product.get('unit'),
+                    'tax_code': api_product.get('taxcode'),
+                    'company': api_product.get('company'),
+                    'brand': api_product.get('brand'),
+                    'text6': api_product.get('text6'),
+                    'price': api_product.get('price', '0.00'),
+                    'original_price': api_product.get('original_price', '0.00')
+                }
+        except requests.RequestException:
+            api_product = None
+            initial_data = {}
+
+    if request.method == 'POST':
+        form = EditedAPIProductForm(request.POST, request.FILES, instance=instance)
+        if form.is_valid():
+            edited_product = form.save(commit=False)
+            if not instance:  # New record
+                edited_product.original_code = product_code
+                # Preserve original price from API if not provided in form
+                if api_product and not form.cleaned_data.get('original_price'):
+                    edited_product.original_price = api_product.get('original_price', '0.00')
+            edited_product.save()
+            messages.success(request, 'Product edited successfully!')
+            return redirect('sysmac_products')
+    else:
+        if instance:
+            form = EditedAPIProductForm(instance=instance)
+        else:
+            form = EditedAPIProductForm(initial=initial_data)
+
+    return render(request, 'edit_api_product.html', {
+        'form': form,
+        'product_code': product_code,
+        'action': 'Edit' if instance else 'Add',
+        'original_data': api_product if not instance else None
+    })
+
+@login_required
+def delete_api_product(request, product_code):
+    if not request.user.is_superuser:
+        auth_logout(request)
+        messages.error(request, 'You do not have permission to access this page.')
+        return redirect('login')
+    
+    product = get_object_or_404(EditedAPIProduct, original_code=product_code)
+    product.delete()
+    messages.success(request, 'Product deleted successfully!')
+    return redirect('sysmac_products')
+
+
 
 
 

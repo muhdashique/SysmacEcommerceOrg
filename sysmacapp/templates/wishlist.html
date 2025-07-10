@@ -583,10 +583,10 @@
         <div class="header-content">
             <div class="logos w-28 h-26"><img src="{% static 'images/SYSMAC LOGO-01.png' %}"></div>
 
-            <!-- <div class="search-container">
+             <div class="search-container md:hidden hidden">
                 <input type="text" class="search-input" placeholder="Search products...">
                 <button class="search-btn">Search</button>
-            </div> -->
+            </div> 
             <div class="header-actions">
                 <div class="cart-icon relative">
                     <a href="{% url 'cart' %}">
@@ -643,10 +643,10 @@
         </div>
 
         <!-- Mobile Search Bar (hidden on desktop) -->
-        <!-- <div class="mobile-search-container">
+       <div class="mobile-search-container md:hidden hidden">
             <input type="text" class="search-input" placeholder="Search products...">
             <button class="search-btn">Search</button>
-        </div> -->
+        </div>
 
         <!-- Navigation -->
         <nav class="nav-bar">

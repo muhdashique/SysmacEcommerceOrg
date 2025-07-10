@@ -645,10 +645,10 @@
         <div class="header-content">
             <div class="logos w-28 h-26"><img src="{% static 'images/SYSMAC LOGO-01.png' %}"></div>
 
-            <!-- <div class="search-container">
+             <div class="search-container hidden md:hidden">
                 <input type="text" class="search-input" placeholder="Search products...">
                 <button class="search-btn">Search</button>
-            </div> -->
+            </div>
             <div class="header-actions">
                 <div class="cart-icon relative">
                     <a href="{% url 'cart' %}">
@@ -702,10 +702,10 @@
         </div>
         
         <!-- Mobile Search Bar (hidden on desktop) -->
-        <!-- <div class="mobile-search-container">
+         <div class="mobile-search-container hidden md:hidden">
             <input type="text" class="search-input" placeholder="Search products...">
             <button class="search-btn">Search</button>
-        </div> -->
+        </div> 
         
         <!-- Navigation -->
         <nav class="nav-bar">
@@ -765,9 +765,9 @@
                                 <button class="qty-btn" onclick="updateQuantity('{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}', 1)">+</button>
                             </div>
                             <div>
-                                <button class="action-btn" onclick="moveToWishlist('{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}')">
+                                {% comment %} <button class="action-btn" onclick="moveToWishlist('{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}')">
                                     <i class="fa-regular fa-heart"></i> SAVE FOR LATER
-                                </button>
+                                </button> {% endcomment %}
                                 <button class="remove-btn" onclick="removeFromCart('{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}', this)">
                                     <i class="fa-solid fa-trash"></i> REMOVE
                                 </button>

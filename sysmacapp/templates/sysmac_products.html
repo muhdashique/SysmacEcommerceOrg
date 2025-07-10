@@ -2,11 +2,6 @@
 
 {% block content %}
 <div class="content-area">
-    {% comment %} <div class="page-header">
-        <h2 class="page-title">Sysmac Products</h2>
-        <p class="page-subtitle">Manage and view all Sysmac products</p>
-    </div> {% endcomment %}
-
     <div class="content-card">
         <div class="card-header">
             <h3 class="card-title">Product List</h3>
@@ -17,32 +12,57 @@
                     <thead>
                         <tr style="background-color: #f1f5f9; text-align: left;">
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Code</th>
+                            <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Image</th>
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Name</th>
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Product</th>
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Category</th>
-                            <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Unit</th>
-                            <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Tax Code</th>
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Company</th>
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Brand</th>
-                            <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Text6</th>
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Price</th>
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Original Price</th>
+                            <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Actions</th>
                         </tr>
                     </thead>
                     <tbody>
                         {% for product in products %}
                         <tr style="border-bottom: 1px solid #e2e8f0;">
                             <td style="padding: 12px 16px;">{{ product.code }}</td>
-                            <td style="padding: 12px 16px;">{{ product.name }}</td>
-                            <td style="padding: 12px 16px;">{{ product.product }}</td>
-                            <td style="padding: 12px 16px;">{{ product.catagory }}</td>
-                            <td style="padding: 12px 16px;">{{ product.unit }}</td>
-                            <td style="padding: 12px 16px;">{{ product.taxtcode }}</td>
-                            <td style="padding: 12px 16px;">{{ product.company }}</td>
-                            <td style="padding: 12px 16px;">{{ product.brand }}</td>
-                            <td style="padding: 12px 16px;">{{ product.text6 }}</td>
-                            <td style="padding: 12px 16px;">-{{ product.price }}</td>
-                            <td style="padding: 12px 16px;">-{{ product.original_price }}</td>
+                            <td style="padding: 12px 16px;">
+                                {% if product.edited_image %}
+                                    <img src="{{ product.edited_image.url }}" alt="{{ product.edited_name|default:product.name }}" style="width: 50px; height: 50px; object-fit: cover; border-radius: 4px;">
+                                {% else %}
+                                    <div style="width: 50px; height: 50px; background-color: #f1f5f9; display: flex; align-items: center; justify-content: center; border-radius: 4px;">
+                                        <span style="font-size: 10px; color: #64748b;">No image</span>
+                                    </div>
+                                {% endif %}
+                            </td>
+                            <td style="padding: 12px 16px;">
+                                {{ product.edited_name|default:product.name }}
+                            </td>
+                            <td style="padding: 12px 16px;">
+                                {{ product.edited_product|default:product.product }}
+                            </td>
+                            <td style="padding: 12px 16px;">
+                                {{ product.edited_category|default:product.catagory }}
+                            </td>
+                            <td style="padding: 12px 16px;">
+                                {{ product.edited_company|default:product.company }}
+                            </td>
+                            <td style="padding: 12px 16px;">
+                                {{ product.edited_brand|default:product.brand }}
+                            </td>
+                            <td style="padding: 12px 16px;">
+                                ₹{{ product.edited_price|default:product.price }}
+                            </td>
+                            <td style="padding: 12px 16px;">
+                                ₹{{ product.original_price }}
+                            </td>
+                            <td style="padding: 12px 16px;">
+                                <a href="{% url 'edit_api_product' product.code %}" class="btn btn-sm btn-primary">Edit</a>
+                                {% if product.code in edited_products %}
+                                <a href="{% url 'delete_api_product' product.code %}" class="btn btn-sm btn-danger">Delete</a>
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -53,15 +73,9 @@
 </div>
 
 <script>
-    // Update the active navigation item
     document.addEventListener('DOMContentLoaded', function() {
-        // Remove active class from all links
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
-        
-        // Add active class to Sysmac Products link
         document.querySelector('.nav-link[data-page="sysmac"]').classList.add('active');
-        
-        // Update page title and breadcrumb
         document.getElementById('page-title').textContent = 'Sysmac Products';
         document.querySelector('.breadcrumb').textContent = 'Dashboard / Sysmac Products';
     });
