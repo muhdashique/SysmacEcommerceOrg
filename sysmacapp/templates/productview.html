@@ -725,6 +725,16 @@
         .notification.info {
             background: #1976d2;
         }
+        .btn-whatsapp {
+    background: #FF6B35;
+    color: white;
+    flex: 1;
+}
+
+.btn-whatsapp:hover {
+    background:rgb(248, 166, 136);
+    transform: translateY(-2px);
+}
     </style>
 </head>
 
@@ -769,10 +779,6 @@
                             <div class="profile-email">{{ user.email }}</div>
                         </div>
                         <div class="dropdown-menu">
-                            <!-- <a href="#" class="dropdown-item">
-                                <i class="fa-solid fa-box"></i>
-                                My Orders
-                            </a> -->
                             <a href="{% url 'wishlist' %}" class="dropdown-item">
                                 <i class="fa-solid fa-heart"></i>
                                 My Wishlist
@@ -807,8 +813,6 @@
                 <a href="{% url 'home' %}" class="nav-item">Home</a>
                 <a href="#" class="nav-item">></a>
                 <a href="#" class="nav-item">{{ product.name }}</a>
-                <!-- <a href="#" class="nav-item">Mobile</a>
-                <a href="#" class="nav-item">Accessories</a>  -->
             </div>
         </nav>
     </header>
@@ -843,104 +847,107 @@
             </div>
         </div>
 
-        <!-- In the product-details section of productview.html -->
-<div class="product-details">
-    <h1 class="product-title">
-        {% if is_custom_product %}
-            {{ product.name }}
-        {% else %}
-            {{ product.edited_name|default:product.name }}
-        {% endif %}
-    </h1>
-
-    <div class="rating-section">
-        <span class="rating">4.4 ★</span>
-        <span class="rating-details">0 Ratings & Reviews</span>
-        <span class="assured-badge">✓ Assured</span>
-    </div>
-
-    <div class="pricing-section">
-        <div class="special-price">Special price</div>
-        <div>
-            <span class="current-price">
-                ₹{% if is_custom_product %}
-                    {{ product.price }}
+        <div class="product-details">
+            <h1 class="product-title">
+                {% if is_custom_product %}
+                    {{ product.name }}
                 {% else %}
-                    {{ product.edited_price|default:product.price }}
+                    {{ product.edited_name|default:product.name }}
                 {% endif %}
-            </span>
-            <span class="original-price">
-                ₹{% if is_custom_product %}
-                    {{ product.original_price|default:product.price|add:"1000" }}
-                {% else %}
-                    {{ product.edited_original_price|default:product.original_price|default:product.price|add:"1000" }}
+            </h1>
+
+            {% comment %} <div class="rating-section">
+                <span class="rating">4.4 ★</span>
+                <span class="rating-details">0 Ratings & Reviews</span>
+                <span class="assured-badge">✓ Assured</span>
+            </div> {% endcomment %}
+
+            <div class="pricing-section">
+                <div class="special-price">Price</div>
+                <div>
+                    <span class="current-price">
+                        ₹{% if is_custom_product %}
+                            {{ product.price }}
+                        {% else %}
+                            {{ product.edited_price|default:product.price }}
+                        {% endif %}
+                    </span>
+                    {% comment %} <span class="original-price">
+                        ₹{% if is_custom_product %}
+                            {{ product.original_price|default:product.price|add:"1000" }}
+                        {% else %}
+                            {{ product.edited_original_price|default:product.original_price|default:product.price|add:"1000" }}
+                        {% endif %}
+                    </span> {% endcomment %}
+                    {% comment %} <span class="discount">25% off</span> {% endcomment %}
+                </div>
+            </div>
+
+            {% comment %} <div class="delivery-info">
+                <strong>Delivery available</strong><br>
+                Check availability in your area
+            </div> {% endcomment %}
+
+            <div class="highlights">
+                <h3 class="section-title">Product Details</h3>
+                <div class="highlight-item">
+                    Brand: {% if is_custom_product %}
+                        {{ product.brand|default:"Not specified" }}
+                    {% else %}
+                        {{ product.edited_brand|default:product.brand|default:"Not specified" }}
+                    {% endif %}
+                </div>
+                <div class="highlight-item">
+                    Company: {% if is_custom_product %}
+                        {{ product.company|default:"Not specified" }}
+                    {% else %}
+                        {{ product.edited_company|default:product.company|default:"Not specified" }}
+                    {% endif %}
+                </div>
+                <div class="highlight-item">
+                    Category: {% if is_custom_product %}
+                        {{ product.category|default:"Not specified" }}
+                    {% else %}
+                        {{ product.edited_category|default:product.catagory|default:"Not specified" }}
+                    {% endif %}
+                </div>
+                <div class="highlight-item">
+                    Product Type: {% if is_custom_product %}
+                        {{ product.product_type|default:"Not specified" }}
+                    {% else %}
+                        {{ product.edited_product|default:product.product|default:"Not specified" }}
+                    {% endif %}
+                </div>
+                {% if product.description or product.edited_description %}
+                <div class="highlight-item">
+                    Description: {{ product.edited_description|default:product.description }}
+                </div>
                 {% endif %}
-            </span>
-            <span class="discount">25% off</span>
-        </div>
-    </div>
+            </div>
 
-    <div class="delivery-info">
-        <strong>Delivery available</strong><br>
-        Check availability in your area
-    </div>
+            <!-- Action buttons -->
+            <div class="action-buttons">
+                <button class="btn btn-cart" id="addToCartBtn"
+                    data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+                    data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-in-cart="false">
+                    <i class="fas fa-shopping-cart"></i>
+                    <span class="btn-text">ADD TO CART</span>
+                </button>
+                
+                <button class="btn btn-whatsapp" id="whatsappBtn">
+                    <i class="fab fa-whatsapp"></i> 
+                    <span class="btn-text">ENQUIRY VIA WHATSAPP</span>
+                </button>
 
-    <div class="highlights">
-        <h3 class="section-title">Product Details</h3>
-        <div class="highlight-item">
-            Brand: {% if is_custom_product %}
-                {{ product.brand|default:"Not specified" }}
-            {% else %}
-                {{ product.edited_brand|default:product.brand|default:"Not specified" }}
-            {% endif %}
+                <button class="btn btn-wishlist {% if in_wishlist %}added{% endif %}" id="addToWishlistBtn"
+    data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+    data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" 
+    data-wishlist-action="{% if in_wishlist %}remove{% else %}add{% endif %}">
+    <i class="{% if in_wishlist %}fas{% else %}far{% endif %} fa-heart"></i>
+    <span class="btn-text">{% if in_wishlist %}WISHLISTED{% else %}WISHLIST{% endif %}</span>
+</button>
+            </div>
         </div>
-        <div class="highlight-item">
-            Company: {% if is_custom_product %}
-                {{ product.company|default:"Not specified" }}
-            {% else %}
-                {{ product.edited_company|default:product.company|default:"Not specified" }}
-            {% endif %}
-        </div>
-        <div class="highlight-item">
-            Category: {% if is_custom_product %}
-                {{ product.category|default:"Not specified" }}
-            {% else %}
-                {{ product.edited_category|default:product.catagory|default:"Not specified" }}
-            {% endif %}
-        </div>
-        <div class="highlight-item">
-            Product Type: {% if is_custom_product %}
-                {{ product.product_type|default:"Not specified" }}
-            {% else %}
-                {{ product.edited_product|default:product.product|default:"Not specified" }}
-            {% endif %}
-        </div>
-        {% if product.description or product.edited_description %}
-        <div class="highlight-item">
-            Description: {{ product.edited_description|default:product.description }}
-        </div>
-        {% endif %}
-    </div>
-
-    <!-- Action buttons -->
-    <div class="action-buttons">
-        <button class="btn btn-cart" id="addToCartBtn"
-            data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-            data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-in-cart="false">
-            <i class="fas fa-shopping-cart"></i>
-            <span class="btn-text">ADD TO CART</span>
-        </button>
-        <button class="btn btn-buy">
-            <i class="fas fa-bolt"></i> BUY NOW
-        </button>
-        <button class="btn btn-wishlist" id="addToWishlistBtn"
-            data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-            data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}" data-wishlist-action="add">
-            <i class="far fa-heart"></i>
-            <span class="btn-text">WISHLIST</span>
-        </button>
-    </div>
-</div>
         <div id="notificationContainer"></div>
     </div>
 
@@ -1149,7 +1156,6 @@ class WishlistManager {
         this.wishlistBtn = document.getElementById('addToWishlistBtn');
         this.notificationContainer = document.getElementById('notificationContainer');
         
-        // Initialize only if elements exist
         if (this.wishlistBtn && this.notificationContainer) {
             this.init();
         } else {
@@ -1158,42 +1164,9 @@ class WishlistManager {
     }
 
     init() {
-        // Don't set initial state here - let the server check happen first
-        // this.updateButtonState(false); // REMOVE THIS LINE
-        
-        // Check actual status from server first
-        this.checkInitialStatus();
-        
-        // Add event listener
+        // Initial state is set by server-side template
+        // Add event listener for toggling
         this.wishlistBtn.addEventListener('click', (e) => this.handleWishlistToggle(e));
-    }
-
-    async checkInitialStatus() {
-        try {
-            const productId = this.wishlistBtn.dataset.productId;
-            const isCustom = this.wishlistBtn.dataset.isCustom === 'true';
-            
-            const response = await fetch(`/wishlist/check/${productId}/?is_custom=${isCustom}`, {
-                method: 'GET',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-CSRFToken': this.getCSRFToken(), // Add CSRF token
-                },
-                credentials: 'same-origin'
-            });
-
-            if (response.ok) {
-                const data = await response.json();
-                this.updateButtonState(data.in_wishlist);
-            } else {
-                // If API call fails, assume product is not in wishlist
-                this.updateButtonState(false);
-            }
-        } catch (error) {
-            console.error('Error checking wishlist status:', error);
-            // If there's an error, assume product is not in wishlist
-            this.updateButtonState(false);
-        }
     }
 
     async handleWishlistToggle(e) {
@@ -1287,11 +1260,9 @@ class WishlistManager {
     }
 
     updateButtonState(isInWishlist) {
-        // Safely get elements
         const icon = this.wishlistBtn.querySelector('i');
         const btnText = this.wishlistBtn.querySelector('.btn-text');
         
-        // Check if elements exist before manipulating
         if (!icon || !btnText) {
             console.error('Wishlist button elements not found');
             return;
@@ -1329,19 +1300,18 @@ class WishlistManager {
             }
         } else {
             this.wishlistBtn.disabled = false;
-            // The button state will be updated by updateButtonState method
-            // so we don't need to set the final state here
+            // Restore the appropriate icon based on current state
+            const isInWishlist = this.wishlistBtn.dataset.wishlistAction === 'remove';
+            this.updateButtonState(isInWishlist);
         }
     }
 
     getCSRFToken() {
-        // Try to get CSRF token from meta tag first
         const csrfMeta = document.querySelector('meta[name="csrf-token"]');
         if (csrfMeta) {
             return csrfMeta.getAttribute('content');
         }
         
-        // Fallback to cookie method
         const csrfCookie = document.cookie.split('; ')
             .find(row => row.startsWith('csrftoken='));
         return csrfCookie ? csrfCookie.split('=')[1] : '';
@@ -1383,9 +1353,9 @@ let cartManager, wishlistManager;
 
 document.addEventListener('DOMContentLoaded', function() {
     cartManager = new CartManager();
-    wishlistManager = new WishlistManager();
+     wishlistManager = new WishlistManager()
     
-    // Profile dropdown functionality (existing)
+    // Profile dropdown functionality
     const profileIcon = document.getElementById('profileIcon');
     const profileDropdown = document.getElementById('profileDropdown');
     
@@ -1405,15 +1375,6 @@ document.addEventListener('DOMContentLoaded', function() {
             e.stopPropagation();
         });
     }
-    
-    // Buy now button functionality
-    document.querySelector('.btn-buy').addEventListener('click', function() {
-        {% if not user.is_authenticated %}
-            window.location.href = "{% url 'login' %}";
-            return;
-        {% endif %}
-        cartManager.showNotification('Proceeding to checkout!', 'info');
-    });
     
     // Search functionality
     const searchBtn = document.querySelector('.search-btn');
@@ -1452,8 +1413,56 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
+class WhatsAppManager {
+    constructor() {
+        this.whatsappBtn = document.getElementById('whatsappBtn');
+        if (this.whatsappBtn) {
+            this.whatsappBtn.addEventListener('click', () => this.sendWhatsAppMessage());
+        }
+    }
 
+    sendWhatsAppMessage() {
+        const productTitle = document.querySelector('.product-title').textContent.trim();
+        const currentPrice = document.querySelector('.current-price').textContent.trim();
+        const originalPrice = document.querySelector('.original-price').textContent.trim();
+        const discount = document.querySelector('.discount').textContent.trim();
+        
+        // Get product ID/code from the button data attribute
+        const productId = document.getElementById('addToCartBtn').dataset.productId;
+        const isCustomProduct = document.getElementById('addToCartBtn').dataset.isCustom === 'true';
+        
+        // Get product details from highlights
+        const highlightItems = document.querySelectorAll('.highlight-item');
+        let details = '';
+        highlightItems.forEach(item => {
+            details += `• ${item.textContent.trim()}\n`;
+        });
 
+        // Construct the WhatsApp message with better formatting
+        let message = `🛍️ *PRODUCT ENQUIRY* 🛍️\n\n`;
+        message += `📋 *Product Details:*\n\n`;
+        message += `➡️ *${productTitle}*\n`;
+        message += `• ${isCustomProduct ? 'Product ID' : 'Product Code'}: ${productId}\n`;
+        message += `• Current Price: ${currentPrice}\n`;
+        message += `• Original Price: ${originalPrice} | Discount: ${discount}\n\n`;
+        message += `🔍 *Product Information:*\n${details}\n\n`;
+        message += `📝 *Notes:* I'm interested in this product. Please provide more details.\n\n`;
+        message += `Thanks! Looking forward to your response. 🙏`;
+
+        // Encode the message for URL
+        const encodedMessage = encodeURIComponent(message);
+        const whatsappNumber = "918129139506";
+        const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+        
+        // Open WhatsApp in a new tab
+        window.open(whatsappUrl, '_blank');
+    }
+}
+
+// Initialize WhatsApp manager
+document.addEventListener('DOMContentLoaded', function() {
+    const whatsappManager = new WhatsAppManager();
+});
 </script>
 
 </body>

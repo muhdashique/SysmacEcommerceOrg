@@ -348,9 +348,9 @@
             padding-bottom: 30px;
             margin-bottom: 40px;
             
-             max-height: calc(180vh - 300px); /* Adjust based on your needs */
+             {% comment %} max-height: calc(180vh - 300px); /* Adjust based on your needs */
     overflow-y: auto;
-    position: relative;
+    position: relative; {% endcomment %}
         }
 
         .product-grid-container {
@@ -438,17 +438,18 @@
 
         .product-image {
             height: 200px;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            background: #ffffff;
             display: flex;
             align-items: center;
             justify-content: center;
             position: relative;
+
         }
 
         .product-image img {
             width: 100%;
             height: 100%;
-            object-fit: cover;
+            object-fit: contain;
         }
 
         .discount-badge {
@@ -462,7 +463,7 @@
             font-size: 12px;
             font-weight: 600;
         }
-
+{% comment %} 
         .wishlist-btn {
             position: absolute;
             top: 15px;
@@ -483,7 +484,7 @@
         .wishlist-btn:hover {
             background: #ff6b35;
             color: white;
-        }
+        } {% endcomment %}
 
         .product-info {
             padding: 20px;
@@ -659,6 +660,7 @@
             text-align: center;
             color: #bdc3c7;
             font-size: 14px;
+            padding-bottom: 10px;
         }
 
         /* Prevent card navigation when clicking buttons */
@@ -874,22 +876,46 @@
             /* Disable further clicks */
         }
 
-        .wishlist-btn.in-wishlist {
-            background: #ff6b35 !important;
-            color: white !important;
-        }
+        .wishlist-btn {
+    position: absolute;
+    top: 15px;
+    right: 15px;
+    width: 30px;
+    height: 30px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.8);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #ff6b35;
+    transition: all 0.3s ease;
+    cursor: pointer;
+    z-index: 2;
+}
 
-        .wishlist-btn.in-wishlist i {
-            color: white !important;
-        }
+.wishlist-btn:hover {
+    background: #ff6b35;
+    color: white;
+}
+
+.wishlist-btn.in-wishlist {
+    background: #ff6b35 !important;
+    color: white !important;
+}
+
+.wishlist-btn.in-wishlist i {
+    color: white !important;
+}
 
         .added-to-cart {
-            background: #4CAF50 !important;
-            /* Green color */
-            pointer-events: none;
-            /* Disable further clicks */
-        }
-
+    background: #4CAF50 !important;
+    color: white !important;
+    /* Remove pointer-events: none to allow clicking */
+}
+.add-to-cart-btn.loading {
+    pointer-events: none;
+    opacity: 0.7;
+}
 
     {% comment %} search bar clear button {% endcomment %}
     .search-input {
@@ -947,6 +973,28 @@
             font-size: 11px;
         }
     }
+    .product-card .add-to-cart-btn,
+.product-card .wishlist-btn {
+    pointer-events: auto !important;
+}
+
+       .footer-links {
+            font-size: 14px;
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+        }
+        
+        .footer-links a {
+            text-decoration: none;
+            color: #bdc3c7;
+            transition: color 0.3s ease, text-decoration 0.3s ease;
+        }
+        
+        .footer-links a:hover {
+            color: #3498db;
+            text-decoration: underline;
+        }
     </style>
 </head>
 
@@ -988,8 +1036,7 @@
                     <!-- Profile Dropdown -->
                     <div class="profile-dropdown" id="profileDropdown">
                         <div class="profile-info">
-                            <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:""
-                                }}</div>
+                            <div class="profile-name">{{ user.first_name|default:"User" }} {{ user.last_name|default:"" }}</div>
                             <div class="profile-email">{{ user.email }}</div>
                         </div>
                         <div class="dropdown-menu">
@@ -1022,8 +1069,12 @@
         <!-- Mobile Search Bar (hidden on desktop) -->
         <div class="mobile-search-container">
             <input type="text" class="search-input" placeholder="Search products...">
+            <button class="clear-btn" title="Clear search">
+                <i class="fas fa-times"></i>
+            </button>
             <button class="search-btn">Search</button>
         </div>
+
 
         <!-- Simplified Navigation - Only show main categories -->
         <nav class="nav-bar">
@@ -1070,83 +1121,102 @@
                     <div class="sort-container">
                         <span style="color: #6c757d; font-size: 14px;">Sort by</span>
                         <select class="sort-dropdown" id="sortFilter">
-                            <option value="featured" {% if current_sort == 'featured' %}selected{% endif %}>Featured</option>
+                            <option value="all" {% if current_sort == 'all' or not current_sort %}selected{% endif %}>All</option>
+                            {% comment %} <option value="featured" {% if current_sort == 'featured' %}selected{% endif %}>Featured</option> {% endcomment %}
                             <option value="price_low_high" {% if current_sort == 'price_low_high' %}selected{% endif %}>Price: Low to High</option>
                             <option value="price_high_low" {% if current_sort == 'price_high_low' %}selected{% endif %}>Price: High to Low</option>
-                            <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest</option>
-                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Popular</option>
+                            {% comment %} <option value="newest" {% if current_sort == 'newest' %}selected{% endif %}>Newest</option>
+                            <option value="popular" {% if current_sort == 'popular' %}selected{% endif %}>Popular</option> {% endcomment %}
                         </select>
                     </div>
                 </div>
             </div>
 
-            <div class="product-grid">
-                {% for product in products %}
-                <div class="product-card"
-                    data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}">
-                    <div class="product-image">
-                        {% if product.edited_image %}
-                            <img src="{{ product.edited_image.url }}" class="w-full h-full object-cover">
-                        {% elif product.main_image %}
-                            <img src="{{ product.main_image.url }}" class="w-full h-full object-cover">
-                        {% elif product.image %}
-                            <img src="{{ product.image }}" class="w-full h-full object-cover">
-                        {% else %}
-                            <img src="{% static 'images/productdemo.jpg' %}" class="w-full h-full object-cover">
-                        {% endif %}
-                    
-                        <!-- Wishlist button remains the same -->
-                        <div class="wishlist-btn {% if product.id in wishlist_ids or product.code in wishlist_api_ids %}in-wishlist{% endif %}"
-                            data-wishlist-action="{% if product.id in wishlist_ids or product.code in wishlist_api_ids %}remove{% else %}add{% endif %}"
-                            data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-                            data-is-custom="{% if product.id %}true{% else %}false{% endif %}">
-                            <i class="fa-{% if product.id in wishlist_ids or product.code in wishlist_api_ids %}solid{% else %}regular{% endif %} fa-heart"></i>
-                        </div>
-                    </div>
-                    <div class="product-info">
-                        <div class="product-category">{{ product.edited_category|default:product.catagory|upper }}</div>
-                        <div class="product-name">{{ product.edited_name|default:product.name }}</div>
-                        <div class="product-brand">{{ product.edited_brand|default:product.brand }}</div>
-                        <div class="product-company">{{ product.edited_company|default:product.company }}</div>
-                        <div class="product-type">{{ product.edited_product|default:product.product }}</div>
-                        <div class="price-section">
-                            <div class="current-price">
-                                {% if product.edited_price %}
-                                    {{ product.edited_price }} /-
-                                {% elif product.price %}
-                                    {{ product.price }} /-
-                                {% else %}
-                                    0.00 /-
-                                {% endif %}
-                            </div>
-                            {% if product.original_price and product.original_price != product.edited_price|default:product.price|default:"0.00" %}
-                                <div class="original-price">{{ product.original_price }} /-</div>
-                            {% endif %}
-                        </div>
-                        <button
-                            class="add-to-cart-btn {% if product.id in cart_ids or product.code in cart_api_ids %}added-to-cart{% endif %}"
-                            data-product-id="{% if product.id %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-                            data-is-custom="{% if product.id %}true{% else %}false{% endif %}"
-                            data-cart-action="{% if product.id in cart_ids or product.code in cart_api_ids %}remove{% else %}add{% endif %}">
-                            {% if product.id in cart_ids or product.code in cart_api_ids %}
-                            <i class="fas fa-check"></i> Added to Cart
-                            {% else %}
-                            ADD TO CART
-                            {% endif %}
-                        </button>
-                    </div>
+           <div class="product-grid">
+    {% for product in page_obj %}
+    <div class="product-card"
+        data-product-id="{% if product.is_custom %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+        data-product-type="{% if product.is_custom %}custom{% else %}api{% endif %}">
+        <div class="product-image">
+            {% if product.edited_image %}
+                <img src="{{ product.edited_image.url }}" class="w-full h-full object-cover">
+            {% elif product.image %}
+                <img src="{{ product.image }}" class="w-full h-full object-cover">
+            {% elif product.is_custom and product.main_image %}
+                <img src="{{ product.main_image }}" class="w-full h-full object-cover">
+            {% else %}
+                <img src="{% static 'images/productdemo.jpg' %}" class="w-full h-full object-cover">
+            {% endif %}
+            
+            <!-- Wishlist button -->
+{% comment %} <div class="wishlist-btn 
+     {% if product.is_custom and product.id|stringformat:'s' in wishlist_ids or not product.is_custom and product.code|stringformat:'s' in wishlist_api_ids %}in-wishlist active{% endif %}"
+     data-wishlist-action="{% if product.is_custom and product.id|stringformat:'s' in wishlist_ids or not product.is_custom and product.code|stringformat:'s' in wishlist_api_ids %}remove{% else %}add{% endif %}"
+     data-product-id="{% if product.is_custom %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+     data-is-custom="{{ product.is_custom|lower }}">
+    <i class="fa-{% if product.is_custom and product.id|stringformat:'s' in wishlist_ids or not product.is_custom and product.code|stringformat:'s' in wishlist_api_ids %}solid{% else %}regular{% endif %} fa-heart"></i>
+</div> {% endcomment %}
+        </div>
+        <div class="product-info">
+            <div class="product-category">{{ product.edited_category|default:product.catagory|upper }}</div>
+            <div class="product-name">{{ product.edited_name|default:product.name }}</div>
+            <div class="product-brand">{{ product.edited_brand|default:product.brand }}</div>
+            <div class="product-company">{{ product.edited_company|default:product.company }}</div>
+            <div class="product-type">{{ product.edited_product|default:product.product }}</div>
+            <div class="price-section">
+                <div class="current-price">
+                    {% if product.edited_price %}
+                        {{ product.edited_price }} /-
+                    {% else %}
+                        {{ product.price }} /-
+                    {% endif %}
                 </div>
-                {% endfor %}
+                {% if product.original_price and product.original_price != product.edited_price|default:product.price %}
+                    {% comment %} <div class="original-price">{{ product.original_price }} /-</div> {% endcomment %}
+                {% endif %}
             </div>
+            <button class="add-to-cart-btn {% if product.is_custom and product.id in cart_ids or not product.is_custom and product.code in cart_api_ids %}added-to-cart{% endif %}"
+                data-product-id="{% if product.is_custom %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+                data-is-custom="{{ product.is_custom|lower }}"
+                data-cart-action="{% if product.is_custom and product.id in cart_ids or not product.is_custom and product.code in cart_api_ids %}remove{% else %}add{% endif %}">
+                {% if product.is_custom and product.id in cart_ids or not product.is_custom and product.code in cart_api_ids %}
+                <i class="fas fa-check"></i> Added to Cart
+                {% else %}
+                ADD TO CART
+                {% endif %}
+            </button>
+        </div>
+    </div>
+    {% empty %}
+    <div class="col-span-4 text-center py-10">
+        <div class="bg-blue-50 p-6 rounded-lg">
+            <i class="fas fa-box-open text-4xl text-blue-400 mb-3"></i>
+            <h3 class="text-lg font-medium text-gray-900">No Products Found</h3>
+            <p class="mt-1 text-sm text-gray-500">
+                {% if request.user.is_superuser %}
+                Get started by adding your first product.
+                {% else %}
+                Check back later for our products.
+                {% endif %}
+            </p>
+        </div>
+    </div>
+    {% endfor %}
+</div>
 
-          {% if products.has_other_pages %}
+<!-- Pagination -->
+{% if page_obj.has_other_pages %}
 <div class="pagination">
     <ul>
-        <!-- First Page Button -->
-        {% if products.has_previous %}
+        {% if page_obj.has_previous %}
         <li class="page-item">
             <a class="page-link" href="?page=1{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}" aria-label="First">
                 <i class="fas fa-angle-double-left"></i>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}" aria-label="Previous">
+                <i class="fas fa-angle-left"></i>
             </a>
         </li>
         {% else %}
@@ -1155,16 +1225,6 @@
                 <i class="fas fa-angle-double-left"></i>
             </span>
         </li>
-        {% endif %}
-
-        <!-- Previous Page Button -->
-        {% if products.has_previous %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ products.previous_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}" aria-label="Previous">
-                <i class="fas fa-angle-left"></i>
-            </a>
-        </li>
-        {% else %}
         <li class="page-item disabled">
             <span class="page-link" aria-label="Previous">
                 <i class="fas fa-angle-left"></i>
@@ -1172,24 +1232,27 @@
         </li>
         {% endif %}
 
-        <!-- Page Numbers -->
-        {% for num in products.paginator.page_range %}
-            {% if products.number == num %}
+        {% for num in page_obj.paginator.page_range %}
+            {% if page_obj.number == num %}
             <li class="page-item active">
                 <span class="page-link">{{ num }}</span>
             </li>
-            {% elif num > products.number|add:'-3' and num < products.number|add:'3' %}
+            {% elif num > page_obj.number|add:'-3' and num < page_obj.number|add:'3' %}
             <li class="page-item">
                 <a class="page-link" href="?page={{ num }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}">{{ num }}</a>
             </li>
             {% endif %}
         {% endfor %}
 
-        <!-- Next Page Button -->
-        {% if products.has_next %}
+        {% if page_obj.has_next %}
         <li class="page-item">
-            <a class="page-link" href="?page={{ products.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}" aria-label="Next">
+            <a class="page-link" href="?page={{ page_obj.next_page_number }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}" aria-label="Next">
                 <i class="fas fa-angle-right"></i>
+            </a>
+        </li>
+        <li class="page-item">
+            <a class="page-link" href="?page={{ page_obj.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}" aria-label="Last">
+                <i class="fas fa-angle-double-right"></i>
             </a>
         </li>
         {% else %}
@@ -1198,16 +1261,6 @@
                 <i class="fas fa-angle-right"></i>
             </span>
         </li>
-        {% endif %}
-
-        <!-- Last Page Button -->
-        {% if products.has_next %}
-        <li class="page-item">
-            <a class="page-link" href="?page={{ products.paginator.num_pages }}{% if request.GET.search %}&search={{ request.GET.search }}{% endif %}{% if request.GET.category %}&category={{ request.GET.category }}{% endif %}{% if request.GET.sort %}&sort={{ request.GET.sort }}{% endif %}{% if request.GET.per_page %}&per_page={{ request.GET.per_page }}{% endif %}" aria-label="Last">
-                <i class="fas fa-angle-double-right"></i>
-            </a>
-        </li>
-        {% else %}
         <li class="page-item disabled">
             <span class="page-link" aria-label="Last">
                 <i class="fas fa-angle-double-right"></i>
@@ -1217,9 +1270,8 @@
     </ul>
 </div>
 
-<!-- Pagination Info -->
 <div class="pagination-info" style="text-align: center; margin-top: 15px; color: #6c757d; font-size: 14px;">
-    Showing {{ products.start_index }} to {{ products.end_index }} of {{ products.paginator.count }} products
+    Showing {{ page_obj.start_index }} to {{ page_obj.end_index }} of {{ page_obj.paginator.count }} products
 </div>
 {% endif %}
         </div>
@@ -1231,7 +1283,15 @@
             <div class="footer-bottom">
                 Copyright © SYSMAC All rights Reserved.
             </div>
+            <div class="footer-links">
+                <a href="/">Home</a>
+                <a href="/cancellation-refund">Cancellation & Refund Policy</a>
+                <a href="/terms">Terms and Conditions</a>
+                <a href="/privacy">Privacy Policy</a>
+                <a href="/contact">Contact Us</a>
+            </div>
         </div>
+          
     </footer>
 
     <script>
@@ -1288,21 +1348,21 @@
         });
 
        // Update category filter to work with pagination
-document.getElementById('categoryFilter').addEventListener('change', function () {
-    const category = this.value;
-    const currentUrl = new URL(window.location.href);
-    
-    if (category && category !== 'all') {
-        currentUrl.searchParams.set('category', category);
-    } else {
-        currentUrl.searchParams.delete('category');
-    }
-    
-    // Reset to first page when filtering
-    currentUrl.searchParams.set('page', '1');
-    
-    window.location.href = currentUrl.toString();
-});
+        document.getElementById('categoryFilter').addEventListener('change', function () {
+            const category = this.value;
+            const currentUrl = new URL(window.location.href);
+            
+            if (category && category !== 'all') {
+                currentUrl.searchParams.set('category', category);
+            } else {
+                currentUrl.searchParams.delete('category');
+            }
+            
+            // Reset to first page when filtering
+            currentUrl.searchParams.set('page', '1');
+            
+            window.location.href = currentUrl.toString();
+        });
       
         // Search functionality
         document.querySelector('.search-btn').addEventListener('click', performSearch);
@@ -1328,96 +1388,68 @@ document.getElementById('categoryFilter').addEventListener('change', function ()
                 }
             });
         }
-        
-        
-// Update sort functionality to work with pagination
-// Set current sort value on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    const sortParam = urlParams.get('sort');
-    
-    if (sortParam) {
-        document.querySelector('.sort-dropdown').value = sortParam;
-    }
-});
+                
+                
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const sortParam = urlParams.get('sort');
+            
+            if (sortParam) {
+                document.querySelector('.sort-dropdown').value = sortParam;
+            } else {
+                // Default to 'all' if no sort parameter (original order)
+                document.querySelector('.sort-dropdown').value = 'all';
+            }
+        });
 
-// Sort functionality
-document.querySelector('.sort-dropdown').addEventListener('change', function() {
-    const sortOption = this.value;
-    const currentUrl = new URL(window.location.href);
-    
-    // Update or remove sort parameter
-    if (sortOption && sortOption !== 'featured') {
-        currentUrl.searchParams.set('sort', sortOption);
-    } else {
-        currentUrl.searchParams.delete('sort');
-    }
-    
-    // Keep other existing parameters (like category)
-    const category = currentUrl.searchParams.get('category');
-    
-    // Reset to first page when sorting
-    currentUrl.searchParams.set('page', '1');
-    
-    window.location.href = currentUrl.toString();
-});
+        // Sort functionality
+        document.querySelector('.sort-dropdown').addEventListener('change', function() {
+            const sortOption = this.value;
+            const currentUrl = new URL(window.location.href);
+            
+            // Update or remove sort parameter
+            if (sortOption && sortOption !== 'all') {
+                currentUrl.searchParams.set('sort', sortOption);
+            } else {
+                // Remove sort parameter for "All" to show original order
+                currentUrl.searchParams.delete('sort');
+            }
+            
+            // Reset to first page when sorting
+            currentUrl.searchParams.set('page', '1');
+            
+            // Reload page with new sort parameter
+            window.location.href = currentUrl.toString();
+        });
 
 
-function sortProducts(sortOption) {
-    const productCards = Array.from(document.querySelectorAll('.product-card'));
-    
-    productCards.sort((a, b) => {
-        const priceA = parseFloat(a.querySelector('.current-price').textContent.replace(/[^\d.]/g, ''));
-        const priceB = parseFloat(b.querySelector('.current-price').textContent.replace(/[^\d.]/g, ''));
-        
-        if (sortOption === 'price_low_high') {
-            return priceA - priceB;
-        } else if (sortOption === 'price_high_low') {
-            return priceB - priceA;
+        // Set current values on page load
+        document.addEventListener('DOMContentLoaded', function() {
+            const urlParams = new URLSearchParams(window.location.search);
+            
+            // Set search input value
+            const searchParam = urlParams.get('search');
+            if (searchParam) {
+                document.querySelector('.search-input').value = searchParam;
+                document.querySelector('.mobile-search-container .search-input').value = searchParam;
+            }
+            
+            // Set category filter value
+            const categoryParam = urlParams.get('category');
+            if (categoryParam) {
+                document.getElementById('categoryFilter').value = categoryParam;
+            }
+            
+            // Set sort dropdown value
+            const sortParam = urlParams.get('sort');
+        if (sortParam) {
+            // Use the actual value attribute, not the display text
+            document.querySelector('.sort-dropdown').value = sortParam;
+        } else {
+            // Default to 'featured' if no sort parameter
+            document.querySelector('.sort-dropdown').value = 'all';
         }
-        return 0;
-    });
-    
-    const productGrid = document.querySelector('.product-grid');
-    productCards.forEach(card => productGrid.appendChild(card));
-}
-
-// Add this to your sort dropdown event listener if using client-side sorting
-document.querySelector('.sort-dropdown').addEventListener('change', function() {
-    sortProducts(this.value);
-});
-// Set current values on page load
-document.addEventListener('DOMContentLoaded', function() {
-    const urlParams = new URLSearchParams(window.location.search);
-    
-    // Set search input value
-    const searchParam = urlParams.get('search');
-    if (searchParam) {
-        document.querySelector('.search-input').value = searchParam;
-        document.querySelector('.mobile-search-container .search-input').value = searchParam;
-    }
-    
-    // Set category filter value
-    const categoryParam = urlParams.get('category');
-    if (categoryParam) {
-        document.getElementById('categoryFilter').value = categoryParam;
-    }
-    
-    // Set sort dropdown value
-    const sortParam = urlParams.get('sort');
-    if (sortParam) {
-        const sortMap = {
-            'featured': 'Featured',
-            'price_low_high': 'Price: Low to High',
-            'price_high_low': 'Price: High to Low',
-            'newest': 'Newest',
-            'popular': 'Popular'
-        };
-        
-        const sortDisplay = sortMap[sortParam] || 'Featured';
-        document.querySelector('.sort-dropdown').value = sortDisplay;
-    }
-});
+        });
 
 // Function to get CSRF token from cookies
         function getCookie(name) {
@@ -1437,7 +1469,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
         // Enhanced Wishlist Functionality
         document.querySelectorAll('.wishlist-btn').forEach(btn => {
-            btn.addEventListener('click', async function (e) {
+            btn.addEventListener('click', async function(e) {
                 e.preventDefault();
                 e.stopPropagation();
 
@@ -1451,15 +1483,10 @@ document.addEventListener('DOMContentLoaded', function() {
                 const action = this.dataset.wishlistAction;
                 const icon = this.querySelector('i');
 
-                // Get CSRF token
-                const csrftoken = getCookie('csrftoken');
-
                 try {
-                    // Show loading state
-                    this.style.pointerEvents = 'none';
-
-                    const url = action === 'add'
-                        ? `/wishlist/add/${productId}/`
+                    const csrftoken = getCookie('csrftoken');
+                    const url = action === 'add' 
+                        ? `/wishlist/add/${productId}/` 
                         : `/wishlist/remove/${productId}/`;
 
                     const response = await fetch(url, {
@@ -1478,36 +1505,59 @@ document.addEventListener('DOMContentLoaded', function() {
                         const data = await response.json();
                         if (data.success) {
                             // Toggle the button state
+                            this.classList.toggle('active');
+                            this.classList.toggle('in-wishlist');
+                            
+                            // Update the action for next click
+                            this.dataset.wishlistAction = action === 'add' ? 'remove' : 'add';
+                            
+                            // Toggle the heart icon
                             if (action === 'add') {
-                                this.classList.add('in-wishlist');
-                                this.dataset.wishlistAction = 'remove';
                                 icon.classList.remove('far');
                                 icon.classList.add('fas');
+                                showSuccessToast('Added to wishlist');
                             } else {
-                                this.classList.remove('in-wishlist');
-                                this.dataset.wishlistAction = 'add';
                                 icon.classList.remove('fas');
                                 icon.classList.add('far');
+                                showSuccessToast('Removed from wishlist');
                             }
-                        } else {
-                            console.error('Wishlist operation failed:', data.message);
                         }
-                    } else {
-                        console.error('HTTP error:', response.status);
                     }
                 } catch (error) {
                     console.error('Wishlist Error:', error);
-                } finally {
-                    this.style.pointerEvents = 'auto';
+                    showErrorToast('Failed to update wishlist');
                 }
             });
         });
 
+        // Add this helper function for success messages
+        function showSuccessToast(message) {
+            const toast = document.createElement('div');
+            toast.style.position = 'fixed';
+            toast.style.bottom = '20px';
+            toast.style.right = '20px';
+            toast.style.backgroundColor = '#4CAF50';
+            toast.style.color = 'white';
+            toast.style.padding = '15px';
+            toast.style.borderRadius = '5px';
+            toast.style.zIndex = '10000';
+            toast.style.boxShadow = '0 4px 8px rgba(0,0,0,0.1)';
+            toast.textContent = message;
+
+            document.body.appendChild(toast);
+
+            setTimeout(() => {
+                toast.style.opacity = '0';
+                setTimeout(() => toast.remove(), 500);
+            }, 3000);
+        }
+
         // Enhanced Cart Functionality
+       // Enhanced Cart Functionality
         document.querySelectorAll('.add-to-cart-btn').forEach(btn => {
             btn.addEventListener('click', async function (e) {
                 e.preventDefault();
-                e.stopPropagation();
+                e.stopPropagation(); // This is crucial to prevent event bubbling
 
                 if (!isAuthenticated) {
                     window.location.href = '/login/';
@@ -1521,10 +1571,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
                 try {
                     // Show loading state
-                    this.style.pointerEvents = 'none';
-                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' +
+                    this.classList.add('loading');
+                    this.innerHTML = '<i class="fas fa-spinner fa-spin"></i> ' + 
                         (action === 'add' ? 'Adding...' : 'Removing...');
-                    this.disabled = true;
 
                     const csrftoken = getCookie('csrftoken');
                     const endpoint = action === 'add'
@@ -1549,18 +1598,16 @@ document.addEventListener('DOMContentLoaded', function() {
                                 cartCountElement.textContent = data.cart_count || 0;
                             }
 
-                            // Toggle button state
+                            // Toggle button state without page reload
                             const newAction = action === 'add' ? 'remove' : 'add';
                             this.dataset.cartAction = newAction;
 
                             if (newAction === 'remove') {
                                 this.classList.add('added-to-cart');
                                 this.innerHTML = '<i class="fas fa-check"></i> Added to Cart';
-                                this.style.background = '#4CAF50';
                             } else {
                                 this.classList.remove('added-to-cart');
                                 this.innerHTML = 'ADD TO CART';
-                                this.style.background = '#ff6b35';
                             }
                         } else {
                             showErrorToast(data.message || 'Operation failed');
@@ -1576,8 +1623,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     showErrorToast('Network error - please try again');
                     this.innerHTML = originalHTML;
                 } finally {
-                    this.disabled = false;
-                    this.style.pointerEvents = 'auto';
+                    this.classList.remove('loading');
                 }
             });
         });
@@ -1606,10 +1652,11 @@ document.addEventListener('DOMContentLoaded', function() {
         }
 
         // Product card click handler
+       // Product card click handler - update to be more specific
         document.querySelectorAll('.product-card').forEach(card => {
             card.addEventListener('click', function (e) {
                 // Don't navigate if clicking on buttons or interactive elements
-                if (e.target.closest('.add-to-cart-btn') ||
+                if (e.target.closest('.add-to-cart-btn') || 
                     e.target.closest('.wishlist-btn') ||
                     e.target.closest('button') ||
                     e.target.closest('a') ||
@@ -1617,9 +1664,7 @@ document.addEventListener('DOMContentLoaded', function() {
                     e.target.tagName === 'INPUT' ||
                     e.target.tagName === 'SELECT' ||
                     e.target.tagName === 'I') {
-                    e.preventDefault();
-                    e.stopPropagation();
-                    return false;
+                    return;
                 }
 
                 const productId = this.dataset.productId;
@@ -1744,6 +1789,37 @@ document.addEventListener('DOMContentLoaded', function() {
         initializeSearchBar(mobileSearchContainer);
     }
 });
+function initializeSearchBar(container) {
+    const searchInput = container.querySelector('.search-input');
+    const clearBtn = container.querySelector('.clear-btn');
+
+    if (!searchInput || !clearBtn) return; // Prevents crashing
+
+    function toggleClearButton() {
+        clearBtn.classList.toggle('show', searchInput.value.trim().length > 0);
+    }
+
+    function clearSearch() {
+        searchInput.value = '';
+        clearBtn.classList.remove('show');
+        searchInput.focus();
+
+        const currentUrl = new URL(window.location.href);
+        currentUrl.searchParams.delete('search');
+        currentUrl.searchParams.set('page', '1');
+        window.location.href = currentUrl.toString();
+    }
+
+    searchInput.addEventListener('input', toggleClearButton);
+    clearBtn.addEventListener('click', function (e) {
+        e.preventDefault();
+        e.stopPropagation();
+        clearSearch();
+    });
+
+    toggleClearButton();
+}
+
     </script>
 </body>
 

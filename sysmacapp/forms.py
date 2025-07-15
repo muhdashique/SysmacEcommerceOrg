@@ -144,3 +144,16 @@ class EditedAPIProductForm(forms.ModelForm):
         self.fields['name'].required = True
         self.fields['price'].required = True
         self.fields['price'].help_text = 'Enter price in decimal format (e.g., 99.99)'
+
+
+
+from django import forms
+from .models import Product
+
+class ProductForm(forms.ModelForm):
+    class Meta:
+        model = Product
+        fields = [
+            'name', 'product_type', 'category', 'unit', 'tax_code',
+            'company', 'brand', 'text6', 'price', 'original_price', 'is_active'
+        ]

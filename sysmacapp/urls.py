@@ -18,14 +18,14 @@ urlpatterns = [
     path('custom-products/delete/<int:product_id>/', views.delete_custom_product, name='delete_custom_product'),
     path('cart/', views.cart_view, name='cart'),
     path('wishlist/', views.wishlist_view, name='wishlist'),
-    path('wishlist/add/<int:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
-    path('wishlist/remove/<int:product_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
+    path('wishlist/add/<str:product_id>/', views.add_to_wishlist, name='add_to_wishlist'),
+    path('wishlist/remove/<str:product_id>/', views.remove_from_wishlist, name='remove_from_wishlist'),
     path('cart/add/<int:product_id>/', views.add_to_cart, name='add_to_cart'),   
     path('products/<product_identifier>/', views.product_detail, name='product_detail'),
     path('cart/add-api/<str:product_code>/', views.add_api_product_to_cart, name='add_api_product_to_cart'),
     path('cart/remove/<str:product_code>/', views.remove_from_cart, name='remove_from_cart'),
     path('cart/remove-api/<str:product_code>/', views.remove_api_product_from_cart, name='remove_api_from_cart'),
-    path('cart/update/<int:product_id>/', views.update_cart_quantity, name='update_cart_quantity'),
+    path('cart/update/<product_identifier>/', views.update_cart_quantity, name='update_cart_quantity'),
     path('cart/check-api/<str:product_code>/', views.check_cart_status_api, name='check_cart_status_api'),
     
     path('wishlist/check-api/<str:product_code>/', views.check_wishlist_status_api, name='check_wishlist_status_api'),
@@ -39,6 +39,10 @@ urlpatterns = [
     path('cart/add-api/<str:product_code>/', views.add_api_product_to_cart, name='add_api_product_to_cart'),
     path('sysmac-products/edit/<str:product_code>/', views.edit_api_product, name='edit_api_product'),
     path('sysmac-products/delete/<str:product_code>/', views.delete_api_product, name='delete_api_product'),
+    path('privacy/', views.privacy_policy, name='privacy_policy'),
+    path('terms/', views.terms_and_conditions, name='terms_and_conditions'),
+    path('cancellation-refund/', views.cancellation_refund_policy, name='cancellation_refund_policy'),
+    path('contact/', views.contact, name='contact'),
     
     
 ]

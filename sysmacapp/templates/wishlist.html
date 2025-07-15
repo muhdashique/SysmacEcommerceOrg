@@ -300,7 +300,7 @@
         .wishlist-image img {
             width: 100%;
             height: 100%;
-            object-fit: contain;
+            object-fit: cover;
             padding: 10px;
         }
 
@@ -658,136 +658,123 @@
         </nav>
     </header>
 
-    <!-- Main Content -->
-    <div class="main-container">
-        <!-- Wishlist Items Section -->
-        <div class="wishlist-container">
-            <h1 class="wishlist-header">
-                My Wishlist
-            </h1>
+<div class="main-container">
+    <!-- Wishlist Items Section -->
+    <div class="wishlist-container">
+        <h1 class="wishlist-header">
+            My Wishlist
+        </h1>
 
-            <!-- Debug Information (remove in production) -->
-            <!-- <div style="background: #f0f0f0; padding: 10px; margin: 10px 0; border-radius: 5px; font-family: monospace; font-size: 12px;">
-        <strong>Debug Info:</strong><br>
-        Custom Products: {{ wishlist_items|length }}<br>
-        API Products: {{ api_products|length }}<br>
-        {% if wishlist_items %}
-            Custom Product IDs: 
+        {% if wishlist_items or api_products %}
+        <div class="wishlist-grid">
+            <!-- Custom Products -->
             {% for item in wishlist_items %}
-                {{ item.product.id }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}<br>
-        {% endif %}
-        {% if api_products %}
-            API Product Codes: 
-            {% for product in api_products %}
-                {{ product.code }}{% if not forloop.last %}, {% endif %}
-            {% endfor %}
-        {% endif %}
-    </div> -->
-
-            {% if wishlist_items or api_products %}
-            <div class="wishlist-grid">
-                <!-- Custom Products -->
-                <!-- Custom Products -->
-                {% for item in wishlist_items %}
-                {% if item.product %}
-                <div class="wishlist-item" data-product-id="{{ item.product.id }}" data-type="custom">
-                    <div class="wishlist-image">
-                        {% if item.product.main_image %}
-                        <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}">
-                        {% else %}
-                        <img src="{% static 'images/productdemo.jpg' %}" alt="Default product image">
+            {% if item.product %}
+                <div class="wishlist-image">
+                    {% if item.edited_image %}
+                        <img src="{{ item.edited_image.url }}" alt="{{ item.product.name|default:item.api_product_name }}" onerror="this.src='{% static 'images/productdemo.jpg' %}'">
+                    {% elif item.product and item.product.main_image %}
+                        <img src="{{ item.product.main_image.url }}" alt="{{ item.product.name }}" onerror="this.src='{% static 'images/productdemo.jpg' %}'">
+                    {% elif item.api_product.image %}
+                        <img src="{{ item.api_product.image }}" alt="{{ item.api_product.name }}" onerror="this.src='{% static 'images/productdemo.jpg' %}'">
+                    {% else %}
+                        <img src="{% static 'images/productdemo.jpg' %}" alt="No Image Available">
+                    {% endif %}
+                    <button class="remove-btn" onclick="removeFromWishlist('{{ item.product.id|default:item.api_product.code }}', '{{ item.product.id|yesno:"custom,api" }}')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                <div class="wishlist-info">
+                    <div class="wishlist-category">{{ item.product.category|default:"GENERAL"|upper }}</div>
+                    <div class="wishlist-name">{{ item.product.name }}</div>
+                    <div class="wishlist-price">
+                        {% if item.product.original_price or item.api_product.original_price %}
+                        <div class="wishlist-original-price">
+                            ₹{{ item.product.original_price|default:item.api_product.original_price }}
+                        </div>
                         {% endif %}
-                        <button class="remove-btn" onclick="removeFromWishlist('{{ item.product.id }}', 'custom')">
-                            <i class="fa-solid fa-trash"></i>
-                        </button>
+                        <div class="wishlist-current-price">
+                            ₹{{ item.product.price|default:item.api_product.price }}
+                        </div>
                     </div>
-                    <div class="wishlist-info">
-                        <div class="wishlist-category">{{ item.product.category|default:"GENERAL"|upper }}</div>
-                        <div class="wishlist-name">{{ item.product.name }}</div>
-                        <div class="wishlist-price">
-                            <div class="wishlist-current-price">₹{{ item.product.price }}</div>
-                            {% if item.product.original_price %}
-                            <div class="wishlist-original-price">₹{{ item.product.original_price }}</div>
+                    <div class="wishlist-actions">
+                        <button class="add-to-cart-btn {% if item.product.id in cart_ids %}added-to-cart{% endif %}"
+                            data-product-id="{{ item.product.id }}" data-is-custom="true"
+                            data-cart-action="{% if item.product.id in cart_ids %}remove{% else %}add{% endif %}">
+                            {% if item.product.id in cart_ids %}
+                            <i class="fas fa-check"></i> Added to Cart
+                            {% else %}
+                            ADD TO CART
                             {% endif %}
-                        </div>
-                        <div class="wishlist-actions">
-                            <button class="add-to-cart-btn {% if item.product.id in cart_ids %}added-to-cart{% endif %}"
-                                data-product-id="{{ item.product.id }}" data-is-custom="true"
-                                data-cart-action="{% if item.product.id in cart_ids %}remove{% else %}add{% endif %}">
-                                {% if item.product.id in cart_ids %}
-                                <i class="fas fa-check"></i> Added to Cart
-                                {% else %}
-                                ADD TO CART
-                                {% endif %}
-                            </button>
-                            <a href="{% url 'product_detail' product_identifier=item.product.id %}" class="view-btn">
-                                VIEW
-                            </a>
-                        </div>
-                    </div>
-                </div>
-                {% endif %}
-                {% endfor %}
-
-                <!-- API Products -->
-                <!-- API Products -->
-                {% for product in api_products %}
-                <div class="wishlist-item" data-product-id="{{ product.code }}" data-type="api">
-                    <div class="wishlist-image">
-                        {% if product.image %}
-                        <img src="{{ product.image }}" alt="{{ product.name }}"
-                            onerror="this.src='{% static 'images/productdemo.jpg' %}'">
-                        {% else %}
-                        <img src="{% static 'images/productdemo.jpg' %}" alt="{{ product.name }}">
-                        {% endif %}
-                        <button class="remove-btn" onclick="removeFromWishlist('{{ product.code }}', 'api')">
-                            <i class="fa-solid fa-trash"></i>
                         </button>
-                    </div>
-                    <div class="wishlist-info">
-                        <div class="wishlist-category">{{ product.category|default:"GENERAL"|upper }}</div>
-                        <div class="wishlist-name">{{ product.name }}</div>
-                        <div class="wishlist-price">
-                            <div class="wishlist-current-price">₹{{ product.price|default:"0" }}</div>
-                            {% if product.original_price %}
-                            <div class="wishlist-original-price">₹{{ product.original_price }}</div>
-                            {% endif %}
-                        </div>
-                        <div class="wishlist-actions">
-                            <button
-                                class="add-to-cart-btn {% if product.code in cart_api_ids %}added-to-cart{% endif %}"
-                                data-product-id="{{ product.code }}" data-is-custom="false"
-                                data-cart-action="{% if product.code in cart_api_ids %}remove{% else %}add{% endif %}">
-                                {% if product.code in cart_api_ids %}
-                                <i class="fas fa-check"></i> Added to Cart
-                                {% else %}
-                                ADD TO CART
-                                {% endif %}
-                            </button>
-                            <a href="{% url 'product_detail' product_identifier=product.code %}" class="view-btn">
-                                VIEW
-                            </a>
-                        </div>
+                        <a href="{% url 'product_detail' product_identifier=item.product.id %}" class="view-btn">
+                            VIEW
+                        </a>
                     </div>
                 </div>
-                {% endfor %}
-            </div>
-            {% else %}
-            <div class="empty-wishlist">
-                <div class="empty-icon">
-                    <i class="fa-regular fa-heart"></i>
-                </div>
-                <div class="empty-text">Your wishlist is empty</div>
-                <a href="{% url 'home' %}" class="shop-btn">
-                    <i class="fa-solid fa-bag-shopping"></i>
-                    Continue Shopping
-                </a>
             </div>
             {% endif %}
-        </div>
+            {% endfor %}
 
+            <!-- API Products -->
+            {% for product in api_products %}
+            <div class="wishlist-item" data-product-id="{{ product.code }}" data-type="api">
+                <div class="wishlist-image">
+                    {% if product.edited_image %}
+                    <img src="{{ product.edited_image.url }}" alt="{{ product.name }}"
+                        onerror="this.src='{% static 'images/productdemo.jpg' %}'">
+                    {% elif product.image %}
+                    <img src="{{ product.image }}" alt="{{ product.name }}"
+                        onerror="this.src='{% static 'images/productdemo.jpg' %}'">
+                    {% else %}
+                    <img src="{% static 'images/productdemo.jpg' %}" alt="{{ product.name }}">
+                    {% endif %}
+                    <button class="remove-btn" onclick="removeFromWishlist('{{ product.code }}', 'api')">
+                        <i class="fa-solid fa-trash"></i>
+                    </button>
+                </div>
+                <div class="wishlist-info">
+                    <div class="wishlist-category">{{ product.catagory|default:"GENERAL"|upper }}</div>
+                    <div class="wishlist-name">{{ product.edited_name|default:product.name }}</div>
+                    <div class="wishlist-price">
+                        {% if product.original_price %}
+                        <div class="wishlist-original-price">₹{{ product.original_price }}</div>
+                        {% endif %}
+                        <div class="wishlist-current-price">₹{{ product.api_product_price }}</div>
+                    </div>
+                    <div class="wishlist-actions">
+                        <button
+                            class="add-to-cart-btn {% if product.code in cart_api_ids %}added-to-cart{% endif %}"
+                            data-product-id="{{ product.code }}" data-is-custom="false"
+                            data-cart-action="{% if product.code in cart_api_ids %}remove{% else %}add{% endif %}">
+                            {% if product.code in cart_api_ids %}
+                            <i class="fas fa-check"></i> Added to Cart
+                            {% else %}
+                            ADD TO CART
+                            {% endif %}
+                        </button>
+                        <a href="{% url 'product_detail' product_identifier=product.code %}" class="view-btn">
+                            VIEW
+                        </a>
+                    </div>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+        {% else %}
+        <div class="empty-wishlist">
+            <div class="empty-icon">
+                <i class="fa-regular fa-heart"></i>
+            </div>
+            <div class="empty-text">Your wishlist is empty</div>
+            <a href="{% url 'home' %}" class="shop-btn">
+                <i class="fa-solid fa-bag-shopping"></i>
+                Continue Shopping
+            </a>
+        </div>
+        {% endif %}
     </div>
+</div>
 
     <!-- Footer -->
     <footer class="footer">
@@ -1256,6 +1243,9 @@
             }, 3000);
         }
     </script>
+
+
+
 </body>
 
 </html>

@@ -79,23 +79,87 @@ class CustomProduct(models.Model):
     
     def __str__(self):
         return self.name
+
+
+from django.db import models
+from django.core.exceptions import ValidationError
+
 class Wishlist(models.Model):
-    user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='wishlist')
-    product = models.ForeignKey(CustomProduct, on_delete=models.CASCADE, null=True, blank=True)
-    api_product_code = models.CharField(max_length=100, null=True, blank=True)
-    added_at = models.DateTimeField(auto_now_add=True)
+    """
+    Model to track user's wishlist items.
+    Can store either custom products (through ForeignKey) or API products (through product code).
+    """
+    
+    user = models.ForeignKey(
+        CustomUser, 
+        on_delete=models.CASCADE,
+        related_name='wishlist_items',
+        verbose_name='User'
+    )
+    
+    product = models.ForeignKey(
+        CustomProduct,
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='wishlisted_by',
+        verbose_name='Custom Product'
+    )
+    
+    api_product_code = models.CharField(
+        max_length=100,
+        null=True,
+        blank=True,
+        verbose_name='API Product Code',
+        help_text='Product code from external API'
+    )
+    
+    added_at = models.DateTimeField(
+        auto_now_add=True,
+        verbose_name='Added Date'
+    )
 
     class Meta:
-        unique_together = ('user', 'product', 'api_product_code')
-        verbose_name = 'Wishlist'
-        verbose_name_plural = 'Wishlists'
+        unique_together = [
+            ('user', 'product'),  # A user can't wishlist same custom product multiple times
+            ('user', 'api_product_code')  # A user can't wishlist same API product multiple times
+        ]
+        verbose_name = 'Wishlist Item'
+        verbose_name_plural = 'Wishlist Items'
+        ordering = ['-added_at']  # Newest items first
 
     def __str__(self):
         if self.product:
             return f"{self.user.email} - {self.product.name}"
-        elif self.api_product_code:
-            return f"{self.user.email} - API Product {self.api_product_code}"
-        return f"{self.user.email} - Unknown Product"
+        return f"{self.user.email} - API Product {self.api_product_code}"
+
+    def clean(self):
+        """
+        Validate that either product or api_product_code is set, but not both
+        """
+        if not self.product and not self.api_product_code:
+            raise ValidationError("Either product or API product code must be set")
+        
+        if self.product and self.api_product_code:
+            raise ValidationError("Cannot set both product and API product code")
+    
+    def save(self, *args, **kwargs):
+        self.full_clean()  # Run validation before saving
+        super().save(*args, **kwargs)
+
+    @property
+    def display_name(self):
+        """Get display name for the product"""
+        if self.product:
+            return self.product.name
+        return f"API Product {self.api_product_code}"
+
+    @property
+    def product_type(self):
+        """Get product type for templates"""
+        return 'custom' if self.product else 'api'
+
+
 class CartItem(models.Model):
     # Fixed: Changed User to CustomUser
     user = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='cart_items')
@@ -169,10 +233,6 @@ class Cart(models.Model):
         return total
 
 
-
-
-
-
 class EditedAPIProduct(models.Model):
     original_code = models.CharField(max_length=100, unique=True)
     name = models.CharField(max_length=200)
@@ -192,3 +252,24 @@ class EditedAPIProduct(models.Model):
     
     def __str__(self):
         return f"{self.name} (Edited)"        
+    
+
+# If you want to create a Product model to store API products locally
+class Product(models.Model):
+    code = models.CharField(max_length=100, unique=True)
+    name = models.CharField(max_length=200)
+    product_type = models.CharField(max_length=100, blank=True, null=True)
+    category = models.CharField(max_length=100, blank=True, null=True)
+    unit = models.CharField(max_length=50, blank=True, null=True)
+    tax_code = models.CharField(max_length=50, blank=True, null=True)
+    company = models.CharField(max_length=100, blank=True, null=True)
+    brand = models.CharField(max_length=100, blank=True, null=True)
+    text6 = models.CharField(max_length=100, blank=True, null=True)
+    price = models.DecimalField(max_digits=10, decimal_places=2)
+    original_price = models.DecimalField(max_digits=10, decimal_places=2, null=True, blank=True)
+    image = models.URLField(blank=True, null=True)  # Store API image URL
+    is_active = models.BooleanField(default=True)
+    last_synced = models.DateTimeField(auto_now=True)
+    
+    def __str__(self):
+        return f"{self.name} ({self.code})"

@@ -636,6 +636,282 @@
             color: #bdc3c7;
             font-size: 14px;
         }
+
+
+        /* Popup Modal Styles */
+.modal-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background-color: rgba(0, 0, 0, 0.5);
+    z-index: 1000;
+    backdrop-filter: blur(5px);
+}
+
+.modal-overlay.show {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.modal-content {
+    background: white;
+    border-radius: 15px;
+    max-width: 600px;
+    width: 90%;
+    max-height: 80vh;
+    overflow-y: auto;
+    box-shadow: 0 10px 40px rgba(0, 0, 0, 0.2);
+    animation: modalSlideIn 0.3s ease-out;
+}
+
+@keyframes modalSlideIn {
+    from {
+        transform: translateY(-50px);
+        opacity: 0;
+    }
+    to {
+        transform: translateY(0);
+        opacity: 1;
+    }
+}
+
+.modal-header {
+    padding: 20px;
+    border-bottom: 1px solid #e9ecef;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.modal-title {
+    font-size: 20px;
+    font-weight: 700;
+    color: #2c3e50;
+}
+
+.close-btn {
+    background: none;
+    border: none;
+    font-size: 24px;
+    cursor: pointer;
+    color: #6c757d;
+    padding: 0;
+    width: 30px;
+    height: 30px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    transition: all 0.3s ease;
+}
+
+.close-btn:hover {
+    background: #f8f9fa;
+    color: #ff6b35;
+}
+
+.modal-body {
+    padding: 20px;
+}
+
+.product-selection-item {
+    display: flex;
+    align-items: center;
+    gap: 15px;
+    padding: 15px;
+    border: 2px solid #e9ecef;
+    border-radius: 10px;
+    margin-bottom: 15px;
+    cursor: pointer;
+    transition: all 0.3s ease;
+}
+
+.product-selection-item:hover {
+    border-color: #ff6b35;
+    background: #fff8f5;
+}
+
+.product-selection-item.selected {
+    border-color: #ff6b35;
+    background: #fff8f5;
+}
+
+.product-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.product-selection-image {
+    width: 60px;
+    height: 60px;
+    border-radius: 8px;
+    object-fit: cover;
+    flex-shrink: 0;
+}
+
+.product-selection-details {
+    flex: 1;
+}
+
+.product-selection-name {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 5px;
+}
+
+.product-selection-price {
+    color: #ff6b35;
+    font-weight: 600;
+    font-size: 16px;
+}
+
+.product-selection-quantity {
+    color: #6c757d;
+    font-size: 14px;
+    margin-top: 3px;
+}
+
+.select-all-section {
+    margin-bottom: 20px;
+    padding: 15px;
+    background: #f8f9fa;
+    border-radius: 10px;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.select-all-checkbox {
+    width: 20px;
+    height: 20px;
+    cursor: pointer;
+}
+
+.select-all-label {
+    font-weight: 600;
+    color: #2c3e50;
+    cursor: pointer;
+}
+
+.modal-footer {
+    padding: 20px;
+    border-top: 1px solid #e9ecef;
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+}
+
+.selected-summary {
+    background: #f8f9fa;
+    padding: 15px;
+    border-radius: 10px;
+    border: 1px solid #e9ecef;
+}
+
+.summary-title {
+    font-weight: 600;
+    color: #2c3e50;
+    margin-bottom: 10px;
+}
+
+.summary-row {
+    display: flex;
+    justify-content: space-between;
+    margin-bottom: 8px;
+    font-size: 14px;
+}
+
+.summary-row.total {
+    font-weight: 700;
+    font-size: 16px;
+    color: #2c3e50;
+    border-top: 1px solid #ddd;
+    padding-top: 8px;
+    margin-top: 8px;
+}
+
+.modal-actions {
+    display: flex;
+    gap: 10px;
+}
+
+.cancel-btn {
+    flex: 1;
+    padding: 12px;
+    border: 2px solid #6c757d;
+    background: white;
+    color: #6c757d;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+}
+
+.cancel-btn:hover {
+    background: #6c757d;
+    color: white;
+}
+
+.proceed-btn {
+    flex: 2;
+    padding: 12px;
+    background: #25d366;
+    color: white;
+    border: none;
+    border-radius: 8px;
+    cursor: pointer;
+    font-weight: 600;
+    transition: all 0.3s ease;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.proceed-btn:hover {
+    background: #22c55e;
+}
+
+.proceed-btn:disabled {
+    background: #ccc;
+    cursor: not-allowed;
+}
+
+.no-items-message {
+    text-align: center;
+    color: #6c757d;
+    padding: 20px;
+    font-style: italic;
+}
+
+@media (max-width: 768px) {
+    .modal-content {
+        width: 95%;
+        max-height: 90vh;
+    }
+    
+    .modal-actions {
+        flex-direction: column;
+    }
+    
+    .cancel-btn, .proceed-btn {
+        flex: none;
+    }
+}
+.product-selection-code {
+    font-size: 12px;
+    color: #6c757d;
+    margin-bottom: 5px;
+    font-family: monospace;
+    background: #f8f9fa;
+    padding: 2px 6px;
+    border-radius: 4px;
+}
     </style>
 </head>
 
@@ -727,14 +1003,26 @@
                     {% for item in cart_items %}
                     <div class="cart-item" data-product-id="{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}">
                         <div class="item-row">
-                            <div class="item-image">
-                                <img src="{% static 'images/productdemo.jpg' %}" alt="{% if item.product %}{{ item.product.name }}{% else %}{{ item.api_product_name }}{% endif %}">
+                            <div class="wishlist-image h-28 w-28">
+                                {% if item.edited_image %}
+                                    <img src="{{ item.edited_image.url }}" alt="{% if item.product and item.product.name %}{{ item.product.name }}{% elif item.api_product_name %}{{ item.api_product_name }}{% else %}Product Image{% endif %}"
+                                        onerror="this.src='{% static 'images/productdemo.jpg' %}'">
+                                {% elif item.product and item.product.main_image %}
+                                    <img src="{{ item.product.main_image.url }}" alt="{% if item.product.name %}{{ item.product.name }}{% else %}Product Image{% endif %}"
+                                        onerror="this.src='{% static 'images/productdemo.jpg' %}'">
+                                {% else %}
+                                    <img src="{% static 'images/productdemo.jpg' %}" alt="No Image Available">
+                                {% endif %}
+                                {% comment %} <button class="remove-btn" onclick="removeFromWishlist('{{ product.code }}', 'api')">
+                                    <i class="fa-solid fa-trash"></i>
+                                </button> {% endcomment %}
                             </div>
+
                             <div class="item-details">
                                 <div class="item-title">{% if item.product %}{{ item.product.name }}{% else %}{{ item.api_product_name }}{% endif %}</div>
                                 <div class="item-subtitle">{% if item.product %}{{ item.product.brand }} - {{ item.product.product_type }}{% else %}SYSMAC Product{% endif %}</div>
                                 
-                                {% if item.product %}
+                                {% comment %} {% if item.product %}
                                     {% if item.product.stock > 0 %}
                                         <div class="in-stock">Delivery in 2-3 days</div>
                                     {% else %}
@@ -742,15 +1030,15 @@
                                     {% endif %}
                                 {% else %}
                                     <div class="in-stock">Delivery in 2-3 days</div>
-                                {% endif %}
+                                {% endif %} {% endcomment %}
                                 
                                 <div class="seller-info">Seller: SYSMAC {% if item.product and item.product.assured %}✓Assured{% endif %}</div>
                                 
                                 <div class="price-section">
                                     {% if item.product %}
                                         <span class="original-price">₹{{ item.product.original_price }}</span>
-                                        <span class="current-price">₹{{ item.product.price }}</span>
-                                        <span class="discount">{{ item.product.discount_percentage }}% Off</span>
+                                        {% comment %} <span class="current-price">₹{{ item.product.price }}</span> {% endcomment %}
+                                        {% comment %} <span class="discount">{{ item.product.discount_percentage }}% Off</span> {% endcomment %}
                                     {% else %}
                                         <span class="current-price">₹{{ item.api_product_price }}</span>
                                     {% endif %}
@@ -820,12 +1108,63 @@
                     <span>Safe and Secure Payments. Easy returns. 100% Authentic products.</span>
                 </div>
                 
-                <button class="place-order-btn" onclick="placeOrder()">PLACE ORDER</button>
+                <button class="place-order-btn" onclick="sendWhatsAppOrder()">
+    <i class="fa-brands fa-whatsapp"></i> PLACE ORDER VIA WHATSAPP
+</button>
             </div>
             {% endif %}
         </div>
-    </div>
 
+    </div>
+<div class="modal-overlay" id="productSelectionModal">
+    <div class="modal-content">
+        <div class="modal-header">
+            <h3 class="modal-title">Select Products for WhatsApp Enquiry</h3>
+            <button class="close-btn" onclick="closeProductSelectionModal()">&times;</button>
+        </div>
+        <div class="modal-body">
+            <div class="select-all-section">
+                <input type="checkbox" class="select-all-checkbox" id="selectAllCheckbox" onchange="toggleSelectAll()">
+                <label class="select-all-label" for="selectAllCheckbox">Select All Products</label>
+            </div>
+            <div id="productSelectionList">
+                <!-- Products will be populated here by JavaScript -->
+            </div>
+        </div>
+        <div class="modal-footer">
+            <div class="selected-summary" id="selectedSummary">
+                <div class="summary-title">Selected Items Summary</div>
+                <div class="summary-row">
+                    <span>Items:</span>
+                    <span id="selectedItemsCount">0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Subtotal:</span>
+                    <span id="selectedSubtotal">₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Discount:</span>
+                    <span id="selectedDiscount">-₹0</span>
+                </div>
+                <div class="summary-row">
+                    <span>Delivery:</span>
+                    <span id="selectedDelivery">FREE</span>
+                </div>
+                <div class="summary-row total">
+                    <span>Total Amount:</span>
+                    <span id="selectedTotal">₹0</span>
+                </div>
+            </div>
+            <div class="modal-actions">
+                <button class="cancel-btn" onclick="closeProductSelectionModal()">Cancel</button>
+                <button class="proceed-btn" id="proceedBtn" onclick="proceedWithWhatsApp()" disabled>
+                    <i class="fa-brands fa-whatsapp"></i>
+                    Proceed with WhatsApp
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
     <!-- Footer -->
     <footer class="footer">
         <div class="footer-content">
@@ -876,129 +1215,31 @@
         }
 
         // Remove from cart function
-        async function removeFromCart(productId, button = null) {
-            if (!productId) {
-                console.error('Product ID is required');
-                alert('Error: Could not identify product to remove');
-                return;
-            }
-
-            if (!isAuthenticated) {
-                window.location.href = '/login/';
-                return;
-            }
-            
-            if (confirm('Are you sure you want to remove this item from your cart?')) {
-                try {
-                    // Add loading state
-                    if (button) {
-                        button.disabled = true;
-                        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> REMOVING...';
-                    }
-
-                    // Determine if this is an API product (has letters in ID) or custom product (numeric ID)
-                    const isApiProduct = isNaN(productId);
-                    const endpoint = isApiProduct ? 
-                        `/cart/remove-api/${productId}/` : 
-                        `/cart/remove/${productId}/`;
-
-                    const response = await fetch(endpoint, {
-                        method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'X-CSRFToken': getCookie('csrftoken'),
-                        },
-                        credentials: 'same-origin'
-                    });
-                    
-                    if (!response.ok) {
-                        throw new Error(`Server responded with ${response.status}`);
-                    }
-                    
-                    let data;
-                    try {
-                        data = await response.json();
-                    } catch {
-                        throw new Error("Invalid JSON response from server");
-                    }
-
-                    
-                    if (data.success) {
-                        // Remove item from DOM
-                        const itemElement = document.querySelector(`.cart-item[data-product-id="${productId}"]`);
-                        if (itemElement) itemElement.remove();
-                        
-                        // Update cart count
-                        document.getElementById('cart-count').textContent = data.cart_count;
-                        
-                        // Update prices if cart not empty
-                        if (data.cart_count > 0 && data.total_price !== undefined) {
-                            updateCartPrices(data);
-                        } else {
-                            showEmptyCart();
-                        }
-                    } else {
-                        throw new Error(data.error || 'Failed to remove item');
-                    }
-                    
-                } catch (error) {
-                    console.error('Remove failed:', error);
-                    alert(error.message || 'Failed to remove item. Please try again.');
-                } finally {
-                    // Reset button state
-                    if (button) {
-                        button.disabled = false;
-                        button.innerHTML = '<i class="fa-solid fa-trash"></i> REMOVE';
-                    }
-                }
-            }
+async function removeFromCart(productId, button = null) {
+        if (!productId) {
+            console.error('Product ID is required');
+            alert('Error: Could not identify product to remove');
+            return;
         }
 
-        // Helper function to update prices in the UI
-        function updateCartPrices(data) {
-            // Update the price details in the summary section
-            const priceRows = document.querySelectorAll('.price-row');
-            if (priceRows.length > 0) {
-                priceRows[0].querySelector('span:last-child').textContent = `₹${data.total_price}`;
-                priceRows[1].querySelector('span:last-child').textContent = `− ₹${data.total_discount}`;
-                priceRows[2].querySelector('span:last-child').textContent =
-                    data.delivery_charge == 0 ? 'FREE' : `₹${data.delivery_charge}`;
-                priceRows[3].querySelector('span:last-child').textContent = `₹${data.grand_total}`;
-                
-                // Update savings message
-                const savingsElement = document.querySelector('.savings');
-                if (savingsElement) {
-                    savingsElement.textContent = `You will save ₹${data.total_discount} on this order`;
-                }
-            }
+        if (!isAuthenticated) {
+            window.location.href = '/login/';
+            return;
         }
-
-        // Update quantity function
-        async function updateQuantity(productId, change) {
-            if (!isAuthenticated) {
-                window.location.href = '/login/';
-                return;
-            }
-
-            const qtyInput = document.getElementById(`qty-${productId}`);
-            let newQty = parseInt(qtyInput.value) + change;
-            
-            // Ensure quantity doesn't go below 1
-            if (newQty < 1) {
-                // If decreasing below 1, ask if they want to remove
-                if (confirm('Do you want to remove this item from your cart?')) {
-                    const button = document.querySelector(`.remove-btn[onclick*="${productId}"]`);
-                    await removeFromCart(productId, button);
-                }
-                return;
-            }
-            
+        
+        if (confirm('Are you sure you want to remove this item from your cart?')) {
             try {
+                // Add loading state
+                if (button) {
+                    button.disabled = true;
+                    button.innerHTML = '<i class="fas fa-spinner fa-spin"></i> REMOVING...';
+                }
+
                 // Determine if this is an API product (has letters in ID) or custom product (numeric ID)
                 const isApiProduct = isNaN(productId);
                 const endpoint = isApiProduct ? 
-                    `/cart/update-api/${productId}/` : 
-                    `/cart/update/${productId}/`;
+                    `/cart/remove-api/${productId}/` : 
+                    `/cart/remove/${productId}/`;
 
                 const response = await fetch(endpoint, {
                     method: 'POST',
@@ -1006,33 +1247,152 @@
                         'Content-Type': 'application/json',
                         'X-CSRFToken': getCookie('csrftoken'),
                     },
-                    body: JSON.stringify({
-                        quantity: newQty
-                    }),
                     credentials: 'same-origin'
                 });
                 
-                if (response.ok) {
-                    const data = await response.json();
-                    if (data.success) {
-                        qtyInput.value = data.quantity;
-                        document.getElementById('cart-count').textContent = data.cart_count;
-                        
-                        // Update the UI with new prices
-                        if (data.total_price !== undefined) {
-                            updateCartPrices(data);
-                        }
-                    }
-                } else {
-                    // Handle server-side validation (like max stock)
-                    const errorData = await response.json();
-                    alert(errorData.message || 'Failed to update quantity');
+                if (!response.ok) {
+                    throw new Error(`Server responded with ${response.status}`);
                 }
+                
+                let data;
+                try {
+                    data = await response.json();
+                } catch {
+                    throw new Error("Invalid JSON response from server");
+                }
+
+                
+                if (data.success) {
+                    // Refresh the page to show updated cart
+                    window.location.reload();
+                    return;
+                } else {
+                    throw new Error(data.error || 'Failed to remove item');
+                }
+                
             } catch (error) {
-                console.error('Error:', error);
-                alert('An error occurred while updating quantity');
+                console.error('Remove failed:', error);
+                alert(error.message || 'Failed to remove item. Please try again.');
+            } finally {
+                // Reset button state
+                if (button) {
+                    button.disabled = false;
+                    button.innerHTML = '<i class="fa-solid fa-trash"></i> REMOVE';
+                }
             }
         }
+    }
+
+        // Helper function to update prices in the UI
+// Helper function to update prices in the UI
+function updateCartPrices(data) {
+    // Update item count in price details
+    const priceDetailTitle = document.querySelector('.price-title');
+    if (priceDetailTitle) {
+        priceDetailTitle.textContent = `PRICE DETAILS (${data.cart_count} items)`;
+    }
+    
+    // Update the price details in the summary section
+    const priceRows = document.querySelectorAll('.price-row');
+    if (priceRows.length >= 4) {
+        // Price row (first row)
+        const priceSpan = priceRows[0].querySelector('span:first-child');
+        if (priceSpan) {
+            priceSpan.textContent = `Price (${data.cart_count} items)`;
+        }
+        priceRows[0].querySelector('span:last-child').textContent = `₹${data.total_price}`;
+        
+        // Discount row (second row)
+        priceRows[1].querySelector('span:last-child').innerHTML = `<span style="color: #28a745;">− ₹${data.total_discount}</span>`;
+        
+        // Delivery charges row (third row)
+        const deliverySpan = priceRows[2].querySelector('span:last-child');
+        if (data.delivery_charge == 0) {
+            deliverySpan.innerHTML = '<span style="color: #28a745;">FREE</span>';
+        } else {
+            deliverySpan.textContent = `₹${data.delivery_charge}`;
+        }
+        
+        // Total amount row (fourth row)
+        priceRows[3].querySelector('span:last-child').textContent = `₹${data.grand_total}`;
+    }
+    
+    // Update savings message
+    const savingsElement = document.querySelector('.savings');
+    if (savingsElement) {
+        savingsElement.textContent = `You will save ₹${data.total_discount} on this order`;
+    }
+}
+
+        // Update quantity function
+ // Update quantity function
+    async function updateQuantity(productId, change) {
+        if (!isAuthenticated) {
+            window.location.href = '/login/';
+            return;
+        }
+
+        const qtyInput = document.getElementById(`qty-${productId}`);
+        let newQty = parseInt(qtyInput.value) + change;
+        
+        // Ensure quantity doesn't go below 1
+        if (newQty < 1) {
+            // If decreasing below 1, ask if they want to remove
+            if (confirm('Do you want to remove this item from your cart?')) {
+                const button = document.querySelector(`.remove-btn[onclick*="${productId}"]`);
+                await removeFromCart(productId, button);
+            }
+            return;
+        }
+        
+        try {
+            // Disable buttons during update
+            const buttons = document.querySelectorAll(`[onclick*="updateQuantity('${productId}'"]`);
+            buttons.forEach(btn => btn.disabled = true);
+            
+            // Determine if this is an API product or custom product
+            const isApiProduct = isNaN(productId);
+            const endpoint = isApiProduct ? 
+                `/cart/update-api/${productId}/` : 
+                `/cart/update/${productId}/`;
+
+            const response = await fetch(endpoint, {
+                method: 'POST',
+                headers: {
+                    'Content-Type': 'application/json',
+                    'X-CSRFToken': getCookie('csrftoken'),
+                },
+                body: JSON.stringify({
+                    quantity: newQty
+                }),
+                credentials: 'same-origin'
+            });
+            
+            if (response.ok) {
+                const data = await response.json();
+                if (data.success) {
+                    // Instead of updating the UI directly, refresh the page
+                    window.location.reload();
+                    return;
+                }
+            } else {
+                // Handle server-side validation (like max stock)
+                const errorData = await response.json();
+                alert(errorData.message || 'Failed to update quantity');
+                // Reset to previous quantity
+                qtyInput.value = parseInt(qtyInput.value) - change;
+            }
+        } catch (error) {
+            console.error('Error:', error);
+            alert('An error occurred while updating quantity');
+            // Reset to previous quantity
+            qtyInput.value = parseInt(qtyInput.value) - change;
+        } finally {
+            // Re-enable buttons
+            const buttons = document.querySelectorAll(`[onclick*="updateQuantity('${productId}'"]`);
+            buttons.forEach(btn => btn.disabled = false);
+        }
+    }
 
         // Move to wishlist function
         async function moveToWishlist(productId) {
@@ -1122,6 +1482,230 @@
                 e.stopPropagation();
             });
         }
-    </script>
+
+// Cart items data (this should be populated from your Django template)
+const cartItems = [
+    {% for item in cart_items %}
+    {
+        id: '{% if item.product %}{{ item.product.id }}{% else %}{{ item.api_product_code }}{% endif %}',
+        name: '{% if item.product %}{{ item.product.name }}{% else %}{{ item.api_product_name }}{% endif %}',
+        code: '{% if item.product %}{{ item.product.code }}{% else %}{{ item.api_product_code }}{% endif %}',
+        price: {% if item.product %}{{ item.product.price }}{% else %}{{ item.api_product_price }}{% endif %},
+        originalPrice: {% if item.product %}{{ item.product.original_price|default:item.product.price }}{% else %}{{ item.api_product_price }}{% endif %},
+        quantity: {{ item.quantity }},
+        image: '{% static "images/productdemo.jpg" %}',
+        brand: '{% if item.product %}{{ item.product.brand }}{% else %}SYSMAC{% endif %}',
+        isApiProduct: {% if item.product %}false{% else %}true{% endif %}
+    },
+    {% endfor %}
+];
+
+let selectedProducts = [];
+
+// Function to open product selection modal
+function openProductSelectionModal() {
+    const modal = document.getElementById('productSelectionModal');
+    const productList = document.getElementById('productSelectionList');
+    
+    // Clear previous content
+    productList.innerHTML = '';
+    selectedProducts = [];
+    
+    if (cartItems.length === 0) {
+        productList.innerHTML = '<div class="no-items-message">No items in cart</div>';
+        document.getElementById('proceedBtn').disabled = true;
+        modal.classList.add('show');
+        return;
+    }
+    
+    // Populate products
+    cartItems.forEach((item, index) => {
+        const discount = item.originalPrice - item.price;
+        const discountPercentage = item.originalPrice > 0 ? Math.round((discount / item.originalPrice) * 100) : 0;
+        
+        const productItem = document.createElement('div');
+        productItem.className = 'product-selection-item';
+        productItem.onclick = () => toggleProductSelection(item.id);
+        
+        productItem.innerHTML = `
+            <input type="checkbox" class="product-checkbox" id="product-${item.id}" onchange="toggleProductSelection('${item.id}')">
+            <img src="${item.image}" alt="${item.name}" class="product-selection-image">
+            <div class="product-selection-details">
+                <div class="product-selection-name">${item.name}</div>
+                <div class="product-selection-code">Code: ${item.code}</div> 
+                <div class="product-selection-price">₹${item.price}</div>
+                <div class="product-selection-quantity">Quantity: ${item.quantity}</div>
+            </div>
+        `;
+        
+        productList.appendChild(productItem);
+    });
+    
+    updateSelectedSummary();
+    modal.classList.add('show');
+}
+
+// Function to close modal
+function closeProductSelectionModal() {
+    const modal = document.getElementById('productSelectionModal');
+    modal.classList.remove('show');
+}
+
+// Function to toggle product selection
+function toggleProductSelection(productId) {
+    const checkbox = document.getElementById(`product-${productId}`);
+    const productItem = checkbox.closest('.product-selection-item');
+    
+    if (checkbox.checked) {
+        if (!selectedProducts.includes(productId)) {
+            selectedProducts.push(productId);
+        }
+        productItem.classList.add('selected');
+    } else {
+        selectedProducts = selectedProducts.filter(id => id !== productId);
+        productItem.classList.remove('selected');
+    }
+    
+    updateSelectAllCheckbox();
+    updateSelectedSummary();
+}
+
+// Function to toggle select all
+function toggleSelectAll() {
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const productCheckboxes = document.querySelectorAll('.product-checkbox');
+    
+    if (selectAllCheckbox.checked) {
+        selectedProducts = cartItems.map(item => item.id);
+        productCheckboxes.forEach(checkbox => {
+            checkbox.checked = true;
+            checkbox.closest('.product-selection-item').classList.add('selected');
+        });
+    } else {
+        selectedProducts = [];
+        productCheckboxes.forEach(checkbox => {
+            checkbox.checked = false;
+            checkbox.closest('.product-selection-item').classList.remove('selected');
+        });
+    }
+    
+    updateSelectedSummary();
+}
+
+// Function to update select all checkbox state
+function updateSelectAllCheckbox() {
+    const selectAllCheckbox = document.getElementById('selectAllCheckbox');
+    const totalProducts = cartItems.length;
+    const selectedCount = selectedProducts.length;
+    
+    if (selectedCount === 0) {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = false;
+    } else if (selectedCount === totalProducts) {
+        selectAllCheckbox.checked = true;
+        selectAllCheckbox.indeterminate = false;
+    } else {
+        selectAllCheckbox.checked = false;
+        selectAllCheckbox.indeterminate = true;
+    }
+}
+
+// Function to update selected summary
+function updateSelectedSummary() {
+    const selectedItems = cartItems.filter(item => selectedProducts.includes(item.id));
+    
+    let itemsCount = 0;
+    let subtotal = 0;
+    let totalDiscount = 0;
+    
+    selectedItems.forEach(item => {
+        itemsCount += item.quantity;
+        subtotal += item.price * item.quantity;
+        totalDiscount += (item.originalPrice - item.price) * item.quantity;
+    });
+    
+    const deliveryCharge = subtotal > 500 ? 0 : 50; // Example delivery logic
+    const grandTotal = subtotal + deliveryCharge;
+    
+    document.getElementById('selectedItemsCount').textContent = itemsCount;
+    document.getElementById('selectedSubtotal').textContent = `₹${subtotal}`;
+    document.getElementById('selectedDiscount').textContent = `-₹${totalDiscount}`;
+    document.getElementById('selectedDelivery').textContent = deliveryCharge === 0 ? 'FREE' : `₹${deliveryCharge}`;
+    document.getElementById('selectedTotal').textContent = `₹${grandTotal}`;
+    
+    // Enable/disable proceed button
+    const proceedBtn = document.getElementById('proceedBtn');
+    proceedBtn.disabled = selectedProducts.length === 0;
+}
+
+// Function to proceed with WhatsApp
+function proceedWithWhatsApp() {
+    const selectedItems = cartItems.filter(item => selectedProducts.includes(item.id));
+    
+    if (selectedItems.length === 0) {
+        alert('Please select at least one product');
+        return;
+    }
+    
+    // Calculate totals for selected items
+    let itemsCount = 0;
+    let subtotal = 0;
+    let totalDiscount = 0;
+    
+    selectedItems.forEach(item => {
+        itemsCount += item.quantity;
+        subtotal += item.price * item.quantity;
+        totalDiscount += (item.originalPrice - item.price) * item.quantity;
+    });
+    
+    const deliveryCharge = subtotal > 500 ? 0 : 50;
+    const grandTotal = subtotal + deliveryCharge;
+    
+    // Create WhatsApp message
+    let orderDetails = "🛍️ *ORDER ENQUIRY* 🛍️\n\n";
+    orderDetails += `📋 *Selected Items (${itemsCount}):*\n\n`;
+    
+
+// Updated section in the proceedWithWhatsApp() function
+selectedItems.forEach(item => {
+    orderDetails += `➡️ *${item.name}*\n`;
+    orderDetails += `   - ${item.isApiProduct ? 'Product Code' : 'Product ID'}: ${item.code}\n`;
+    orderDetails += `   - Quantity: ${item.quantity}\n`;
+    orderDetails += `   - Price: ₹${item.price}\n`;
+    orderDetails += `   - Total: ₹${item.price * item.quantity}\n\n`;
+});
+    
+    orderDetails += "💵 *Payment Details:*\n";
+    orderDetails += "────────────────\n";
+    orderDetails += `Subtotal:       ₹${subtotal}\n`;
+    orderDetails += `Discount:      -₹${totalDiscount}\n`;
+    orderDetails += `Delivery:       ${deliveryCharge === 0 ? 'FREE' : '₹' + deliveryCharge}\n`;
+    orderDetails += "────────────────\n";
+    orderDetails += `*Total Amount: ₹${grandTotal}*\n\n`;
+    orderDetails += "📝 *Notes:* Please confirm this enquiry and provide further details.\n\n";
+    orderDetails += "Thanks for contacting us! We'll clarify the details with you before proceeding.❤️";
+    
+    // Send to WhatsApp
+    const encodedMessage = encodeURIComponent(orderDetails);
+    const whatsappNumber = "918129139506";
+    const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+    
+    window.open(whatsappUrl, '_blank');
+    closeProductSelectionModal();
+}
+
+// Update the original sendWhatsAppOrder function
+function sendWhatsAppOrder() {
+    openProductSelectionModal();
+}
+
+// Close modal when clicking outside
+window.onclick = function(event) {
+    const modal = document.getElementById('productSelectionModal');
+    if (event.target === modal) {
+        closeProductSelectionModal();
+    }
+}
+</script>
 </body>
 </html>
