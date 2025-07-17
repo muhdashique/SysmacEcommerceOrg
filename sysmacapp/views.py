@@ -2,6 +2,7 @@ from django.shortcuts import render, redirect, get_object_or_404
 from django.contrib.auth import authenticate, login, logout as auth_logout
 from django.contrib import messages
 from django.contrib.auth.decorators import login_required
+from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 from django.conf import settings
@@ -9,7 +10,7 @@ import requests
 import json
 from google.oauth2 import id_token
 from google.auth.transport import requests as google_requests
-from .models import CartItem, CustomProduct, CustomUser, Wishlist, Cart
+from .models import CartItem, CustomProduct, CustomUser, ProductImage, Wishlist, Cart
 from .forms import CustomProductForm, CustomUserCreationForm
 from django.views.decorators.http import require_POST
 from decimal import Decimal
@@ -953,11 +954,36 @@ def sysmac_products(request):
     try:
         response = requests.get(api_url)
         response.raise_for_status()
-        products = response.json()
-    except requests.RequestException:
-        products = []
+        api_products = response.json()
+        
+        # Get all edited products
+        edited_products = EditedAPIProduct.objects.all()
+        edited_product_map = {p.original_code: p for p in edited_products}
+        
+        # Process products to include edited versions
+        processed_products = []
+        for product in api_products:
+            product_code = str(product.get('code', ''))
+            edited_product = edited_product_map.get(product_code)
+            
+            processed_product = {
+                'code': product_code,
+                'name': product.get('name', 'Unknown Product'),
+                # ... other fields ...
+                'edited_name': edited_product.name if edited_product else None,
+                # ... other edited fields ...
+            }
+            processed_products.append(processed_product)
+            
+    except requests.RequestException as e:
+        logger.error(f"Error fetching API products: {str(e)}")
+        processed_products = []
+        messages.error(request, 'Failed to fetch products from API')
     
-    return render(request, 'sysmac_products.html', {'products': products})
+    return render(request, 'sysmac_products.html', {
+        'products': processed_products,
+        'edited_products': [p.original_code for p in edited_products]
+    })
 
 
 # LOGOUT
@@ -997,7 +1023,8 @@ def add_custom_product(request):
     
     return render(request, 'edit_custom_product.html', {'form': form, 'action': 'Add'})
 
-
+# views.py - Update your edit_custom_product view
+@login_required
 @login_required
 def edit_custom_product(request, product_id):
     if not request.user.is_superuser:
@@ -1010,13 +1037,17 @@ def edit_custom_product(request, product_id):
     if request.method == 'POST':
         form = CustomProductForm(request.POST, request.FILES, instance=product)
         if form.is_valid():
-            form.save()
+            product = form.save()
             messages.success(request, 'Product updated successfully!')
             return redirect('custom_products')
     else:
         form = CustomProductForm(instance=product)
     
-    return render(request, 'edit_custom_product.html', {'form': form, 'action': 'Edit', 'product': product})
+    return render(request, 'edit_custom_product.html', {
+        'form': form,
+        'action': 'Edit',
+        'product': product
+    })
 
 
 @login_required
@@ -1111,6 +1142,40 @@ def product_detail(request, product_identifier):
             logger.error(f"API request failed: {str(e)}")
             raise Http404("Could not retrieve products")
     
+    # Get all images for the product
+    product_images = []
+    if is_custom_product:
+        # Main image first
+        if product.main_image:
+            product_images.append({
+                'image': product.main_image,
+                'is_main': True
+            })
+        # Then additional images
+        product_images.extend([
+            {'image': img.image, 'is_main': False}
+            for img in product.additional_images.all()
+        ])
+    else:
+        # For API products
+        if edited_product and edited_product.image:
+            product_images.append({
+                'image': edited_product.image,
+                'is_main': True
+            })
+        elif product.get('image'):
+            product_images.append({
+                'image': product['image'],  # This is a URL
+                'is_main': True,
+                'is_url': True
+            })
+        # Additional images for API products
+        if edited_product:
+            product_images.extend([
+                {'image': img.image, 'is_main': False}
+                for img in edited_product.additional_images.all()
+            ])
+
     # Handle wishlist and cart status
     in_wishlist = False
     in_cart = False
@@ -1149,6 +1214,7 @@ def product_detail(request, product_identifier):
     
     context = {
         'product': product,
+        'product_images': product_images,
         'in_wishlist': in_wishlist,
         'in_cart': in_cart,
         'cart_quantity': cart_quantity,
@@ -1156,11 +1222,6 @@ def product_detail(request, product_identifier):
         'is_custom_product': is_custom_product,
         'product_identifier': product_identifier,
     }
-    
-    # Debug output
-    print(f"Debug - Product: {product_identifier}, Type: {'Custom' if is_custom_product else 'API'}")
-    print(f"Wishlist Status: {'In Wishlist' if in_wishlist else 'Not in Wishlist'}")
-    print(f"Cart Status: {'In Cart' if in_cart else 'Not in Cart'} (Qty: {cart_quantity})")
     
     return render(request, 'productview.html', context)
 
@@ -1293,6 +1354,7 @@ def sysmac_products(request):
 # Add these new views for editing API products
 
 @login_required
+@login_required
 def edit_api_product(request, product_code):
     if not request.user.is_superuser:
         auth_logout(request)
@@ -1326,9 +1388,11 @@ def edit_api_product(request, product_code):
                     'price': api_product.get('price', '0.00'),
                     'original_price': api_product.get('original_price', '0.00')
                 }
-        except requests.RequestException:
+        except requests.RequestException as e:
+            logger.error(f"Error fetching API product: {str(e)}")
             api_product = None
             initial_data = {}
+            messages.error(request, 'Failed to fetch product details from API')
 
     if request.method == 'POST':
         form = EditedAPIProductForm(request.POST, request.FILES, instance=instance)
@@ -1339,21 +1403,84 @@ def edit_api_product(request, product_code):
                 # Preserve original price from API if not provided in form
                 if api_product and not form.cleaned_data.get('original_price'):
                     edited_product.original_price = api_product.get('original_price', '0.00')
-            edited_product.save()
-            messages.success(request, 'Product edited successfully!')
-            return redirect('sysmac_products')
+            
+            try:
+                edited_product.save()
+                
+                # Handle additional images - only if form is valid and product saved
+                if 'additional_images' in request.FILES:
+                    for image in request.FILES.getlist('additional_images'):
+                        try:
+                            ProductImage.objects.create(api_product=edited_product, image=image)
+                        except Exception as e:
+                            logger.error(f"Error saving additional image: {str(e)}")
+                            messages.warning(request, f"Could not save one of the additional images: {str(e)}")
+                
+                messages.success(request, 'Product edited successfully!')
+                return redirect('sysmac_products')
+            
+            except Exception as e:
+                logger.error(f"Error saving product: {str(e)}")
+                messages.error(request, f'Error saving product: {str(e)}')
+        else:
+            messages.error(request, 'Please correct the form errors')
     else:
         if instance:
             form = EditedAPIProductForm(instance=instance)
         else:
             form = EditedAPIProductForm(initial=initial_data)
 
-    return render(request, 'edit_api_product.html', {
+    context = {
         'form': form,
         'product_code': product_code,
         'action': 'Edit' if instance else 'Add',
         'original_data': api_product if not instance else None
-    })
+    }
+    
+    # Add existing additional images to context if editing
+    if instance:
+        context['additional_images'] = instance.additional_images.all()
+    
+    return render(request, 'edit_api_product.html', context)
+
+@login_required
+def delete_product_image(request, image_id):
+    if not request.user.is_superuser:
+        messages.error(request, "You don't have permission to delete images")
+        return redirect('login')
+    
+    image = get_object_or_404(ProductImage, id=image_id)
+    product_code = image.api_product.original_code
+    image.delete()
+    messages.success(request, "Image deleted successfully")
+    return redirect('edit_api_product', product_code=product_code)
+
+
+
+
+
+# views.py - Add this new view
+
+@login_required
+def delete_product_image(request, image_id):
+    if not request.user.is_superuser:
+        messages.error(request, "You don't have permission to delete images")
+        return redirect('login')
+    
+    image = get_object_or_404(ProductImage, id=image_id)
+    
+    # Determine which product this belongs to for redirect
+    if image.custom_product:
+        product = image.custom_product
+        redirect_url = reverse('edit_custom_product', args=[product.id])
+    else:
+        product = image.api_product
+        redirect_url = reverse('edit_api_product', args=[product.original_code])
+    
+    image.delete()
+    messages.success(request, "Image deleted successfully")
+    return redirect(redirect_url)
+
 
 @login_required
 def delete_api_product(request, product_code):
@@ -1362,10 +1489,18 @@ def delete_api_product(request, product_code):
         messages.error(request, 'You do not have permission to access this page.')
         return redirect('login')
     
-    product = get_object_or_404(EditedAPIProduct, original_code=product_code)
-    product.delete()
-    messages.success(request, 'Product deleted successfully!')
+    try:
+        product = EditedAPIProduct.objects.get(original_code=product_code)
+        product.delete()
+        messages.success(request, 'Product deleted successfully!')
+    except EditedAPIProduct.DoesNotExist:
+        messages.error(request, 'Product not found!')
+    except Exception as e:
+        logger.error(f"Error deleting API product: {str(e)}")
+        messages.error(request, 'Error deleting product')
+    
     return redirect('sysmac_products')
+
 
 from django.db import transaction
 import requests

@@ -995,6 +995,7 @@
             color: #3498db;
             text-decoration: underline;
         }
+        
     </style>
 </head>
 
@@ -1134,19 +1135,34 @@
 
            <div class="product-grid">
     {% for product in page_obj %}
-    <div class="product-card"
-        data-product-id="{% if product.is_custom %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
-        data-product-type="{% if product.is_custom %}custom{% else %}api{% endif %}">
-        <div class="product-image">
-            {% if product.edited_image %}
-                <img src="{{ product.edited_image.url }}" class="w-full h-full object-cover">
-            {% elif product.image %}
-                <img src="{{ product.image }}" class="w-full h-full object-cover">
-            {% elif product.is_custom and product.main_image %}
-                <img src="{{ product.main_image }}" class="w-full h-full object-cover">
-            {% else %}
-                <img src="{% static 'images/productdemo.jpg' %}" class="w-full h-full object-cover">
+   <div class="product-card" 
+     data-product-id="{% if product.is_custom %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+     data-product-type="{% if product.is_custom %}custom{% else %}api{% endif %}">
+    <div class="product-image">
+        <!-- Main image -->
+        {% if product.edited_image %}
+            <img src="{{ product.edited_image.url }}" class="w-full h-full object-cover main-image">
+        {% elif product.image %}
+            <img src="{{ product.image }}" class="w-full h-full object-cover main-image">
+        {% elif product.is_custom and product.main_image %}
+            <img src="{{ product.main_image }}" class="w-full h-full object-cover main-image">
+        {% else %}
+            <img src="{% static 'images/productdemo.jpg' %}" class="w-full h-full object-cover main-image">
+        {% endif %}
+        
+        <!-- Thumbnail gallery (only show if there are additional images) -->
+        {% if product.additional_images.all or product.images %}
+        <div class="image-thumbnails">
+            {% for image in product.additional_images.all %}
+                <img src="{{ image.image.url }}" class="thumbnail" onclick="changeMainImage(this)">
+            {% endfor %}
+            {% if not product.is_custom and product.images %}
+                {% for image_url in product.images %}
+                    <img src="{{ image_url }}" class="thumbnail" onclick="changeMainImage(this)">
+                {% endfor %}
             {% endif %}
+        </div>
+        {% endif %}
             
             <!-- Wishlist button -->
 {% comment %} <div class="wishlist-btn 

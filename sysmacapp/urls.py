@@ -37,12 +37,18 @@ urlpatterns = [
 
     # AP{I product ,delete and edit}
     path('cart/add-api/<str:product_code>/', views.add_api_product_to_cart, name='add_api_product_to_cart'),
-    path('sysmac-products/edit/<str:product_code>/', views.edit_api_product, name='edit_api_product'),
+    path('product-images/delete/<int:image_id>/', views.delete_product_image, name='delete_product_image'),
     path('sysmac-products/delete/<str:product_code>/', views.delete_api_product, name='delete_api_product'),
     path('privacy/', views.privacy_policy, name='privacy_policy'),
     path('terms/', views.terms_and_conditions, name='terms_and_conditions'),
     path('cancellation-refund/', views.cancellation_refund_policy, name='cancellation_refund_policy'),
     path('contact/', views.contact, name='contact'),
+
+
+    # urls.py - Add this path
+
+path('product-images/delete/<int:image_id>/', views.delete_product_image, name='delete_product_image'),
+ path('sysmac-products/edit/<str:product_code>/', views.edit_api_product, name='edit_api_product'),
     
     
 ]

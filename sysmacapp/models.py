@@ -273,3 +273,51 @@ class Product(models.Model):
     
     def __str__(self):
         return f"{self.name} ({self.code})"
+
+
+
+
+
+
+
+
+# models.py - Add this to your existing models
+
+# models.py
+from django.db import models
+from django.core.exceptions import ValidationError
+
+from django.db import models
+from django.core.exceptions import ValidationError
+
+class ProductImage(models.Model):
+    custom_product = models.ForeignKey(
+        'CustomProduct', 
+        on_delete=models.CASCADE, 
+        null=True, 
+        blank=True,
+        related_name='additional_images'
+    )
+    api_product = models.ForeignKey(
+        'EditedAPIProduct',
+        on_delete=models.CASCADE,
+        null=True,
+        blank=True,
+        related_name='additional_images'
+    )
+    image = models.ImageField(upload_to='product_images/')
+    created_at = models.DateTimeField(auto_now_add=True)
+
+    class Meta:
+        ordering = ['-created_at']
+
+    def __str__(self):
+        if self.custom_product:
+            return f"Image for {self.custom_product.name}"
+        return f"Image for {self.api_product.name}"
+
+    def clean(self):
+        if not self.custom_product and not self.api_product:
+            raise ValidationError("Either custom_product or api_product must be set")
+        if self.custom_product and self.api_product:
+            raise ValidationError("Cannot set both custom_product and api_product")
