@@ -1443,40 +1443,67 @@ function getCookie(name) {
 let cartManager, wishlistManager;
 
 document.addEventListener('DOMContentLoaded', function() {
-    // 1. FIRST ADD THE THUMBNAIL HANDLING CODE HERE
-    const thumbnails = document.querySelectorAll('.thumbnail');
-    const mainImage = document.getElementById('mainProductImage');
+    cartManager = new CartManager();
+     wishlistManager = new WishlistManager()
     
-    if (thumbnails.length > 0 && mainImage) {
-        thumbnails.forEach(thumbnail => {
-            thumbnail.addEventListener('click', function() {
-                const newSrc = this.dataset.imageSrc;
-                
-                // Only proceed if this isn't already the active image
-                if (mainImage.src !== newSrc) {
-                    // Add fade-out class
-                    mainImage.classList.add('fade-out');
-                    
-                    // After fade out completes, change image and fade in
-                    setTimeout(() => {
-                        mainImage.src = newSrc;
-                        mainImage.classList.remove('fade-out');
-                        mainImage.classList.add('fade-in');
-                        
-                        // Remove fade-in class after transition completes
-                        setTimeout(() => {
-                            mainImage.classList.remove('fade-in');
-                        }, 300);
-                        
-                        // Update active state
-                        thumbnails.forEach(t => t.classList.remove('active'));
-                        this.classList.add('active');
-                    }, 300);
-                }
-            });
+    // Profile dropdown functionality
+    const profileIcon = document.getElementById('profileIcon');
+    const profileDropdown = document.getElementById('profileDropdown');
+    
+    if (profileIcon && profileDropdown) {
+        profileIcon.addEventListener('click', function(e) {
+            e.stopPropagation();
+            profileDropdown.classList.toggle('show');
+        });
+        
+        document.addEventListener('click', function(e) {
+            if (!profileIcon.contains(e.target)) {
+                profileDropdown.classList.remove('show');
+            }
+        });
+        
+        profileDropdown.addEventListener('click', function(e) {
+            e.stopPropagation();
         });
     }
-//
+    
+    // Search functionality
+    const searchBtn = document.querySelector('.search-btn');
+    const searchInput = document.querySelector('.search-input');
+    const mobileSearchBtn = document.querySelector('.mobile-search-container .search-btn');
+    const mobileSearchInput = document.querySelector('.mobile-search-container .search-input');
+    
+    if (searchBtn && searchInput) {
+        searchBtn.addEventListener('click', function() {
+            const searchTerm = searchInput.value.trim();
+            if (searchTerm) {
+                window.location.href = `{% url 'home' %}?search=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+        
+        searchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                searchBtn.click();
+            }
+        });
+    }
+    
+    if (mobileSearchBtn && mobileSearchInput) {
+        mobileSearchBtn.addEventListener('click', function() {
+            const searchTerm = mobileSearchInput.value.trim();
+            if (searchTerm) {
+                window.location.href = `{% url 'home' %}?search=${encodeURIComponent(searchTerm)}`;
+            }
+        });
+        
+        mobileSearchInput.addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                mobileSearchBtn.click();
+            }
+        });
+    }
+});
+
 class WhatsAppManager {
     constructor() {
         this.whatsappBtn = document.getElementById('whatsappBtn');
