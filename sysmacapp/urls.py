@@ -47,8 +47,13 @@ urlpatterns = [
 
     # urls.py - Add this path
 
-path('product-images/delete/<int:image_id>/', views.delete_product_image, name='delete_product_image'),
- path('sysmac-products/edit/<str:product_code>/', views.edit_api_product, name='edit_api_product'),
+    path('product-images/delete/<int:image_id>/', views.delete_product_image, name='delete_product_image'),
+    path('sysmac-products/edit/<str:product_code>/', views.edit_api_product, name='edit_api_product'),
+    path('admin/search/', views.search_products, name='admin_search'),
+    path('toggle-user-status/<int:user_id>/', views.toggle_user_status, name='toggle_user_status'),
+    path('user-management/', views.user_management, name='user_management'),
+    path('toggle-user-status/<int:user_id>/', views.toggle_user_status, name='toggle_user_status'),
+  
     
     
 ]

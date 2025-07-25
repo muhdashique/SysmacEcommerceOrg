@@ -244,8 +244,51 @@ def admin_dashboard(request):
         messages.error(request, 'You do not have permission to access this page.')
         return redirect('login')
     
-    products = CustomProduct.objects.all()
-    return render(request, 'admin_dashboard.html', {'products': products})
+    # Get counts for different product types
+    custom_product_count = CustomProduct.objects.count()
+    
+    # Get API product count
+    api_url = "https://sysmacsynctoolapi.imcbs.com/api/upload-products/"
+    try:
+        response = requests.get(api_url)
+        response.raise_for_status()
+        api_products = response.json()
+        api_product_count = len(api_products)
+    except requests.RequestException:
+        api_product_count = 0
+    
+    # Get edited API product count
+    edited_api_product_count = EditedAPIProduct.objects.count()
+    
+    # Get total product count (custom + API)
+    total_product_count = custom_product_count + api_product_count
+    
+    # Calculate total sales (from cart items)
+    total_sales = Decimal('0.00')
+    for cart_item in CartItem.objects.all():
+        total_sales += cart_item.get_price * cart_item.quantity
+    
+    # Calculate total purchase value (assuming you have a purchase_price field in your models)
+    # For custom products
+    total_purchase_custom = Decimal('0.00')
+    if hasattr(CustomProduct, 'purchase_price'):
+        for product in CustomProduct.objects.all():
+            total_purchase_custom += product.purchase_price * product.stock_quantity
+    
+    # For API products (if you track inventory)
+    total_purchase_api = Decimal('0.00')
+    # Add logic here if you track purchase prices for API products
+    
+    total_purchase = total_purchase_custom + total_purchase_api
+    
+    return render(request, 'admin_dashboard.html', {
+        'custom_product_count': custom_product_count,
+        'api_product_count': api_product_count,
+        'edited_api_product_count': edited_api_product_count,
+        'total_product_count': total_product_count,
+        'total_sales': total_sales,
+        'total_purchase': total_purchase,
+    })
 
 
 # WISHLIST
@@ -1572,3 +1615,162 @@ def contact(request):
 
 
 
+from django.http import JsonResponse
+from django.db.models import Q
+
+from django.http import JsonResponse
+from django.views.decorators.http import require_GET
+from django.contrib.auth.decorators import login_required
+from django.db.models import Q
+import requests
+import logging
+
+logger = logging.getLogger(__name__)
+
+
+
+
+
+
+@require_GET
+@login_required
+def search_products(request):
+    query = request.GET.get('q', '').strip().lower()
+    results = []
+    
+    if query:
+        # Search custom products
+        custom_products = CustomProduct.objects.filter(
+            Q(name__icontains=query) |
+            Q(brand__icontains=query) |
+            Q(company__icontains=query) |
+            Q(category__icontains=query) |
+            Q(price__icontains=query),
+            is_active=True
+        )[:5]
+        
+        for product in custom_products:
+            results.append({
+                'type': 'custom',
+                'id': product.id,
+                'name': product.name,
+                'brand': product.brand,
+                'company': product.company,
+                'category': product.category,
+                'price': str(product.price),
+                'image': product.main_image.url if product.main_image else ''
+            })
+        
+        # Search API products
+        api_url = "https://sysmacsynctoolapi.imcbs.com/api/upload-products/"
+        try:
+            response = requests.get(api_url, timeout=5)
+            response.raise_for_status()
+            api_products = response.json()
+            
+            # Get edited products map
+            edited_products = EditedAPIProduct.objects.all()
+            edited_product_map = {p.original_code: p for p in edited_products}
+            
+            for product in api_products:
+                product_code = str(product.get('code', ''))
+                product_name = str(product.get('name', '')).lower()
+                product_brand = str(product.get('brand', '')).lower()
+                product_company = str(product.get('company', '')).lower()
+                product_category = str(product.get('catagory', '')).lower()
+                product_price = str(product.get('price', '')).lower()
+                
+                if (query in product_name or 
+                    query in product_brand or
+                    query in product_company or
+                    query in product_category or
+                    query in product_price):
+                    
+                    edited_product = edited_product_map.get(product_code)
+                    
+                    results.append({
+                        'type': 'api',
+                        'id': product_code,
+                        'name': edited_product.name if edited_product else product.get('name', ''),
+                        'brand': edited_product.brand if edited_product else product.get('brand', ''),
+                        'company': edited_product.company if edited_product else product.get('company', ''),
+                        'category': edited_product.category if edited_product else product.get('catagory', ''),
+                        'price': str(edited_product.price) if edited_product else str(product.get('price', '0.00')),
+                        'image': edited_product.image.url if (edited_product and edited_product.image) else product.get('image', '')
+                    })
+                    
+                    if len(results) >= 10:  # Limit total results
+                        break
+                        
+        except requests.RequestException as e:
+            logger.warning(f"API request failed: {e}")
+    
+    return JsonResponse({
+        'success': True, 
+        'results': results,
+        'total_found': len(results)
+    })
+
+
+
+
+from django.shortcuts import render, redirect, get_object_or_404
+from django.contrib.auth.decorators import login_required
+from django.views.decorators.http import require_POST
+from django.contrib import messages
+from .models import CustomUser
+@login_required
+def user_management(request):
+    if not request.user.is_superuser:
+        messages.error(request, 'You do not have permission to access this page.')
+        return redirect('home')
+    
+    all_users = CustomUser.objects.all().order_by('-date_joined')
+    superusers = all_users.filter(is_superuser=True)
+    regular_users = all_users.filter(is_superuser=False)
+    
+    active_regular_users = regular_users.filter(is_active=True).count()
+    inactive_regular_users = regular_users.filter(is_active=False).count()
+    total_active_users = active_regular_users + superusers.count()
+    
+    return render(request, 'user_management.html', {
+        'superusers': superusers,
+        'regular_users': regular_users,
+        'total_users': all_users.count(),
+        'superuser_count': superusers.count(),
+        'regular_user_count': regular_users.count(),
+        'active_regular_users': active_regular_users,
+        'inactive_regular_users': inactive_regular_users,
+        'total_active_users': total_active_users
+    })
+
+@login_required
+@require_POST
+def toggle_user_status(request, user_id):
+    if not request.user.is_superuser:
+        messages.error(request, 'You do not have permission to perform this action.')
+        return redirect('home')
+    
+    user = get_object_or_404(CustomUser, id=user_id)
+    user.is_active = not user.is_active
+    user.save()
+    
+    messages.success(request, f'User {user.email} has been {"activated" if user.is_active else "deactivated"}.')
+    return redirect('user_management')
+
+
+
+
+@login_required
+@require_POST
+def toggle_user_status(request, user_id):
+    if not request.user.is_superuser:
+        messages.error(request, 'You do not have permission to perform this action.')
+        return redirect('home')
+    
+    user = get_object_or_404(CustomUser, id=user_id)
+    user.is_active = not user.is_active
+    user.save()
+    
+    messages.success(request, f'User {user.email} has been {"activated" if user.is_active else "deactivated"}.')
+    return redirect('user_management')

@@ -3,8 +3,6 @@
 {% block content %}
 <div class="content-area">
     <div class="page-header">
-        {% comment %} <h2 class="page-title">Custom Products</h2>
-        <p class="page-subtitle">Manage your custom products</p> {% endcomment %}
         <a href="{% url 'add_custom_product' %}" class="submit-btn" style="width: auto; padding: 10px 20px; margin: 0; background-color: #4f46e5; color: white; text-decoration: none; display: inline-flex; align-items: center; border-radius: 10px;">
             <i class="fas fa-plus"></i> Add New Product
         </a>
@@ -13,6 +11,23 @@
     <div class="content-card">
         <div class="card-header">
             <h3 class="card-title">Product List</h3>
+            <!-- Search Form -->
+            <form method="GET" action="{% url 'custom_products' %}" style="margin-top: 20px;">
+                <div style="display: flex; gap: 10px; align-items: center;">
+                    <input type="text" name="q" placeholder="Search by name, company, brand, category..." 
+                           value="{{ request.GET.q }}" 
+                           style="flex: 1; padding: 10px; border: 1px solid #e2e8f0; border-radius: 6px;"
+                           oninput="this.form.submit()">
+                    <button type="submit" style="padding: 10px 20px; background-color: #4f46e5; color: white; border: none; border-radius: 6px; cursor: pointer;">
+                        <i class="fas fa-search"></i> Search
+                    </button>
+                    {% if request.GET.q %}
+                    <a href="{% url 'custom_products' %}" style="padding: 10px 15px; background-color: #ef4444; color: white; border: none; border-radius: 6px; text-decoration: none;">
+                        Clear
+                    </a>
+                    {% endif %}
+                </div>
+            </form>
         </div>
         <div class="card-content">
             <div style="overflow-x: auto;">
@@ -60,7 +75,13 @@
                         </tr>
                         {% empty %}
                         <tr>
-                            <td colspan="7" style="padding: 20px; text-align: center;">No custom products found.</td>
+                            <td colspan="11" style="padding: 20px; text-align: center;">
+                                {% if request.GET.q %}
+                                    No products found matching your search.
+                                {% else %}
+                                    No custom products found.
+                                {% endif %}
+                            </td>
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -99,7 +120,6 @@
 </style>
 
 <script>
-    // Update the active navigation item
     document.addEventListener('DOMContentLoaded', function() {
         // Remove active class from all links
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
@@ -110,6 +130,17 @@
         // Update page title and breadcrumb
         document.getElementById('page-title').textContent = 'Custom Products';
         document.querySelector('.breadcrumb').textContent = 'Dashboard / Custom Products';
+        
+        // Auto-submit form when typing (with slight delay)
+        const searchInput = document.querySelector('input[name="q"]');
+        let searchTimer;
+        
+        searchInput.addEventListener('input', function() {
+            clearTimeout(searchTimer);
+            searchTimer = setTimeout(() => {
+                this.form.submit();
+            }, 500);
+        });
     });
 </script>
 {% endblock %}

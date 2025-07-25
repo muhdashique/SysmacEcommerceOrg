@@ -995,6 +995,95 @@
             color: #3498db;
             text-decoration: underline;
         }
+        /* Autocomplete dropdown styles */
+.autocomplete-dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: white;
+    border: 1px solid #e9ecef;
+    border-radius: 0 0 8px 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    z-index: 1000;
+    max-height: 300px;
+    overflow-y: auto;
+}
+
+.autocomplete-item {
+    padding: 10px 15px;
+    cursor: pointer;
+    border-bottom: 1px solid #f1f3f4;
+    display: flex;
+    align-items: center;
+}
+
+.autocomplete-item:hover {
+    background-color: #f8f9fa;
+}
+
+.autocomplete-item img {
+    width: 40px;
+    height: 40px;
+    object-fit: contain;
+    margin-right: 10px;
+}
+
+.autocomplete-item .info {
+    flex: 1;
+}
+
+.autocomplete-item .name {
+    font-weight: 600;
+    color: #2c3e50;
+}
+
+.autocomplete-item .details {
+    font-size: 12px;
+    color: #6c757d;
+    display: flex;
+    justify-content: space-between;
+}
+
+.no-results {
+    padding: 10px 15px;
+    color: #6c757d;
+    font-style: italic;
+}
+
+
+
+{% comment %} banner image {% endcomment %}
+.hero-banner {
+    background-size: cover;
+    background-position: center;
+    background-repeat: no-repeat;
+    min-height: 400px; /* Adjust height as needed */
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+    color: white; /* Adjust text color based on your image */
+    text-align: center;
+}
+
+/* Optional: Add an overlay to make text more readable */
+.hero-banner::before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.4); /* Adjust opacity as needed */
+}
+
+.hero-content {
+    position: relative;
+    z-index: 1;
+    max-width: 800px;
+    padding: 20px;
+}
         
     </style>
 </head>
@@ -1005,12 +1094,16 @@
         <div class="header-content">
             <div class="logos w-28 h-26"><img src="{% static 'images/SYSMAC LOGO-01.png' %}"></div>
 
+     <!-- In your header section -->
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="Search products...">
+                <input type="text" class="search-input" placeholder="Search by name, brand, company, category..." 
+                    value="{{ request.GET.search }}" id="searchInput">
                 <button class="clear-btn" title="Clear search">
                     <i class="fas fa-times"></i>
                 </button>
                 <button class="search-btn">Search</button>
+                <!-- Autocomplete dropdown -->
+                <div class="autocomplete-dropdown" id="autocompleteDropdown" style="display: none;"></div>
             </div>
             <div class="header-actions">
                 <div class="cart-icon relative">
@@ -1067,15 +1160,17 @@
             </div>
         </div>
 
-        <!-- Mobile Search Bar (hidden on desktop) -->
+  <!-- In your mobile search container -->
         <div class="mobile-search-container">
-            <input type="text" class="search-input" placeholder="Search products...">
+            <input type="text" class="search-input" placeholder="Search by name, brand, company, category..." 
+                value="{{ request.GET.search }}" id="mobileSearchInput">
             <button class="clear-btn" title="Clear search">
                 <i class="fas fa-times"></i>
             </button>
             <button class="search-btn">Search</button>
+            <!-- Autocomplete dropdown -->
+            <div class="autocomplete-dropdown" id="mobileAutocompleteDropdown" style="display: none;"></div>
         </div>
-
 
         <!-- Simplified Navigation - Only show main categories -->
         <nav class="nav-bar">
@@ -1086,20 +1181,20 @@
                 <a href="#" class="nav-item">Mobile</a>
                 <a href="#" class="nav-item">Accessories</a>
             </div>
-        </nav>
+        </nav> 
     </header>
 
     <!-- Hero Banner -->
-    <section class="hero-banner ">
-        <div class="hero-content">
-            <h1 class="hero-title">Welcome to SYSMAC</h1>
-            <p class="hero-subtitle">Discover amazing products at unbeatable prices</p>
-            <a href="#products" class="hero-cta">
-                <i class="fa-solid fa-shopping-bag"></i>
-                Shop Now
-            </a>
-        </div>
-    </section>
+    <section class="hero-banner" style="background-image: url('https://i.vuzopedia.ru/storage/app/uploads/public/671/94f/6c5/67194f6c580d5004104694.jpg');">
+    <div class="hero-content">
+        <h1 class="hero-title">Welcome to SYSMAC</h1>
+        <p class="hero-subtitle">Discover amazing products at unbeatable prices</p>
+        <a href="#products" class="hero-cta">
+            <i class="fa-solid fa-shopping-bag"></i>
+            Shop Now
+        </a>
+    </div>
+</section>
 
     <!-- Main Content -->
     <div class="main-container">
@@ -1765,28 +1860,39 @@ function initializeSearchBar(container) {
             clearBtn.classList.remove('show');
         }
     }
-
+function clearSearch() {
+    const baseUrl = window.location.origin + window.location.pathname;
+    window.location.href = baseUrl;
+    setTimeout(() => {
+        window.location.reload(true); // true forces a hard refresh
+    }, 100);
+}
     // Clear search input
-    function clearSearch() {
-        searchInput.value = '';
-        clearBtn.classList.remove('show');
-        searchInput.focus();
-        
-        // Clear any existing search filters
-        const currentUrl = new URL(window.location.href);
-        currentUrl.searchParams.delete('search');
-        currentUrl.searchParams.set('page', '1');
-        window.location.href = currentUrl.toString();
-    }
+   function clearSearch() {
+    // Clear the search input
+    searchInput.value = '';
+    clearBtn.classList.remove('show');
+    
+    // Refresh the page to reset all filters
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete('search');
+    currentUrl.searchParams.set('page', '1');
+    window.location.href = currentUrl.toString();
+}
 
     // Event listeners
     searchInput.addEventListener('input', toggleClearButton);
     
-    clearBtn.addEventListener('click', function(e) {
-        e.preventDefault();
-        e.stopPropagation();
-        clearSearch();
-    });
+   // Inside the mobile search initialization
+clearBtn.addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    searchInput.value = '';
+    const currentUrl = new URL(window.location.href);
+    currentUrl.searchParams.delete('search');
+    currentUrl.searchParams.set('page', '1');
+    window.location.href = currentUrl.toString();
+});
 
     // Initialize clear button state
     toggleClearButton();
@@ -1821,9 +1927,11 @@ function initializeSearchBar(container) {
         searchInput.focus();
 
         const currentUrl = new URL(window.location.href);
+        const baseUrl = window.location.origin + window.location.pathname;
         currentUrl.searchParams.delete('search');
         currentUrl.searchParams.set('page', '1');
         window.location.href = currentUrl.toString();
+        window.location.href = baseUrl;
     }
 
     searchInput.addEventListener('input', toggleClearButton);
@@ -1836,6 +1944,141 @@ function initializeSearchBar(container) {
     toggleClearButton();
 }
 
+
+
+
+
+// Search functionality
+function initializeSearchBar(container) {
+    const searchInput = container.querySelector('.search-input');
+    const clearBtn = container.querySelector('.clear-btn');
+    const searchBtn = container.querySelector('.search-btn');
+    const dropdown = container.querySelector('.autocomplete-dropdown');
+    
+    // Show/hide clear button
+    function toggleClearButton() {
+        clearBtn.classList.toggle('show', searchInput.value.trim().length > 0);
+    }
+    
+    // Clear search
+    function clearSearch() {
+        searchInput.value = '';
+        toggleClearButton();
+        hideDropdown();
+        searchInput.focus();
+    }
+    
+    // Show autocomplete dropdown
+    function showDropdown(items) {
+        if (items.length === 0) {
+            dropdown.innerHTML = '<div class="no-results">SEARCH</div>';
+        } else {
+            dropdown.innerHTML = items.map(item => `
+                <div class="autocomplete-item" data-id="${item.id}" data-type="${item.type}">
+                    ${item.image ? `<img src="${item.image}" alt="${item.name}">` : ''}
+                    <div class="info">
+                        <div class="name">${item.name}</div>
+                        <div class="details">
+                            <span>${item.brand || ''}</span>
+                            <span>${item.price || ''}</span>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
+        }
+        dropdown.style.display = 'block';
+    }
+    
+    // Hide autocomplete dropdown
+    function hideDropdown() {
+        dropdown.style.display = 'none';
+    }
+    
+    // Perform search (redirect to filtered page)
+    function performSearch() {
+        const searchTerm = searchInput.value.trim();
+        const currentUrl = new URL(window.location.href);
+        
+        if (searchTerm) {
+            currentUrl.searchParams.set('search', searchTerm);
+        } else {
+            currentUrl.searchParams.delete('search');
+        }
+        
+        currentUrl.searchParams.set('page', '1');
+        window.location.href = currentUrl.toString();
+    }
+    
+    // Fetch autocomplete suggestions
+    async function fetchSuggestions(searchTerm) {
+        try {
+            const response = await fetch(`/search-products/?q=${encodeURIComponent(searchTerm)}`);
+            const data = await response.json();
+            return data.success ? data.results : [];
+        } catch (error) {
+            console.error('Search error:', error);
+            return [];
+        }
+    }
+    
+    // Event listeners
+    searchInput.addEventListener('input', async function() {
+        toggleClearButton();
+        const searchTerm = this.value.trim();
+        
+        if (searchTerm.length > 1) { // Only search after 2 characters
+            const results = await fetchSuggestions(searchTerm);
+            showDropdown(results);
+        } else {
+            hideDropdown();
+        }
+    });
+    
+    clearBtn.addEventListener('click', clearSearch);
+    searchBtn.addEventListener('click', performSearch);
+    searchInput.addEventListener('keypress', function(e) {
+        if (e.key === 'Enter') performSearch();
+    });
+    
+    // Handle item selection from dropdown
+    dropdown.addEventListener('click', function(e) {
+        const item = e.target.closest('.autocomplete-item');
+        if (item) {
+            const productId = item.dataset.id;
+            const productType = item.dataset.type;
+            window.location.href = `/products/${productId}/`;
+        }
+    });
+    
+    // Hide dropdown when clicking outside
+    document.addEventListener('click', function(e) {
+        if (!container.contains(e.target)) {
+            hideDropdown();
+        }
+    });
+    
+    // Initialize
+    toggleClearButton();
+}
+
+// Initialize both search bars
+document.addEventListener('DOMContentLoaded', function() {
+    const desktopSearch = document.querySelector('.search-container');
+    const mobileSearch = document.querySelector('.mobile-search-container');
+    
+    if (desktopSearch) initializeSearchBar(desktopSearch);
+    if (mobileSearch) initializeSearchBar(mobileSearch);
+});
+document.querySelector('.search-container .clear-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = window.location.origin + window.location.pathname;
+});
+document.querySelector('.mobile-search-container .clear-btn').addEventListener('click', function(e) {
+    e.preventDefault();
+    e.stopPropagation();
+    window.location.href = window.location.origin + window.location.pathname;
+});
     </script>
 </body>
 

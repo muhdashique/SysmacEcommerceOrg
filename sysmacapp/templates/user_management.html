@@ -1,0 +1,337 @@
+{% extends 'admin_dashboard.html' %}
+{% load static %}
+
+{% block content %}
+<style>
+    /* Base Styles */
+    .user-management-container {
+        font-family: 'Inter', -apple-system, BlinkMacSystemFont, sans-serif;
+    }
+    
+    /* Header Styles */
+    .user-management-header {
+        color: #1f2937;
+        margin-bottom: 1.5rem;
+        font-weight: 700;
+        letter-spacing: -0.025em;
+    }
+    
+    /* Card Styles */
+    .management-card {
+        background: white;
+        border-radius: 0.5rem;
+        box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+        transition: all 0.2s ease;
+        overflow: hidden;
+        position: relative;
+    }
+    
+    .management-card:hover {
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+        transform: translateY(-2px);
+    }
+    
+    .superusers-card {
+        border-left: 4px solid #3b82f6;
+    }
+    
+    .regular-users-card {
+        border-left: 4px solid #10b981;
+    }
+    
+    .stats-card {
+        border-top: 4px solid #8b5cf6;
+    }
+    
+    /* Card Header Styles */
+    .card-header {
+        padding: 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+    }
+    
+    .card-title {
+        font-size: 1.125rem;
+        font-weight: 600;
+        color: #374151;
+    }
+    
+    .user-count-badge {
+        font-size: 0.875rem;
+        font-weight: 500;
+        padding: 0.25rem 0.625rem;
+        border-radius: 9999px;
+    }
+    
+    .superuser-count {
+        background-color: #dbeafe;
+        color: #1d4ed8;
+    }
+    
+    .regular-user-count {
+        background-color: #dcfce7;
+        color: #047857;
+    }
+    
+    /* Table Styles */
+    .user-table {
+        width: 100%;
+        font-size: 0.875rem;
+        text-align: left;
+    }
+    
+    .user-table thead {
+        background-color: #f9fafb;
+        color: #6b7280;
+        text-transform: uppercase;
+        font-size: 0.75rem;
+    }
+    
+    .user-table th {
+        padding: 0.75rem 1.5rem;
+        font-weight: 500;
+    }
+    
+    .user-table td {
+        padding: 1rem 1.5rem;
+        border-bottom: 1px solid #e5e7eb;
+        vertical-align: middle;
+    }
+    
+    .user-table tbody tr:last-child td {
+        border-bottom: none;
+    }
+    
+    .user-table tbody tr:hover {
+        background-color: #f9fafb;
+    }
+    
+    /* Action Buttons */
+    .action-button {
+        font-weight: 500;
+        padding: 0.25rem 0.75rem;
+        border-radius: 0.375rem;
+        transition: all 0.2s ease;
+    }
+    
+    .deactivate-btn {
+        color: #dc2626;
+    }
+    
+    .deactivate-btn:hover {
+        background-color: #fee2e2;
+    }
+    
+    .activate-btn {
+        color: #059669;
+    }
+    
+    .activate-btn:hover {
+        background-color: #d1fae5;
+    }
+    
+    /* Stats Section */
+    .stats-container {
+        display: grid;
+        gap: 1rem;
+    }
+    
+    .stat-card {
+        padding: 1.5rem;
+        border-radius: 0.5rem;
+        transition: all 0.2s ease;
+    }
+    
+    .stat-card:hover {
+        transform: translateY(-2px);
+    }
+    
+    .total-users-stat {
+        background-color: #eff6ff;
+        border-bottom: 4px solid #3b82f6;
+    }
+    
+    .active-users-stat {
+        background-color: #ecfdf5;
+        border-bottom: 4px solid #10b981;
+    }
+    
+    .inactive-users-stat {
+        background-color: #f5f3ff;
+        border-bottom: 4px solid #8b5cf6;
+    }
+    
+    .stat-label {
+        font-size: 0.875rem;
+        font-weight: 500;
+        color: #4b5563;
+        margin-bottom: 0.5rem;
+    }
+    
+    .stat-value {
+        font-size: 1.5rem;
+        font-weight: 700;
+        color: #111827;
+    }
+    
+    /* Responsive Adjustments */
+    @media (max-width: 768px) {
+        .card-header {
+            padding: 1rem;
+        }
+        
+        .user-table th, 
+        .user-table td {
+            padding: 0.75rem 1rem;
+        }
+        
+        .stat-card {
+            padding: 1rem;
+        }
+    }
+    
+    @media (max-width: 640px) {
+        .user-table {
+            display: block;
+            overflow-x: auto;
+            white-space: nowrap;
+        }
+    }
+</style>
+
+<div class="user-management-container container mx-auto px-4 py-8">
+    <h1 class="user-management-header text-3xl">User Management</h1>
+    
+    <div class="grid grid-cols-1 md:grid-cols-2 gap-8">
+        <!-- Superusers Section -->
+        <div class="management-card superusers-card">
+            <div class="card-header">
+                <h2 class="card-title">Superusers</h2>
+                <span class="user-count-badge superuser-count">
+                    {{ superuser_count }} users
+                </span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Joined</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in superusers %}
+                        <tr>
+                            <td class="font-medium text-gray-900">
+                                {{ user.email }}
+                            </td>
+                            <td>
+                                {{ user.full_name }}
+                            </td>
+                            <td>
+                                {{ user.date_joined|date:"M d, Y" }}
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="3" class="text-center text-gray-500 py-4">
+                                No superusers found
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        
+        <!-- Regular Users Section -->
+        <div class="management-card regular-users-card">
+            <div class="card-header">
+                <h2 class="card-title">Regular Users</h2>
+                <span class="user-count-badge regular-user-count">
+                    {{ regular_user_count }} users
+                </span>
+            </div>
+            
+            <div class="overflow-x-auto">
+                <table class="user-table">
+                    <thead>
+                        <tr>
+                            <th>Email</th>
+                            <th>Name</th>
+                            <th>Joined</th>
+                            <th>Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        {% for user in regular_users %}
+                        <tr>
+                            <td class="font-medium text-gray-900">
+                                {{ user.email }}
+                            </td>
+                            <td>
+                                {{ user.full_name }}
+                            </td>
+                            <td>
+                                {{ user.date_joined|date:"M d, Y" }}
+                            </td>
+                            <td>
+                                <div class="flex space-x-2">
+                                    {% if user.is_active %}
+                                    <form method="post" action="{% url 'toggle_user_status' user.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-button deactivate-btn">
+                                            Deactivate
+                                        </button>
+                                    </form>
+                                    {% else %}
+                                    <form method="post" action="{% url 'toggle_user_status' user.id %}">
+                                        {% csrf_token %}
+                                        <button type="submit" class="action-button activate-btn">
+                                            Activate
+                                        </button>
+                                    </form>
+                                    {% endif %}
+                                </div>
+                            </td>
+                        </tr>
+                        {% empty %}
+                        <tr>
+                            <td colspan="4" class="text-center text-gray-500 py-4">
+                                No regular users found
+                            </td>
+                        </tr>
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+    
+    <div class="management-card stats-card mt-6">
+        <div class="card-header">
+            <h2 class="card-title">User Statistics</h2>
+        </div>
+        <div class="p-6">
+            <div class="stats-container grid grid-cols-1 md:grid-cols-3 gap-4">
+                <div class="stat-card total-users-stat">
+                    <p class="stat-label">Total Users</p>
+                    <p class="stat-value">{{ total_users }}</p>
+                </div>
+                <div class="stat-card active-users-stat">
+                    <p class="stat-label">Active Users</p>
+                    <p class="stat-value">{{ total_active_users }}</p>
+                </div>
+                <div class="stat-card inactive-users-stat">
+                    <p class="stat-label">Inactive Users</p>
+                    <p class="stat-value">{{ inactive_regular_users }}</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

@@ -818,6 +818,150 @@
         height: 40px;
     }
 }
+
+
+
+{% comment %}  {% endcomment %}
+ /* Add these styles to your existing CSS */
+    .image-section {
+        flex: 0 0 400px;
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+    }
+    
+    .main-image-container {
+        width: 400px;
+        height: 400px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 1px solid #e9ecef;
+        border-radius: 8px;
+        margin-bottom: 16px;
+        background: #fafafa;
+        overflow: hidden;
+    }
+    
+    .main-image {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+        transition: opacity 0.3s ease;
+    }
+    
+    /* Thumbnail container */
+    .thumbnail-gallery {
+        width: 100%;
+    }
+    
+    .thumbnails {
+        display: flex;
+        gap: 8px;
+        flex-wrap: wrap;
+        justify-content: center;
+    }
+    
+    .thumbnail-container {
+        width: 60px;
+        height: 60px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        border: 2px solid #e9ecef;
+        border-radius: 8px;
+        padding: 4px;
+        cursor: pointer;
+        overflow: hidden;
+    }
+    
+    .thumbnail {
+        max-width: 100%;
+        max-height: 100%;
+        object-fit: contain;
+    }
+
+    /* Mobile responsive styles */
+    @media (max-width: 768px) {
+        .image-section {
+            flex: none;
+            width: 100%;
+        }
+        
+        .main-image-container {
+            width: 100%;
+            height: 300px;
+        }
+        
+        .thumbnail-container {
+            width: 50px;
+            height: 50px;
+        }
+        
+        /* Swipe container for mobile */
+        .swipe-container {
+            position: relative;
+            width: 100%;
+            overflow: hidden;
+        }
+        
+        .swipe-images {
+            display: flex;
+            transition: transform 0.3s ease;
+            width: 100%;
+            height: 300px;
+        }
+        
+        .swipe-image {
+            min-width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+        
+        .swipe-image img {
+            max-width: 100%;
+            max-height: 100%;
+            object-fit: contain;
+        }
+        
+        .swipe-nav {
+            position: absolute;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(0,0,0,0.5);
+            color: white;
+            border: none;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            z-index: 10;
+        }
+        
+        .swipe-prev {
+            left: 10px;
+        }
+        
+        .swipe-next {
+            right: 10px;
+        }
+    }
+
+    @media (max-width: 480px) {
+        .main-image-container {
+            height: 250px;
+        }
+        
+        .thumbnail-container {
+            width: 40px;
+            height: 40px;
+        }
+    }
     </style>
 </head>
 
@@ -906,30 +1050,53 @@
 
 <!-- In the product-images-container section -->
 <div class="image-section">
-    <div class="main-image mb-4">
+    <!-- Desktop view -->
+    <div class="main-image-container hidden md:block">
         {% if product_images %}
             {% with product_images.0 as main_image %}
                 {% if main_image.is_url %}
-                    <img src="{{ main_image.image }}" alt="{{ product.name }}" class="img-fluid" id="mainProductImage">
+                    <img src="{{ main_image.image }}" alt="{{ product.name }}" class="main-image" id="mainProductImage">
                 {% else %}
-                    <img src="{{ main_image.image.url }}" alt="{{ product.name }}" class="img-fluid" id="mainProductImage">
+                    <img src="{{ main_image.image.url }}" alt="{{ product.name }}" class="main-image" id="mainProductImage">
                 {% endif %}
             {% endwith %}
         {% else %}
-            <img src="{% static 'images/no-image.jpg' %}" alt="No image available" class="img-fluid" id="mainProductImage">
+            <img src="{% static 'images/no-image.jpg' %}" alt="No image available" class="main-image" id="mainProductImage">
         {% endif %}
+    </div>
+    
+    <!-- Mobile swipe view -->
+    <div class="swipe-container block md:hidden">
+        <div class="swipe-images">
+            {% for image in product_images %}
+                <div class="swipe-image">
+                    {% if image.is_url %}
+                        <img src="{{ image.image }}" alt="{{ product.name }}">
+                    {% else %}
+                        <img src="{{ image.image.url }}" alt="{{ product.name }}">
+                    {% endif %}
+                </div>
+            {% empty %}
+                <div class="swipe-image">
+                    <img src="{% static 'images/no-image.jpg' %}" alt="No image available">
+                </div>
+            {% endfor %}
+        </div>
+        <button class="swipe-nav swipe-prev">❮</button>
+        <button class="swipe-nav swipe-next">❯</button>
     </div>
 
     {% if product_images|length > 1 %}
     <div class="thumbnail-gallery">
-        <div class="thumbnails flex flex-wrap gap-2">
+        <div class="thumbnails">
             {% for image in product_images %}
-                <div class="thumbnail cursor-pointer {% if forloop.first %}active{% endif %}" 
-                     data-image-src="{% if image.is_url %}{{ image.image }}{% else %}{{ image.image.url }}{% endif %}">
+                <div class="thumbnail-container {% if forloop.first %}active{% endif %}" 
+                     data-image-src="{% if image.is_url %}{{ image.image }}{% else %}{{ image.image.url }}{% endif %}"
+                     data-index="{{ forloop.counter0 }}">
                     {% if image.is_url %}
-                        <img src="{{ image.image }}" alt="{{ product.name }}" class="w-full h-full object-contain">
+                        <img src="{{ image.image }}" alt="{{ product.name }}" class="thumbnail">
                     {% else %}
-                        <img src="{{ image.image.url }}" alt="{{ product.name }}" class="w-full h-full object-contain">
+                        <img src="{{ image.image.url }}" alt="{{ product.name }}" class="thumbnail">
                     {% endif %}
                 </div>
             {% endfor %}
@@ -1024,11 +1191,106 @@
                     <i class="fas fa-shopping-cart"></i>
                     <span class="btn-text">ADD TO CART</span>
                 </button>
-                
-                <button class="btn btn-whatsapp" id="whatsappBtn">
-                    <i class="fab fa-whatsapp"></i> 
-                    <span class="btn-text">ENQUIRY VIA WHATSAPP</span>
-                </button>
+                <script>
+console.log('Debug Elements:',
+    document.querySelector('.product-title'),
+    document.querySelector('.current-price'),
+    document.getElementById('addToCartBtn')
+);
+</script>
+      <!-- First, modify your WhatsApp button to include all data as attributes -->
+<!-- Button HTML (unchanged) -->
+<button class="btn btn-whatsapp" id="whatsappBtn"
+    data-product-title="{{ product.edited_name|default:product.name }}"
+    data-product-price="₹{% if is_custom_product %}{{ product.price }}{% else %}{{ product.edited_price|default:product.price }}{% endif %}"
+    data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
+    data-is-custom="{% if is_custom_product %}true{% else %}false{% endif %}"
+    data-image-url="{% if product_images %}{% if product_images.0.is_url %}{{ product_images.0.image }}{% else %}{{ product_images.0.image.url }}{% endif %}{% else %}{% static 'images/no-image.jpg' %}{% endif %}">
+    <i class="fab fa-whatsapp"></i> 
+    <span class="btn-text">ENQUIRY VIA WHATSAPP</span>
+</button>
+
+<!-- JavaScript Solution -->
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    const whatsappBtn = document.getElementById('whatsappBtn');
+    
+    if (!whatsappBtn) {
+        console.error('WhatsApp button not found!');
+        return;
+    }
+
+    whatsappBtn.addEventListener('click', async function(e) {
+        e.preventDefault();
+        
+        try {
+            // Get product data from attributes
+            const productData = {
+                title: this.getAttribute('data-product-title') || 'Unknown Product',
+                price: this.getAttribute('data-product-price') || 'Price not available',
+                id: this.getAttribute('data-product-id') || 'UNKNOWN-ID',
+                isCustom: this.getAttribute('data-is-custom') === 'true',
+                imageUrl: this.getAttribute('data-image-url') || ''
+            };
+
+            // Create product details
+            const highlights = [
+                `Brand: {{ product.edited_brand|default:product.brand|default:"Not specified" }}`,
+                `Company: {{ product.edited_company|default:product.company|default:"Not specified" }}`,
+                `Category: {{ product.edited_category|default:product.catagory|default:"Not specified" }}`,
+                `Type: {{ product.edited_product|default:product.product|default:"Not specified" }}`,
+                {% if product.description or product.edited_description %}
+                `Description: {{ product.edited_description|default:product.description }}`
+                {% endif %}
+            ].filter(Boolean).join('\n• ');
+
+            // Construct the message
+            const message = `🛍️ *PRODUCT ENQUIRY* 🛍️\n\n` +
+                `📋 *Product Details:*\n` +
+                `➡️ *${productData.title}*\n` +
+                `• ${productData.isCustom ? 'Product ID' : 'Product Code'}: ${productData.id}\n` +
+                `• Price: ${productData.price}\n\n` +
+                `🔍 *Product Information:*\n• ${highlights}\n\n` +
+                `📝 *Notes:* I'm interested in this product. Please provide more details.\n\n` +
+                `Thanks! Looking forward to your response. 🙏`;
+
+            // Encode the message
+            const encodedMessage = encodeURIComponent(message.trim());
+            const whatsappNumber = "918129139506";
+            
+            // Create a temporary link to download the image
+            const downloadLink = document.createElement('a');
+            downloadLink.href = productData.imageUrl;
+            downloadLink.download = `${productData.id}_product_image.jpg`;
+            document.body.appendChild(downloadLink);
+            
+            // Open WhatsApp with both the message and image download suggestion
+            const whatsappUrl = `https://wa.me/${whatsappNumber}?text=${encodedMessage}`;
+            window.open(whatsappUrl, '_blank');
+            
+            // Show instructions for image
+            setTimeout(() => {
+                alert('Please download the product image from this link and send it in WhatsApp:\n\n' + 
+                      productData.imageUrl + 
+                      '\n\nAfter downloading, go back to WhatsApp and attach the image to your message.');
+            }, 1000);
+            
+            // Clean up
+            document.body.removeChild(downloadLink);
+            
+        } catch (error) {
+            console.error('WhatsApp error:', error);
+            alert('Error preparing WhatsApp message. Please contact support.');
+        }
+    });
+});
+
+
+
+
+//image section
+
+</script>
 
                 <button class="btn btn-wishlist {% if in_wishlist %}added{% endif %}" id="addToWishlistBtn"
     data-product-id="{% if is_custom_product %}{{ product.id }}{% else %}{{ product.code }}{% endif %}"
@@ -1041,7 +1303,13 @@
         </div>
         <div id="notificationContainer"></div>
     </div>
-
+<script>
+console.log('Debugging WhatsApp button:');
+console.log('whatsappBtn:', document.getElementById('whatsappBtn'));
+console.log('product-title:', document.querySelector('.product-title'));
+console.log('current-price:', document.querySelector('.current-price'));
+console.log('addToCartBtn:', document.getElementById('addToCartBtn'));
+</script>
     <script>
 class CartManager {
     constructor() {
@@ -1504,7 +1772,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 });
 
-class WhatsAppManager {
+{% comment %} class WhatsAppManager {
     constructor() {
         this.whatsappBtn = document.getElementById('whatsappBtn');
         if (this.whatsappBtn) {
@@ -1548,7 +1816,7 @@ class WhatsAppManager {
         // Open WhatsApp in a new tab
         window.open(whatsappUrl, '_blank');
     }
-}
+} {% endcomment %}
 
 // Initialize WhatsApp manager
 document.addEventListener('DOMContentLoaded', function() {
@@ -1612,6 +1880,118 @@ thumbnails.forEach(thumbnail => {
             }, 300);
         }
     });
+});
+</script>
+<script>
+document.addEventListener('DOMContentLoaded', function() {
+    // Thumbnail click functionality
+    const thumbnails = document.querySelectorAll('.thumbnail-container');
+    const mainImage = document.getElementById('mainProductImage');
+    
+    if (thumbnails.length > 0 && mainImage) {
+        thumbnails.forEach(thumbnail => {
+            thumbnail.addEventListener('click', function() {
+                const newSrc = this.dataset.imageSrc;
+                
+                // Only proceed if this isn't already the active image
+                if (mainImage.src !== newSrc) {
+                    // Add fade-out class
+                    mainImage.classList.add('fade-out');
+                    
+                    // After fade out completes, change image and fade in
+                    setTimeout(() => {
+                        mainImage.src = newSrc;
+                        mainImage.classList.remove('fade-out');
+                        mainImage.classList.add('fade-in');
+                        
+                        // Remove fade-in class after transition completes
+                        setTimeout(() => {
+                            mainImage.classList.remove('fade-in');
+                        }, 300);
+                        
+                        // Update active state
+                        thumbnails.forEach(t => t.classList.remove('active'));
+                        this.classList.add('active');
+                    }, 300);
+                }
+            });
+        });
+    }
+    
+    // Mobile swipe functionality
+    const swipeContainer = document.querySelector('.swipe-container');
+    if (swipeContainer) {
+        const swipeImages = document.querySelector('.swipe-images');
+        const images = document.querySelectorAll('.swipe-image');
+        const prevBtn = document.querySelector('.swipe-prev');
+        const nextBtn = document.querySelector('.swipe-next');
+        const thumbContainers = document.querySelectorAll('.thumbnail-container');
+        
+        let currentIndex = 0;
+        const totalImages = images.length;
+        
+        function updateSwipePosition() {
+            swipeImages.style.transform = `translateX(-${currentIndex * 100}%)`;
+            
+            // Update active thumbnail
+            if (thumbContainers.length > 0) {
+                thumbContainers.forEach(t => t.classList.remove('active'));
+                thumbContainers[currentIndex].classList.add('active');
+            }
+        }
+        
+        function goToIndex(index) {
+            if (index >= 0 && index < totalImages) {
+                currentIndex = index;
+                updateSwipePosition();
+            }
+        }
+        
+        function nextImage() {
+            currentIndex = (currentIndex + 1) % totalImages;
+            updateSwipePosition();
+        }
+        
+        function prevImage() {
+            currentIndex = (currentIndex - 1 + totalImages) % totalImages;
+            updateSwipePosition();
+        }
+        
+        // Button events
+        if (nextBtn) nextBtn.addEventListener('click', nextImage);
+        if (prevBtn) prevBtn.addEventListener('click', prevImage);
+        
+        // Touch events for swipe
+        let touchStartX = 0;
+        let touchEndX = 0;
+        
+        swipeContainer.addEventListener('touchstart', (e) => {
+            touchStartX = e.changedTouches[0].screenX;
+        }, false);
+        
+        swipeContainer.addEventListener('touchend', (e) => {
+            touchEndX = e.changedTouches[0].screenX;
+            handleSwipe();
+        }, false);
+        
+        function handleSwipe() {
+            const difference = touchStartX - touchEndX;
+            if (difference > 50) { // Swipe left
+                nextImage();
+            } else if (difference < -50) { // Swipe right
+                prevImage();
+            }
+        }
+        
+        // Thumbnail click to navigate
+        if (thumbContainers.length > 0) {
+            thumbContainers.forEach((thumb, index) => {
+                thumb.addEventListener('click', () => {
+                    goToIndex(index);
+                });
+            });
+        }
+    }
 });
 </script>
 

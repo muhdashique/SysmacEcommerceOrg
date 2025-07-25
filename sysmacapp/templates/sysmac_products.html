@@ -1,14 +1,25 @@
 {% extends 'admin_dashboard.html' %}
 
 {% block content %}
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+
 <div class="content-area">
     <div class="content-card">
         <div class="card-header">
             <h3 class="card-title">Product List</h3>
+          
+<div class="search-container" style="position: relative; margin-top: 20px;">
+    <input type="text" id="productSearch" placeholder="Search by name, company, brand, category or price..."
+        style="padding: 8px 32px 8px 16px; width: 100%; max-width: 500px; border: 1px solid #e2e8f0; border-radius: 4px;">
+    <span id="clearSearch"
+        style="position: absolute; right: 12px; top: 50%; transform: translateY(-50%); cursor: pointer; font-size: 18px; color: #aaa; display: none;">
+        &times;
+    </span>
+</div>
         </div>
         <div class="card-content">
             <div style="overflow-x: auto;">
-                <table style="width: 100%; border-collapse: collapse;">
+                <table id="productTable" style="width: 100%; border-collapse: collapse;">
                     <thead>
                         <tr style="background-color: #f1f5f9; text-align: left;">
                             <th style="padding: 12px 16px; border-bottom: 1px solid #e2e8f0;">Code</th>
@@ -36,33 +47,39 @@
                                     </div>
                                 {% endif %}
                             </td>
-                            <td style="padding: 12px 16px;">
+                            <td style="padding: 12px 16px;" class="searchable">
                                 {{ product.edited_name|default:product.name }}
                             </td>
                             <td style="padding: 12px 16px;">
                                 {{ product.edited_product|default:product.product }}
                             </td>
-                            <td style="padding: 12px 16px;">
+                            <td style="padding: 12px 16px;" class="searchable">
                                 {{ product.edited_category|default:product.catagory }}
                             </td>
-                            <td style="padding: 12px 16px;">
+                            <td style="padding: 12px 16px;" class="searchable">
                                 {{ product.edited_company|default:product.company }}
                             </td>
-                            <td style="padding: 12px 16px;">
+                            <td style="padding: 12px 16px;" class="searchable">
                                 {{ product.edited_brand|default:product.brand }}
                             </td>
-                            <td style="padding: 12px 16px;">
+                            <td style="padding: 12px 16px;" class="searchable">
                                 ₹{{ product.edited_price|default:product.price }}
                             </td>
                             <td style="padding: 12px 16px;">
                                 ₹{{ product.original_price }}
                             </td>
-                            <td style="padding: 12px 16px;">
-                                <a href="{% url 'edit_api_product' product.code %}" class="btn btn-sm btn-primary">Edit</a>
-                                {% if product.code in edited_products %}
-                                <a href="{% url 'delete_api_product' product.code %}" class="btn btn-sm btn-danger">Delete</a>
-                                {% endif %}
-                            </td>
+                        <td style="padding: 12px 16px;">
+                            <a href="{% url 'edit_api_product' product.code %}" class="action-btn edit-btn" title="Edit">
+                                <i class="fas fa-pen"></i>
+                            </a>
+                            
+                            {% if product.code in edited_products %}
+                            <a href="{% url 'delete_api_product' product.code %}" class="action-btn delete-btn" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </a>
+                            {% endif %}
+                        </td>
+
                         </tr>
                         {% endfor %}
                     </tbody>
@@ -71,13 +88,98 @@
         </div>
     </div>
 </div>
+<style>
+  .action-btn {
+        width: 36px;
+        height: 36px;
+        border: none;
+        border-radius: 50%;
+        display: inline-flex;
+        align-items: center;
+        justify-content: center;
+        transition: 0.3s ease;
+        margin-right: 6px;
+        font-size: 16px;
+    }
 
+    .edit-btn {
+        background-color: #0d6efd;
+        color: white;
+    }
+
+    .edit-btn:hover {
+        background-color: #0b5ed7;
+        transform: scale(1.1);
+    }
+
+    .delete-btn {
+        background-color: #dc3545;
+        color: white;
+    }
+
+    .delete-btn:hover {
+        background-color: #bb2d3b;
+        transform: scale(1.1);
+    }
+
+    .action-btn i {
+        pointer-events: none;
+    }
+</style>
 <script>
     document.addEventListener('DOMContentLoaded', function() {
         document.querySelectorAll('.nav-link').forEach(l => l.classList.remove('active'));
         document.querySelector('.nav-link[data-page="sysmac"]').classList.add('active');
         document.getElementById('page-title').textContent = 'Sysmac Products';
         document.querySelector('.breadcrumb').textContent = 'Dashboard / Sysmac Products';
+
+        // Search functionality
+        const searchInput = document.getElementById('productSearch');
+        const tableRows = document.querySelectorAll('#productTable tbody tr');
+        
+        searchInput.addEventListener('input', function() {
+            const searchTerm = this.value.toLowerCase();
+            
+            tableRows.forEach(row => {
+                const cells = row.querySelectorAll('.searchable');
+                let matches = false;
+                
+                cells.forEach(cell => {
+                    if (cell.textContent.toLowerCase().includes(searchTerm)) {
+                        matches = true;
+                    }
+                });
+                
+                // Also search in the product column (which doesn't have searchable class)
+                const productCell = row.querySelector('td:nth-child(4)');
+                if (productCell && productCell.textContent.toLowerCase().includes(searchTerm)) {
+                    matches = true;
+                }
+                
+                if (matches || searchTerm === '') {
+                    row.style.display = '';
+                } else {
+                    row.style.display = 'none';
+                }
+            });
+        });
+    });
+</script>
+<script>
+    const searchInput = document.getElementById('productSearch');
+    const clearBtn = document.getElementById('clearSearch');
+    
+    // Show the clear (×) when user types
+    searchInput.addEventListener('input', function () {
+        clearBtn.style.display = this.value ? 'block' : 'none';
+    });
+    
+    // Clear the text and refresh the page when clicked
+    clearBtn.addEventListener('click', function () {
+        searchInput.value = '';
+        clearBtn.style.display = 'none';
+        // Refresh the page
+        window.location.reload();
     });
 </script>
 {% endblock %}
