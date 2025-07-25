@@ -548,22 +548,24 @@
                             <p class="text-sm text-gray-500 mt-1">Upload multiple additional product images</p>
 
                             <!-- Display existing additional images -->
-                            {% if form.instance.additional_images.all %}
-                            <div class="mt-4">
-                                <h4 class="text-sm font-semibold mb-2">Current Additional Images</h4>
-                                <div class="image-grid">
-                                    {% for image in form.instance.additional_images.all %}
-                                    <div class="image-item">
-                                        <img src="{{ image.image.url }}" class="w-24 h-24 object-cover rounded">
-                                        <a href="{% url 'delete_product_image' image.id %}" 
-                                           class="delete-button"
-                                           onclick="return confirm('Are you sure you want to delete this image?')">
-                                            ×
-                                        </a>
+                            <!-- Display existing additional images -->
+                                {% if form.instance.pk and form.instance.additional_images.all %}
+                                <div class="mt-4">
+                                    <h4 class="text-sm font-semibold mb-2">Current Additional Images</h4>
+                                    <div class="image-grid">
+                                        {% for image in form.instance.additional_images.all %}
+                                        <div class="image-item">
+                                            <img src="{{ image.image.url }}" class="w-24 h-24 object-cover rounded">
+                                            <a href="{% url 'delete_product_image' image.id %}" 
+                                            class="delete-button"
+                                            onclick="return confirm('Are you sure you want to delete this image?')">
+                                                ×
+                                            </a>
+                                        </div>
+                                        {% endfor %}
                                     </div>
-                                    {% endfor %}
                                 </div>
-                            </div>
+
                             {% endif %}
                         </div>
                     </div>
