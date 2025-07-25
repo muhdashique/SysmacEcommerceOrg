@@ -25,12 +25,16 @@ SECRET_KEY = 'django-insecure-82z=$w!h1sj1hzv3li2l64(7i+45#my$%m-f$t#bl5h&-+8l+(
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
-ALLOWED_HOSTS = ['192.168.1.27','sysmac.in','www.sysmac.in', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = ['192.168.1.27', 'localhost', '127.0.0.1']
 
 
 
 
 
+CSRF_TRUSTED_ORIGINS = [
+    'https://sysmac.in',
+    'https://www.sysmac.in',  # Optional if you're also using www
+]
 
 
 
@@ -83,9 +87,9 @@ WSGI_APPLICATION = 'sysmac_ecommerce_project.wsgi.application'
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.postgresql',
-        'NAME': 'sysmac_ecommerce',  # Replace with your database name
+        'NAME': 'sysmacdb',  # Replace with your database name
         'USER': 'postgres',  # Replace with your database username
-        'PASSWORD': 'info@imc',  # Replace with your database password
+        'PASSWORD': '1234',  # Replace with your database password
         'HOST': 'localhost',  # For local development, use 'localhost' or '127.0.0.1'
         'PORT': '5432',  # Default PostgreSQL port is 5432
     }
