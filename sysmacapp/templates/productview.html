@@ -1237,7 +1237,7 @@ document.addEventListener('DOMContentLoaded', function() {
             const highlights = [
                 `Brand: {{ product.edited_brand|default:product.brand|default:"Not specified" }}`,
                 `Company: {{ product.edited_company|default:product.company|default:"Not specified" }}`,
-               `Category: {{ product.edited_category|default:product.category|default:"Not specified" }}`,
+               `Category: {{ product.edited_category|default:product.catagory|default:"Not specified" }}`,
                 `Type: {{ product.edited_product|default:product.product|default:"Not specified" }}`,
                 {% if product.description or product.edited_description %}
                 `Description: {{ product.edited_description|default:product.description }}`
